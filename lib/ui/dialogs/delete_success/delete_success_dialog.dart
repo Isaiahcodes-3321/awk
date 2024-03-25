@@ -1,0 +1,97 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:verzo/ui/common/app_colors.dart';
+import 'package:verzo/ui/common/app_styles.dart';
+import 'package:verzo/ui/common/ui_helpers.dart';
+import 'package:stacked/stacked.dart';
+import 'package:stacked_services/stacked_services.dart';
+
+import 'delete_success_dialog_model.dart';
+
+const double _graphicSize = 60;
+
+class DeleteSuccessDialog extends StackedView<DeleteSuccessDialogModel> {
+  final DialogRequest request;
+  final Function(DialogResponse) completer;
+
+  const DeleteSuccessDialog({
+    Key? key,
+    required this.request,
+    required this.completer,
+  }) : super(key: key);
+
+  @override
+  Widget builder(
+    BuildContext context,
+    DeleteSuccessDialogModel viewModel,
+    Widget? child,
+  ) {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      backgroundColor: Colors.white,
+      surfaceTintColor: Colors.white,
+      // shadowColor: kcErrorColor,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SvgPicture.asset(
+              'assets/images/Frame_43540-7.svg',
+              width: 48,
+              height: 48,
+            ),
+            verticalSpaceSmallMid,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(request.title ?? '',
+                          style: ktsBottomSheetHeaderText),
+                      if (request.description != null) ...[
+                        verticalSpaceTiny,
+                        Text(
+                          request.description!,
+                          style: ktsFormHintText,
+                          maxLines: 3,
+                          softWrap: true,
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            verticalSpaceSmallMid,
+            GestureDetector(
+              onTap: () => completer(DialogResponse(confirmed: true)),
+              child: Container(
+                height: 40,
+                width: double.infinity,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: kcErrorColor,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text(
+                  request.mainButtonTitle!,
+                  style: ktsButtonText,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  DeleteSuccessDialogModel viewModelBuilder(BuildContext context) =>
+      DeleteSuccessDialogModel();
+}

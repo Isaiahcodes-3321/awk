@@ -1,0 +1,160 @@
+import 'package:verzo/ui/bottom_sheets/notice/notice_sheet.dart';
+import 'package:verzo/ui/dialogs/info_alert/info_alert_dialog.dart';
+import 'package:verzo/ui/views/home/home_view.dart';
+import 'package:verzo/ui/views/startup/startup_view.dart';
+import 'package:stacked/stacked_annotations.dart';
+import 'package:stacked_services/stacked_services.dart';
+import 'package:verzo/services/authentication_service.dart';
+import 'package:verzo/services/verification_service.dart';
+import 'package:verzo/services/business_creation_service.dart';
+import 'package:verzo/services/dashboard_service.dart';
+import 'package:verzo/services/merchant_service.dart';
+import 'package:verzo/services/expense_service.dart';
+import 'package:verzo/services/purchase_service.dart';
+import 'package:verzo/services/sales_service.dart';
+import 'package:verzo/services/products_services_service.dart';
+import 'package:verzo/ui/views/login/login_view.dart';
+import 'package:verzo/ui/views/create_account/create_account_view.dart';
+import 'package:verzo/ui/views/verification/verification_view.dart';
+import 'package:verzo/ui/views/business_creation/business_creation_view.dart';
+import 'package:verzo/ui/views/expense/expense_view.dart';
+import 'package:verzo/ui/views/purchase/purchase_view.dart';
+import 'package:verzo/ui/views/sales/sales_view.dart';
+import 'package:verzo/ui/views/customer/customer_view.dart';
+import 'package:verzo/ui/views/product/product_view.dart';
+import 'package:verzo/ui/views/profile/profile_view.dart';
+import 'package:verzo/ui/views/settings/settings_view.dart';
+import 'package:verzo/ui/views/view_expense/view_expense_view.dart';
+import 'package:verzo/ui/views/view_purchase/view_purchase_view.dart';
+import 'package:verzo/ui/views/view_sales/view_sales_view.dart';
+import 'package:verzo/ui/views/view_customer/view_customer_view.dart';
+import 'package:verzo/ui/views/view_products_services/view_products_services_view.dart';
+import 'package:verzo/ui/views/update_expense/update_expense_view.dart';
+import 'package:verzo/ui/views/update_purchase/update_purchase_view.dart';
+import 'package:verzo/ui/views/update_sales/update_sales_view.dart';
+import 'package:verzo/ui/views/update_customer/update_customer_view.dart';
+import 'package:verzo/ui/views/update_product/update_product_view.dart';
+import 'package:verzo/ui/views/add_customer/add_customer_view.dart';
+import 'package:verzo/ui/views/add_expense/add_expense_view.dart';
+import 'package:verzo/ui/views/add_purchase/add_purchase_view.dart';
+import 'package:verzo/ui/views/add_sales/add_sales_view.dart';
+import 'package:verzo/ui/views/add_product/add_product_view.dart';
+import 'package:verzo/ui/views/choose_item/choose_item_view.dart';
+import 'package:verzo/ui/views/choose_purchase_item/choose_purchase_item_view.dart';
+import 'package:verzo/ui/views/choose_service_expense/choose_service_expense_view.dart';
+import 'package:verzo/ui/views/create_customer/create_customer_view.dart';
+import 'package:verzo/ui/views/create_merchant/create_merchant_view.dart';
+import 'package:verzo/ui/views/password/password_view.dart';
+import 'package:verzo/ui/views/business_profile/business_profile_view.dart';
+import 'package:verzo/ui/views/expense_categories/expense_categories_view.dart';
+import 'package:verzo/ui/views/service/service_view.dart';
+import 'package:verzo/ui/views/add_service/add_service_view.dart';
+import 'package:verzo/ui/views/update_service/update_service_view.dart';
+import 'package:verzo/ui/views/add_sales2/add_sales2_view.dart';
+import 'package:verzo/ui/views/add_item/add_item_view.dart';
+import 'package:verzo/ui/views/make_sales_payment/make_sales_payment_view.dart';
+import 'package:verzo/ui/dialogs/archive/archive_dialog.dart';
+import 'package:verzo/ui/dialogs/delete/delete_dialog.dart';
+import 'package:verzo/ui/dialogs/delete_success/delete_success_dialog.dart';
+import 'package:verzo/ui/dialogs/archive_success/archive_success_dialog.dart';
+import 'package:verzo/ui/views/merchant_invoice/merchant_invoice_view.dart';
+import 'package:verzo/ui/views/make_expense_payment/make_expense_payment_view.dart';
+import 'package:verzo/ui/views/make_purchase_payment/make_purchase_payment_view.dart';
+import 'package:verzo/ui/dialogs/send/send_dialog.dart';
+import 'package:verzo/ui/dialogs/send_success/send_success_dialog.dart';
+import 'package:verzo/ui/dialogs/info/info_dialog.dart';
+import 'package:verzo/ui/views/merchant_invoice_to_purchase/merchant_invoice_to_purchase_view.dart';
+import 'package:verzo/ui/views/add_purchase_item/add_purchase_item_view.dart';
+import 'package:verzo/ui/dialogs/logout/logout_dialog.dart';
+import 'package:verzo/ui/views/mark_purchase_item_as_received/mark_purchase_item_as_received_view.dart';
+import 'package:verzo/ui/views/mark_expense_item_as_received/mark_expense_item_as_received_view.dart';
+import 'package:verzo/ui/views/record_sale_expense/record_sale_expense_view.dart';
+// @stacked-import
+
+@StackedApp(
+  routes: [
+    MaterialRoute(page: HomeView),
+    MaterialRoute(page: StartupView),
+    MaterialRoute(page: LoginView, initial: true),
+    MaterialRoute(page: CreateAccountView),
+    MaterialRoute(page: VerificationView),
+    MaterialRoute(page: BusinessCreationView),
+    MaterialRoute(page: ExpenseView),
+    MaterialRoute(page: PurchaseView),
+    MaterialRoute(page: SalesView),
+    MaterialRoute(page: CustomerView),
+    MaterialRoute(page: ProfileView),
+    MaterialRoute(page: SettingsView),
+    MaterialRoute(page: ViewExpenseView),
+    MaterialRoute(page: ViewPurchaseView),
+    MaterialRoute(page: ViewSalesView),
+    MaterialRoute(page: ViewCustomerView),
+    MaterialRoute(page: ViewProductsServicesView),
+    MaterialRoute(page: UpdateExpenseView),
+    MaterialRoute(page: UpdatePurchaseView),
+    MaterialRoute(page: UpdateSalesView),
+    MaterialRoute(page: UpdateCustomerView),
+    MaterialRoute(page: UpdateProductView),
+    MaterialRoute(page: AddCustomerView),
+    MaterialRoute(page: AddExpenseView),
+    MaterialRoute(page: AddPurchaseView),
+    MaterialRoute(page: AddSalesView),
+    MaterialRoute(page: AddProductView),
+    MaterialRoute(page: ChooseItemView),
+    MaterialRoute(page: ChoosePurchaseItemView),
+    MaterialRoute(page: ChooseServiceExpenseView),
+    MaterialRoute(page: CreateCustomerView),
+    MaterialRoute(page: CreateMerchantView),
+    MaterialRoute(page: PasswordView),
+    MaterialRoute(page: BusinessProfileView),
+    MaterialRoute(page: ExpenseCategoriesView),
+    MaterialRoute(page: ProductView),
+    MaterialRoute(page: ServiceView),
+    MaterialRoute(page: AddServiceView),
+    MaterialRoute(page: UpdateServiceView),
+    MaterialRoute(page: AddSales2View),
+    MaterialRoute(page: AddItemView),
+    MaterialRoute(page: MakeSalesPaymentView),
+    MaterialRoute(page: MerchantInvoiceView),
+    MaterialRoute(page: MakeExpensePaymentView),
+    MaterialRoute(page: MakePurchasePaymentView),
+    MaterialRoute(page: MerchantInvoiceToPurchaseView),
+    MaterialRoute(page: AddPurchaseItemView),
+    MaterialRoute(page: MarkPurchaseItemAsReceivedView),
+    MaterialRoute(page: MarkExpenseItemAsReceivedView),
+    MaterialRoute(page: RecordSaleExpenseView),
+// @stacked-route
+  ],
+  dependencies: [
+    LazySingleton(classType: BottomSheetService),
+    LazySingleton(classType: DialogService),
+    LazySingleton(classType: NavigationService),
+    LazySingleton(classType: AuthenticationService),
+    LazySingleton(classType: VerificationService),
+    LazySingleton(classType: BusinessCreationService),
+    LazySingleton(classType: DashboardService),
+    LazySingleton(classType: MerchantService),
+    LazySingleton(classType: ExpenseService),
+    LazySingleton(classType: PurchaseService),
+    LazySingleton(classType: SalesService),
+    LazySingleton(classType: ProductsServicesService),
+// @stacked-service
+  ],
+  bottomsheets: [
+    StackedBottomsheet(classType: NoticeSheet),
+    // @stacked-bottom-sheet
+  ],
+  dialogs: [
+    StackedDialog(classType: InfoAlertDialog),
+    StackedDialog(classType: ArchiveDialog),
+    StackedDialog(classType: DeleteDialog),
+    StackedDialog(classType: DeleteSuccessDialog),
+    StackedDialog(classType: ArchiveSuccessDialog),
+    StackedDialog(classType: SendDialog),
+    StackedDialog(classType: SendSuccessDialog),
+    StackedDialog(classType: InfoDialog),
+    StackedDialog(classType: LogoutDialog),
+// @stacked-dialog
+  ],
+)
+class App {}
