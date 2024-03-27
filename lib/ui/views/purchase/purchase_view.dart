@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.locator.dart';
@@ -67,7 +68,7 @@ class _PurchaseViewState extends State<PurchaseView>
         return PopScope(
           canPop: false,
           child: Scaffold(
-            backgroundColor: kcButtonTextColor,
+            backgroundColor: kcTextTitleColor,
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.miniEndFloat,
             floatingActionButton: FloatingActionButton(
@@ -145,382 +146,375 @@ class _PurchaseViewState extends State<PurchaseView>
                     )
                   ]),
             ),
-            body: Padding(
-              padding:
-                  const EdgeInsets.only(top: 4, bottom: 0, left: 28, right: 28),
+            body: SizedBox(
+              height: 100.h,
+              width: 100.w,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  verticalSpaceRegular,
-                  if (!viewModel.isSearchActive)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Container(
+                    height: 14.h,
+                    color: kcTextTitleColor,
+                    padding: const EdgeInsets.only(left: 28, right: 28, top: 4),
+                    child: Column(
+                      // crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Purchase',
-                              style: ktsHeaderText,
-                            ),
-                            verticalSpaceTinyt,
-                            Text(
-                              'Create and manage orders',
-                              style: ktsSubtitleTextAuthentication,
-                            ),
-                          ],
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            viewModel.toggleSearch();
-                          },
-                          child: SvgPicture.asset(
-                            'assets/images/Group_search.svg',
-                            width: 36,
-                            height: 36,
-                          ),
-                        ),
-                      ],
-                    ),
-                  if (viewModel.isSearchActive)
-                    TextField(
-                      controller: viewModel
-                          .searchController, // Use the search controller
-                      onChanged: (value) {
-                        if (value.isEmpty) {
-                          viewModel.reloadPurchase();
-                        } // Call the search function as you type
-                        else {
-                          viewModel.searchPurchase();
-                        }
-                      },
-                      style: ktsBodyText,
-                      cursorColor: kcPrimaryColor,
-                      decoration: InputDecoration(
-                        focusColor: kcPrimaryColor,
-                        hoverColor: kcPrimaryColor,
-                        fillColor: kcPrimaryColor,
-                        contentPadding: const EdgeInsets.only(top: 10),
-                        prefixIconColor: kcTextSubTitleColor,
-                        hintText: 'Search purchases...',
-                        hintStyle: const TextStyle(
-                            color: kcTextSubTitleColor,
-                            fontSize: 16,
-                            fontFamily: 'Satoshi',
-                            fontWeight: FontWeight.w500,
-                            height: 0,
-                            letterSpacing: -0.3),
-                        prefixIcon: const Icon(
-                          Icons.search,
-                          size: 20,
-                        ),
-                        suffixIconColor: kcTextTitleColor,
-                        suffixIcon: IconButton(
-                          icon: const Icon(Icons.close, size: 20),
-                          onPressed: () {
-                            viewModel
-                                .toggleSearch(); // Call toggleSearch to hide the search bar
-                          },
-                        ),
-                        enabledBorder: const UnderlineInputBorder(
-                            borderSide:
-                                BorderSide(width: 1, color: kcBorderColor)),
-                        focusedBorder: const UnderlineInputBorder(
-                            borderSide:
-                                BorderSide(width: 1, color: kcPrimaryColor)),
-                        // border: const UnderlineInputBorder(
-                        //     borderSide: BorderSide(
-                        //         width: 1, color: kcPrimaryColor)),
-                      ),
-                    ),
-                  if (viewModel.isSearchActive) verticalSpaceTinyt,
-                  verticalSpaceSmallMid,
-                  Expanded(
-                    child: Container(
-                      height: MediaQuery.of(context).size.height * 0.762,
-                      width: double.infinity,
-                      clipBehavior: Clip.antiAlias,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 0, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: kcButtonTextColor,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Column(
-                        children: [
-                          if (!viewModel.isSearchActive)
-                            Container(
-                              clipBehavior: Clip.antiAlias,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 4, vertical: 6),
-                              decoration: BoxDecoration(
-                                color: kcArchiveColor,
-                                borderRadius: BorderRadius.circular(10),
+                        verticalSpaceRegular,
+                        if (!viewModel.isSearchActive)
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Purchase',
+                                    style: ktsHeaderText1,
+                                  ),
+                                  verticalSpaceTinyt,
+                                  Text(
+                                    'Create and manage orders',
+                                    style: ktsSubtitleTextAuthentication1,
+                                  ),
+                                ],
                               ),
-                              height: 32,
-                              child: TabBar(
-                                indicatorPadding: EdgeInsets.zero,
-                                indicatorSize: TabBarIndicatorSize
-                                    .tab, // Adjust the indicatorSize
-                                indicator: BoxDecoration(
-                                  border: Border.all(
-                                      width: 2, color: kcButtonTextColor),
-                                  color:
-                                      kcButtonTextColor, // Use your desired color
-                                  borderRadius: BorderRadius.circular(8),
+                              GestureDetector(
+                                onTap: () {
+                                  viewModel.toggleSearch();
+                                },
+                                child: SvgPicture.asset(
+                                  'assets/images/Group_search.svg',
+                                  width: 28,
+                                  height: 28,
                                 ),
-                                dividerColor: kcArchiveColor,
-                                indicatorColor: kcTextSubTitleColor,
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8),
-                                labelColor: kcTextTitleColor,
-                                labelStyle: const TextStyle(
-                                  fontSize: 11.44,
-                                  fontFamily: 'Satoshi',
-                                  fontWeight: FontWeight.w700,
-                                  height: 0,
-                                  letterSpacing: -0.25,
-                                ),
-                                // Use your desired label color
-                                unselectedLabelColor: kcTextSubTitleColor,
-                                unselectedLabelStyle: const TextStyle(
-                                  fontSize: 11.44,
+                              ),
+                            ],
+                          ),
+                        if (viewModel.isSearchActive)
+                          TextField(
+                            controller: viewModel
+                                .searchController, // Use the search controller
+                            onChanged: (value) {
+                              if (value.isEmpty) {
+                                viewModel.reloadPurchase();
+                              } // Call the search function as you type
+                              else {
+                                viewModel.searchPurchase();
+                              }
+                            },
+                            style: ktsBodyTextWhite,
+                            cursorColor: kcPrimaryColor,
+                            decoration: InputDecoration(
+                              focusColor: kcPrimaryColor,
+                              hoverColor: kcPrimaryColor,
+                              fillColor: kcPrimaryColor,
+                              contentPadding: const EdgeInsets.only(top: 10),
+                              prefixIconColor: kcTextSubTitleColor,
+                              hintText: 'Search purchases...',
+                              hintStyle: const TextStyle(
+                                  color: kcTextSubTitleColor,
+                                  fontSize: 16,
                                   fontFamily: 'Satoshi',
                                   fontWeight: FontWeight.w500,
                                   height: 0,
-                                  letterSpacing: -0.25,
-                                ), // Use your desired unselected label color
-                                tabs: [
-                                  Tab(
-                                    child: Text(
-                                      'All (${viewModel.purchases.length})', // Use your label text
-                                    ),
-                                  ),
-                                  Tab(
-                                    child: Text(
-                                      ''
-                                      'Archived (${viewModel.archivedPurchases.length})', // Use your label text
-                                    ),
-                                  ),
-                                ],
-                                controller: tabController,
+                                  letterSpacing: -0.3),
+                              prefixIcon: const Icon(
+                                Icons.search,
+                                size: 20,
                               ),
+                              suffixIconColor: kcTextSubTitleColor,
+                              suffixIcon: IconButton(
+                                icon: const Icon(Icons.close, size: 20),
+                                onPressed: () {
+                                  viewModel
+                                      .toggleSearch(); // Call toggleSearch to hide the search bar
+                                },
+                              ),
+                              enabledBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      width: 1, color: kcBorderColor)),
+                              focusedBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      width: 1, color: kcPrimaryColor)),
+                              // border: const UnderlineInputBorder(
+                              //     borderSide: BorderSide(
+                              //         width: 1, color: kcPrimaryColor)),
                             ),
-                          verticalSpaceSmall,
-                          Expanded(
-                            child: TabBarView(
-                                controller: tabController,
-                                children: [
-                                  Builder(builder: (context) {
-                                    if (viewModel.isBusy) {
-                                      return const SizedBox(
-                                          height: 500,
-                                          child: Center(
-                                              child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              CircularProgressIndicator(
-                                                color: kcPrimaryColor,
-                                              ),
-                                            ],
-                                          )));
-                                    }
-                                    if (viewModel.isSearchActive &&
-                                        viewModel.purchases.isEmpty) {
-                                      return SizedBox(
-                                          height: 400,
-                                          child: Center(
-                                              child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              SvgPicture.asset(
-                                                'assets/images/Group 1000007841.svg',
-                                                width: 200,
-                                                height: 150,
-                                              ),
-                                              verticalSpaceSmall,
-                                              Text(
-                                                'No purchase available',
-                                                style:
-                                                    ktsSubtitleTextAuthentication,
-                                              ),
-                                            ],
-                                          )));
-                                    }
-                                    if (viewModel.isSearchActive &&
-                                        viewModel.purchases.isNotEmpty) {
-                                      ListView.separated(
-                                        padding: const EdgeInsets.all(2),
-                                        scrollDirection: Axis.vertical,
-                                        // physics: const NeverScrollableScrollPhysics(),
-                                        primary: true,
-                                        shrinkWrap: true,
-                                        itemCount: viewModel.purchases.length,
-                                        itemBuilder: (context, index) {
-                                          var purchase =
-                                              viewModel.purchases[index];
-                                          return Container(
-                                            clipBehavior: Clip.antiAlias,
-                                            padding: EdgeInsets.zero,
-                                            width: double.infinity,
-                                            decoration: BoxDecoration(
-                                              // color: kcButtonTextColor,
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                              border: Border.all(
-                                                  width: 1.3,
-                                                  color: kcBorderColor),
-                                            ),
-                                            child: PurchaseOrderCard(
-                                              purchase: purchase,
-                                              purchaseId: purchase.id,
-                                            ),
-                                          );
-                                        },
-                                        separatorBuilder:
-                                            (BuildContext context, int index) {
-                                          return verticalSpaceTiny1;
-                                        },
-                                      );
-                                    }
-                                    if (viewModel.purchases.isEmpty) {
-                                      return SizedBox(
-                                          height: 400,
-                                          child: Center(
-                                              child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              SvgPicture.asset(
-                                                'assets/images/Group 1000007944.svg',
-                                                width: 200,
-                                                height: 150,
-                                              ),
-                                              verticalSpaceSmall,
-                                              Text(
-                                                'No purchase available',
-                                                style:
-                                                    ktsSubtitleTextAuthentication,
-                                              ),
-                                            ],
-                                          )));
-                                    }
-                                    return ListView.separated(
-                                      padding: const EdgeInsets.all(2),
-                                      scrollDirection: Axis.vertical,
-                                      // physics: const NeverScrollableScrollPhysics(),
-                                      primary: true,
-                                      shrinkWrap: true,
-                                      itemCount: viewModel.purchases.length,
-                                      itemBuilder: (context, index) {
-                                        var purchase =
-                                            viewModel.purchases[index];
-                                        return Container(
-                                          clipBehavior: Clip.antiAlias,
-                                          padding: EdgeInsets.zero,
-                                          width: double.infinity,
-                                          decoration: BoxDecoration(
-                                            // color: kcButtonTextColor,
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                            border: Border.all(
-                                                width: 1.3,
-                                                color: kcBorderColor),
-                                          ),
-                                          child: PurchaseOrderCard(
-                                            purchase: purchase,
-                                            purchaseId: purchase.id,
-                                          ),
-                                        );
-                                      },
-                                      separatorBuilder:
-                                          (BuildContext context, int index) {
-                                        return verticalSpaceTiny1;
-                                      },
-                                    );
-                                  }),
-                                  Builder(builder: (context) {
-                                    if (viewModel.isBusy) {
-                                      return const SizedBox(
-                                          height: 500,
-                                          child: Center(
-                                              child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              CircularProgressIndicator(
-                                                color: kcPrimaryColor,
-                                              ),
-                                            ],
-                                          )));
-                                    }
-
-                                    if (viewModel.archivedPurchases.isEmpty) {
-                                      return SizedBox(
-                                          height: 400,
-                                          child: Center(
-                                              child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              SvgPicture.asset(
-                                                'assets/images/Group 1000007944.svg',
-                                                width: 200,
-                                                height: 150,
-                                              ),
-                                              verticalSpaceSmall,
-                                              Text(
-                                                'No purchase available',
-                                                style:
-                                                    ktsSubtitleTextAuthentication,
-                                              ),
-                                            ],
-                                          )));
-                                    }
-                                    return ListView.separated(
-                                      padding: const EdgeInsets.all(2),
-                                      scrollDirection: Axis.vertical,
-                                      // physics:
-                                      //     const NeverScrollableScrollPhysics(),
-                                      primary: true,
-                                      shrinkWrap: true,
-                                      itemCount:
-                                          viewModel.archivedPurchases.length,
-                                      itemBuilder: (context, index) {
-                                        var purchase =
-                                            viewModel.archivedPurchases[index];
-                                        return Container(
-                                          clipBehavior: Clip.antiAlias,
-                                          padding: EdgeInsets.zero,
-                                          width: double.infinity,
-                                          decoration: BoxDecoration(
-                                            // color: kcButtonTextColor,
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                            border: Border.all(
-                                                width: 1.3,
-                                                color: kcBorderColor),
-                                          ),
-                                          child: ArchivedPurchaseOrderCard(
-                                            purchase: purchase,
-                                            purchaseId: purchase.id,
-                                          ),
-                                        );
-                                        // }
-                                      },
-                                      separatorBuilder:
-                                          (BuildContext context, int index) {
-                                        return verticalSpaceTiny1;
-                                      },
-                                    );
-                                  })
-                                ]),
                           ),
-                        ],
-                      ),
+                        if (viewModel.isSearchActive) verticalSpaceTinyt,
+                      ],
+                    ),
+                  ),
+                  verticalSpaceSmall,
+                  Container(
+                    padding: const EdgeInsets.only(left: 28, right: 28, top: 6),
+                    height: 76.h,
+                    decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(32),
+                            topRight: Radius.circular(32)),
+                        color: kcButtonTextColor),
+                    child: Column(
+                      children: [
+                        if (!viewModel.isSearchActive)
+                          Container(
+                            clipBehavior: Clip.antiAlias,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 4, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: kcArchiveColor,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            height: 32,
+                            child: TabBar(
+                              indicatorPadding: EdgeInsets.zero,
+                              indicatorSize: TabBarIndicatorSize
+                                  .tab, // Adjust the indicatorSize
+                              indicator: BoxDecoration(
+                                border: Border.all(
+                                    width: 2, color: kcButtonTextColor),
+                                color:
+                                    kcButtonTextColor, // Use your desired color
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              dividerColor: kcArchiveColor,
+                              indicatorColor: kcTextSubTitleColor,
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8),
+                              labelColor: kcTextTitleColor,
+                              labelStyle: const TextStyle(
+                                fontSize: 11.44,
+                                fontFamily: 'Satoshi',
+                                fontWeight: FontWeight.w700,
+                                height: 0,
+                                letterSpacing: -0.25,
+                              ),
+                              // Use your desired label color
+                              unselectedLabelColor: kcTextSubTitleColor,
+                              unselectedLabelStyle: const TextStyle(
+                                fontSize: 11.44,
+                                fontFamily: 'Satoshi',
+                                fontWeight: FontWeight.w500,
+                                height: 0,
+                                letterSpacing: -0.25,
+                              ), // Use your desired unselected label color
+                              tabs: [
+                                Tab(
+                                  child: Text(
+                                    'All (${viewModel.purchases.length})', // Use your label text
+                                  ),
+                                ),
+                                Tab(
+                                  child: Text(
+                                    ''
+                                    'Archived (${viewModel.archivedPurchases.length})', // Use your label text
+                                  ),
+                                ),
+                              ],
+                              controller: tabController,
+                            ),
+                          ),
+                        verticalSpaceSmall,
+                        Expanded(
+                          child:
+                              TabBarView(controller: tabController, children: [
+                            Builder(builder: (context) {
+                              if (viewModel.isBusy) {
+                                return const SizedBox(
+                                    height: 500,
+                                    child: Center(
+                                        child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        CircularProgressIndicator(
+                                          color: kcPrimaryColor,
+                                        ),
+                                      ],
+                                    )));
+                              }
+                              if (viewModel.isSearchActive &&
+                                  viewModel.purchases.isEmpty) {
+                                return SizedBox(
+                                    height: 400,
+                                    child: Center(
+                                        child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        SvgPicture.asset(
+                                          'assets/images/Group 1000007841.svg',
+                                          width: 200,
+                                          height: 150,
+                                        ),
+                                        verticalSpaceSmall,
+                                        Text(
+                                          'No purchase available',
+                                          style: ktsSubtitleTextAuthentication,
+                                        ),
+                                      ],
+                                    )));
+                              }
+                              if (viewModel.isSearchActive &&
+                                  viewModel.purchases.isNotEmpty) {
+                                ListView.separated(
+                                  padding: const EdgeInsets.all(2),
+                                  scrollDirection: Axis.vertical,
+                                  // physics: const NeverScrollableScrollPhysics(),
+                                  primary: true,
+                                  shrinkWrap: true,
+                                  itemCount: viewModel.purchases.length,
+                                  itemBuilder: (context, index) {
+                                    var purchase = viewModel.purchases[index];
+                                    return Container(
+                                      clipBehavior: Clip.antiAlias,
+                                      padding: EdgeInsets.zero,
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                        // color: kcButtonTextColor,
+                                        borderRadius: BorderRadius.circular(12),
+                                        border: Border.all(
+                                            width: 1.3, color: kcBorderColor),
+                                      ),
+                                      child: PurchaseOrderCard(
+                                        purchase: purchase,
+                                        purchaseId: purchase.id,
+                                      ),
+                                    );
+                                  },
+                                  separatorBuilder:
+                                      (BuildContext context, int index) {
+                                    return verticalSpaceTiny1;
+                                  },
+                                );
+                              }
+                              if (viewModel.purchases.isEmpty) {
+                                return SizedBox(
+                                    height: 400,
+                                    child: Center(
+                                        child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        SvgPicture.asset(
+                                          'assets/images/Group 1000007944.svg',
+                                          width: 200,
+                                          height: 150,
+                                        ),
+                                        verticalSpaceSmall,
+                                        Text(
+                                          'No purchase available',
+                                          style: ktsSubtitleTextAuthentication,
+                                        ),
+                                      ],
+                                    )));
+                              }
+                              return ListView.separated(
+                                padding: const EdgeInsets.all(2),
+                                scrollDirection: Axis.vertical,
+                                // physics: const NeverScrollableScrollPhysics(),
+                                primary: true,
+                                shrinkWrap: true,
+                                itemCount: viewModel.purchases.length,
+                                itemBuilder: (context, index) {
+                                  var purchase = viewModel.purchases[index];
+                                  return Container(
+                                    clipBehavior: Clip.antiAlias,
+                                    padding: EdgeInsets.zero,
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      // color: kcButtonTextColor,
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(
+                                          width: 1.3, color: kcBorderColor),
+                                    ),
+                                    child: PurchaseOrderCard(
+                                      purchase: purchase,
+                                      purchaseId: purchase.id,
+                                    ),
+                                  );
+                                },
+                                separatorBuilder:
+                                    (BuildContext context, int index) {
+                                  return verticalSpaceTiny1;
+                                },
+                              );
+                            }),
+                            Builder(builder: (context) {
+                              if (viewModel.isBusy) {
+                                return const SizedBox(
+                                    height: 500,
+                                    child: Center(
+                                        child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        CircularProgressIndicator(
+                                          color: kcPrimaryColor,
+                                        ),
+                                      ],
+                                    )));
+                              }
+
+                              if (viewModel.archivedPurchases.isEmpty) {
+                                return SizedBox(
+                                    height: 400,
+                                    child: Center(
+                                        child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        SvgPicture.asset(
+                                          'assets/images/Group 1000007944.svg',
+                                          width: 200,
+                                          height: 150,
+                                        ),
+                                        verticalSpaceSmall,
+                                        Text(
+                                          'No purchase available',
+                                          style: ktsSubtitleTextAuthentication,
+                                        ),
+                                      ],
+                                    )));
+                              }
+                              return ListView.separated(
+                                padding: const EdgeInsets.all(2),
+                                scrollDirection: Axis.vertical,
+                                // physics:
+                                //     const NeverScrollableScrollPhysics(),
+                                primary: true,
+                                shrinkWrap: true,
+                                itemCount: viewModel.archivedPurchases.length,
+                                itemBuilder: (context, index) {
+                                  var purchase =
+                                      viewModel.archivedPurchases[index];
+                                  return Container(
+                                    clipBehavior: Clip.antiAlias,
+                                    padding: EdgeInsets.zero,
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      // color: kcButtonTextColor,
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(
+                                          width: 1.3, color: kcBorderColor),
+                                    ),
+                                    child: ArchivedPurchaseOrderCard(
+                                      purchase: purchase,
+                                      purchaseId: purchase.id,
+                                    ),
+                                  );
+                                  // }
+                                },
+                                separatorBuilder:
+                                    (BuildContext context, int index) {
+                                  return verticalSpaceTiny1;
+                                },
+                              );
+                            })
+                          ]),
+                        ),
+                      ],
                     ),
                   ),
                 ],

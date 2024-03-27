@@ -36,15 +36,39 @@ BorderRadius defaultTagBorderRadius = BorderRadius.circular(20);
 BorderRadius defaultCarouselBorderRadius = BorderRadius.circular(32);
 
 // TextStyle
-TextStyle ktsHeroText = GoogleFonts.plusJakartaSans(
+TextStyle ktsHeroText = GoogleFonts.publicSans(
   color: kcTextColor,
   fontSize: kHeroTextSize,
-  fontWeight: FontWeight.bold,
+  fontWeight: FontWeight.w500,
 );
 TextStyle ktsHeroTextWhite = GoogleFonts.dmSans(
   color: kcButtonTextColor,
   fontSize: kHeroTextSize,
   fontWeight: FontWeight.bold,
+);
+
+TextStyle ktsHeroText1 = GoogleFonts.plusJakartaSans(
+  color: kcTextTitleColor,
+  fontSize: 16,
+  fontWeight: FontWeight.w400,
+);
+
+TextStyle ktsHeroTextWhiteDashboard = GoogleFonts.dmSans(
+  color: kcButtonTextColor,
+  fontSize: 32,
+  fontWeight: FontWeight.bold,
+);
+
+TextStyle ktsHeroTextWhiteDashboard1 = GoogleFonts.dmSans(
+  color: kcButtonTextColor,
+  fontSize: 20,
+  fontWeight: FontWeight.bold,
+);
+
+TextStyle ktsHeroTextWhiteDashboard2 = GoogleFonts.dmSans(
+  color: kcButtonTextColor,
+  fontSize: 20,
+  fontWeight: FontWeight.normal,
 );
 
 TextStyle ktsTitleTextAuthentication = const TextStyle(
@@ -85,6 +109,14 @@ TextStyle ktsSubtitleTextAuthentication = const TextStyle(
     letterSpacing: -0.3,
     height: 0,
     color: kcTextSubTitleColor,
+    fontSize: 16,
+    fontWeight: FontWeight.w500);
+
+TextStyle ktsSubtitleTextAuthentication1 = const TextStyle(
+    fontFamily: 'Satoshi',
+    letterSpacing: -0.3,
+    height: 0,
+    color: kcButtonTextColor,
     fontSize: 16,
     fontWeight: FontWeight.w500);
 
@@ -177,6 +209,15 @@ TextStyle ktsBottomSheetHeaderText = const TextStyle(
 
 TextStyle ktsHeaderText = const TextStyle(
   color: kcTextTitleColor,
+  fontSize: 20,
+  fontFamily: 'Satoshi',
+  fontWeight: FontWeight.w700,
+  height: 0,
+  letterSpacing: -0.30,
+);
+
+TextStyle ktsHeaderText1 = const TextStyle(
+  color: kcButtonTextColor,
   fontSize: 20,
   fontFamily: 'Satoshi',
   fontWeight: FontWeight.w700,

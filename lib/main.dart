@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:verzo/app/app.bottomsheets.dart';
 import 'package:verzo/app/app.dialogs.dart';
 import 'package:verzo/app/app.locator.dart';
@@ -19,16 +20,31 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      color: kcButtonTextColor,
-      debugShowCheckedModeBanner: false,
-      initialRoute: Routes.startupView,
-      onGenerateRoute: StackedRouter().onGenerateRoute,
-      navigatorKey: StackedService.navigatorKey,
-      navigatorObservers: [
-        StackedService.routeObserver,
-      ],
+    return ResponsiveSizer(
+      builder: (context, orientation, screenType) {
+        return MaterialApp(
+          color: kcButtonTextColor,
+          debugShowCheckedModeBanner: false,
+          initialRoute: Routes.startupView,
+          onGenerateRoute: StackedRouter().onGenerateRoute,
+          navigatorKey: StackedService.navigatorKey,
+          navigatorObservers: [
+            StackedService.routeObserver,
+          ],
+        );
+      },
     );
+
+    //  MaterialApp(
+    //     color: kcButtonTextColor,
+    //     debugShowCheckedModeBanner: false,
+    //     initialRoute: Routes.startupView,
+    //     onGenerateRoute: StackedRouter().onGenerateRoute,
+    //     navigatorKey: StackedService.navigatorKey,
+    //     navigatorObservers: [
+    //       StackedService.routeObserver,
+    //     ],
+    //   );
   }
 }
 

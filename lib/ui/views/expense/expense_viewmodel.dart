@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.dialogs.dart';
@@ -19,6 +22,8 @@ class ExpenseViewModel extends FutureViewModel<List<Expenses>> {
   List<Expenses> allExpenses = []; // Original list of expenses
   List<Expenses> searchResults = [];
 
+  // ExpenseViewModel() {}
+
   bool isSearchActive = false;
   void toggleSearch() {
     isSearchActive = !isSearchActive;
@@ -30,8 +35,60 @@ class ExpenseViewModel extends FutureViewModel<List<Expenses>> {
     rebuildUi();
   }
 
-  @override
-  Future<List<Expenses>> futureToRun() => getExpenseByBusiness();
+  // @override
+  // Future<List<Expenses>> futureToRun() async {
+  //   final db = await getExpenseDatabaseList();
+
+  //   //retrieveExpensesfromDatabase
+  //   final List<Map<String, dynamic>> maps = await db.query('expenses');
+  //   List<Expenses> expensesFromDatabase;
+  //   if (maps.isNotEmpty) {
+  //     expensesFromDatabase = List.generate(maps.length, (i) {
+  //       return Expenses(
+  //         id: maps[i]['id'],
+  //         description: maps[i]['description'],
+  //         reference: maps[i]['reference'],
+  //         amount: maps[i]['amount'],
+  //         expenseDate: maps[i]['expenseDate'],
+  //         expenseCategoryId: maps[i]['expenseCategoryId'],
+  //         expenseCategoryName: maps[i]['expenseCategoryName'],
+  //         merchantId: maps[i]['merchantId'],
+  //         merchantName: maps[i]['merchantName'],
+  //         expenseStatusId: maps[i]['expenseStatusId'],
+  //         expenseItems: List<ExpenseDetail>.from(
+  //           (jsonDecode(maps[i]['expenseItems']) as List)
+  //               .map((item) => ExpenseDetail.fromMap(item)),
+  //         ),
+  //       );
+  //     });
+  //   } else {
+  //     expensesFromDatabase = [];
+  //   }
+
+  //   if (expensesFromDatabase != null && expensesFromDatabase.isNotEmpty) {
+  //     // If there are expenses in the database, set them in your ViewModel.
+  //     allExpenses = expensesFromDatabase;
+  //   } else {
+  //     // If the database is empty, fetch data from your service.
+  //     final expenseList = await getExpenseByBusiness();
+
+  //     // Save expenses to the SQLite database.
+  //     for (final expense in expenseList) {
+  //       await db.insert(
+  //         'expenses',
+  //         expense.toMap(),
+  //         conflictAlgorithm: ConflictAlgorithm.replace,
+  //       );
+  //     }
+
+  //     allExpenses.addAll(expenseList);
+  //   }
+
+  //   rebuildUi();
+
+  //   return allExpenses;
+  // }
+
   Future<List<Expenses>> getExpenseByBusiness() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String businessIdValue = prefs.getString('businessId') ?? '';
@@ -216,4 +273,7 @@ class ExpenseViewModel extends FutureViewModel<List<Expenses>> {
   Future reload() async {
     runBusyFuture(reloadExpense());
   }
+
+  @override
+  Future<List<Expenses>> futureToRun() => getExpenseByBusiness();
 }

@@ -113,7 +113,9 @@ const Widget horizontalSpaceHeader = SizedBox(
 const Widget verticalSpaceMinute = SizedBox(
   height: 4,
 );
-
+const Widget verticalSpaceTinyt1 = SizedBox(
+  height: 2,
+);
 const Widget verticalSpaceTinyt = SizedBox(
   height: 4,
 );

@@ -50,92 +50,60 @@ class AddItemView extends StackedView<AddItemViewModel> with $AddItemView {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // ElevatedButton(
-                    //   onPressed: () {
-                    //     viewModel.isProduct = true;
-                    //     viewModel.rebuildUi(); // force a redraw
-                    //   },
-                    //   style: ElevatedButton.styleFrom(
-                    //     minimumSize: const Size(88, 36),
-                    //     shape: const RoundedRectangleBorder(
-                    //       borderRadius: BorderRadius.only(
-                    //         topLeft: Radius.circular(10),
-                    //         bottomLeft: Radius.circular(10),
-                    //       ),
-                    //     ),
-                    //     // Apply gradient background
-                    //     elevation:
-                    //         0, // Remove elevation to make gradient more visible
-                    //     padding: EdgeInsets
-                    //         .zero, // Remove padding to make gradient fill the button completely
-                    //   ),
-                    //   child: Ink(
-                    //     decoration: const BoxDecoration(
-                    //       gradient: LinearGradient(
-                    //         colors: [
-                    //           kcPrimaryColor,
-                    //           Color(0xFF6275E9),
-                    //         ],
-                    //       ),
-                    //       borderRadius: BorderRadius.only(
-                    //         topLeft: Radius.circular(10),
-                    //         bottomLeft: Radius.circular(10),
-                    //       ),
-                    //     ),
-                    //     child: Container(
-                    //       alignment: Alignment.center,
-                    //       child: Text(
-                    //         'Product',
-                    //         style: viewModel.isProduct
-                    //             ? ktsSubtitleTileText2
-                    //             : ktsSubtitleTileText3,
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
-
-                    ElevatedButton(
-                      onPressed: () {
+                    GestureDetector(
+                      onTap: () {
                         viewModel.isProduct = true;
-                        viewModel.rebuildUi(); // force a redraw
+                        viewModel.rebuildUi();
                       },
-                      style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(88, 36),
-                          backgroundColor: viewModel.isProduct
-                              ? kcPrimaryColor.withOpacity(.999)
-                              : kcBorderColor,
-                          shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(10),
                             bottomLeft: Radius.circular(10),
-                          ))),
-                      child: Text(
-                        'Product',
-                        style: viewModel.isProduct
-                            ? ktsSubtitleTileText2
-                            : ktsSubtitleTileText3,
+                          ),
+                          color: kcBorderColor,
+                          gradient: viewModel.isProduct
+                              ? const LinearGradient(
+                                  colors: [kcPrimaryColor, Color(0xFF6275E9)],
+                                )
+                              : null, // fallback to null to use default color
+                        ),
+                        child: Text(
+                          'Product',
+                          style: viewModel.isProduct
+                              ? ktsSubtitleTileText2
+                              : ktsSubtitleTileText3,
+                        ),
                       ),
                     ),
-                    ElevatedButton(
-                      onPressed: () {
+                    GestureDetector(
+                      onTap: () {
                         viewModel.isProduct = false;
-                        viewModel.rebuildUi(); // force a redraw
+                        viewModel.rebuildUi();
                       },
-                      style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(88, 36),
-                          backgroundColor: !viewModel.isProduct
-                              ? kcPrimaryColor.withOpacity(.999)
-                              : kcBorderColor,
-                          shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.only(
                             topRight: Radius.circular(10),
                             bottomRight: Radius.circular(10),
-                          ))),
-                      child: Text(
-                        'Service',
-                        style: !viewModel.isProduct
-                            ? ktsSubtitleTileText2
-                            : ktsSubtitleTileText3,
+                          ),
+                          color: kcBorderColor,
+                          gradient: !viewModel.isProduct
+                              ? const LinearGradient(
+                                  colors: [Color(0xFF6275E9), kcPrimaryColor],
+                                )
+                              : null, // fallback to null to use default color
+                        ),
+                        child: Text(
+                          'Service',
+                          style: !viewModel.isProduct
+                              ? ktsSubtitleTileText2
+                              : ktsSubtitleTileText3,
+                        ),
                       ),
                     ),
                   ],

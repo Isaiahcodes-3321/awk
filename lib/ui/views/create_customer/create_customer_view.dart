@@ -121,7 +121,7 @@ class CreateCustomerView extends StackedView<CreateCustomerViewModel>
                 // textCapitalization: TextCapitalization.words,
                 style: ktsBodyText,
                 controller: mobileController,
-                keyboardType: TextInputType.emailAddress,
+                keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter a phone number';

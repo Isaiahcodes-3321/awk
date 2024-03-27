@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -152,9 +153,21 @@ class _HomeViewState extends State<HomeView>
                       top: MediaQuery.of(context).size.height * 0.06),
                   color: kcTextTitleColor,
                   child: Column(
+                      // mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
                       children: [
+                        Container(
+                          padding: EdgeInsets.zero,
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          child: Text('Dashboard',
+                              style: GoogleFonts.openSans(
+                                color: kcButtonTextColor,
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                              )),
+                        ),
+                        verticalSpaceTiny1,
                         Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 20, vertical: 12),
@@ -188,11 +201,12 @@ class _HomeViewState extends State<HomeView>
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text("John Doe", style: ktsButtonText2),
+                                  Text("John Doe",
+                                      style: ktsHeroTextWhiteDashboard1),
                                   SvgPicture.asset(
                                     'assets/images/eye.svg',
-                                    width: 20,
-                                    height: 20,
+                                    width: 26,
+                                    height: 26,
                                   ),
                                 ],
                               ),
@@ -203,12 +217,12 @@ class _HomeViewState extends State<HomeView>
                                 children: [
                                   Text(
                                     'Card number',
-                                    style: ktsSubtitleTileText2,
+                                    style: ktsButtonText2,
                                   ),
-                                  verticalSpaceTinyt,
+                                  verticalSpaceTinyt1,
                                   Text(
                                     '5425 2334 3010 9903',
-                                    style: ktsButtonText2,
+                                    style: ktsHeroTextWhiteDashboard1,
                                   )
                                 ],
                               ),
@@ -224,12 +238,12 @@ class _HomeViewState extends State<HomeView>
                                         children: [
                                           Text(
                                             'Expiry date',
-                                            style: ktsSubtitleTileText2,
+                                            style: ktsButtonText2,
                                           ),
-                                          verticalSpaceTinyt,
+                                          verticalSpaceTinyt1,
                                           Text(
                                             '01/28',
-                                            style: ktsButtonText2,
+                                            style: ktsHeroTextWhiteDashboard2,
                                           )
                                         ],
                                       ),
@@ -238,12 +252,12 @@ class _HomeViewState extends State<HomeView>
                                         children: [
                                           Text(
                                             'CVV',
-                                            style: ktsSubtitleTileText2,
+                                            style: ktsButtonText2,
                                           ),
-                                          verticalSpaceTinyt,
+                                          verticalSpaceTinyt1,
                                           Text(
                                             '987',
-                                            style: ktsButtonText2,
+                                            style: ktsHeroTextWhiteDashboard2,
                                           )
                                         ],
                                       )
@@ -268,15 +282,19 @@ class _HomeViewState extends State<HomeView>
                             mainAxisAlignment: MainAxisAlignment.start,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text(
-                                'Billing address',
-                                style: ktsSubtitleTileText2,
-                              ),
+                              Text('Billing address',
+                                  style: GoogleFonts.dmSans(
+                                    color: kcButtonTextColor.withOpacity(0.7),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w300,
+                                  )),
                               verticalSpaceTiny,
-                              Text(
-                                '1, street name, Ikeja 100200, Lagos',
-                                style: ktsButtonText2,
-                              )
+                              Text('1, street name, Ikeja 100200, Lagos',
+                                  style: GoogleFonts.openSans(
+                                    color: kcButtonTextColor,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500,
+                                  ))
                             ],
                           ),
                         ),
@@ -302,7 +320,11 @@ class _HomeViewState extends State<HomeView>
                                   verticalSpaceTiny,
                                   Text(
                                     'New card',
-                                    style: ktsSubtitleTileText2,
+                                    style: GoogleFonts.dmSans(
+                                      color: kcButtonTextColor,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w300,
+                                    ),
                                   )
                                 ],
                               ),
@@ -322,7 +344,11 @@ class _HomeViewState extends State<HomeView>
                                   verticalSpaceTiny,
                                   Text(
                                     'Lock card',
-                                    style: ktsSubtitleTileText2,
+                                    style: GoogleFonts.dmSans(
+                                      color: kcButtonTextColor,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w300,
+                                    ),
                                   )
                                 ],
                               ),
@@ -333,9 +359,9 @@ class _HomeViewState extends State<HomeView>
                 ),
                 DraggableScrollableSheet(
                   snap: false,
-                  initialChildSize: 0.88,
+                  initialChildSize: 0.8,
                   minChildSize: 0.2,
-                  maxChildSize: 0.88,
+                  maxChildSize: 0.8,
                   builder: (context, controller) => Container(
                     decoration: const BoxDecoration(
                         color: kcButtonTextColor,
@@ -352,7 +378,16 @@ class _HomeViewState extends State<HomeView>
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          verticalSpaceTiny,
+                          verticalSpaceTiny1,
+                          Center(
+                            child: Container(
+                              width: 80,
+                              height: 4,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(4),
+                                  color: kcTextSubTitleColor.withOpacity(0.2)),
+                            ),
+                          ),
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12),
                             height: 60,
@@ -525,7 +560,7 @@ class _HomeViewState extends State<HomeView>
                                           width: MediaQuery.of(context)
                                                   .size
                                                   .width *
-                                              0.65,
+                                              0.76,
                                           decoration: BoxDecoration(
                                             gradient: const LinearGradient(
                                               colors: [
@@ -555,8 +590,15 @@ class _HomeViewState extends State<HomeView>
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                      style: ktsButtonText,
-                                                      'Revenue'),
+                                                    // style: ktsButtonText,
+                                                    'Revenue',
+                                                    style: GoogleFonts.openSans(
+                                                      color: kcButtonTextColor,
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
                                                   verticalSpaceSmallMid,
                                                   verticalSpaceTiny,
                                                   RichText(
@@ -570,10 +612,15 @@ class _HomeViewState extends State<HomeView>
                                                                       symbol:
                                                                           '₦')
                                                               .currencySymbol, // The remaining digits without the symbol
-                                                          style: ktsCardMetricsAmount2
-                                                              .copyWith(
-                                                                  fontFamily:
-                                                                      'Roboto'),
+                                                          style: GoogleFonts
+                                                              .roboto(
+                                                            // color: kcPrimaryColor,
+                                                            fontSize: 26,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ).copyWith(
+                                                              fontFamily:
+                                                                  'Roboto'),
                                                         ),
                                                         TextSpan(
                                                           text: viewModel
@@ -596,8 +643,13 @@ class _HomeViewState extends State<HomeView>
                                                                           .monthlyInvoices
                                                                           ?.totalInvoiceAmountForMonth ??
                                                                       0), // The remaining digits without the symbol
-                                                          style:
-                                                              ktsCardMetricsAmount2,
+                                                          style: GoogleFonts
+                                                              .roboto(
+                                                            // color: kcPrimaryColor,
+                                                            fontSize: 26,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
                                                         ),
                                                       ],
                                                     ),
@@ -625,9 +677,15 @@ class _HomeViewState extends State<HomeView>
                                                     ),
                                                     horizontalSpaceminute2,
                                                     Text(
-                                                        "${viewModel.isChecked ? (viewModel.weeklyInvoices?.percentageOfIncreaseInInvoicesThisWeek ?? 0) : (viewModel.monthlyInvoices?.percentageIncreaseInInvoicesThisMonth ?? 0)}%",
-                                                        style:
-                                                            ktsCardMetricsStats),
+                                                      "${viewModel.isChecked ? (viewModel.weeklyInvoices?.percentageOfIncreaseInInvoicesThisWeek ?? 0) : (viewModel.monthlyInvoices?.percentageIncreaseInInvoicesThisMonth ?? 0)}%",
+                                                      style: GoogleFonts.roboto(
+                                                        color:
+                                                            kcButtonTextColor,
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
                                                   ])
                                             ],
                                           ),
@@ -639,7 +697,7 @@ class _HomeViewState extends State<HomeView>
                                           width: MediaQuery.of(context)
                                                   .size
                                                   .width *
-                                              0.65,
+                                              0.76,
                                           decoration: BoxDecoration(
                                             gradient: const LinearGradient(
                                               colors: [
@@ -669,7 +727,14 @@ class _HomeViewState extends State<HomeView>
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                      style: ktsButtonText,
+                                                      style:
+                                                          GoogleFonts.openSans(
+                                                        color:
+                                                            kcButtonTextColor,
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
                                                       'Expenses'),
                                                   verticalSpaceSmallMid,
                                                   verticalSpaceTiny,
@@ -684,10 +749,15 @@ class _HomeViewState extends State<HomeView>
                                                                       symbol:
                                                                           '₦')
                                                               .currencySymbol, // The remaining digits without the symbol
-                                                          style: ktsCardMetricsAmount2
-                                                              .copyWith(
-                                                                  fontFamily:
-                                                                      'Roboto'),
+                                                          style: GoogleFonts
+                                                              .roboto(
+                                                            // color: kcPrimaryColor,
+                                                            fontSize: 26,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ).copyWith(
+                                                              fontFamily:
+                                                                  'Roboto'),
                                                         ),
                                                         TextSpan(
                                                           text: viewModel
@@ -710,8 +780,15 @@ class _HomeViewState extends State<HomeView>
                                                                           .expenseForMonth
                                                                           ?.totalExpenseAmountThisMonth ??
                                                                       0), // The remaining digits without the symbol
-                                                          style:
-                                                              ktsCardMetricsAmount2,
+                                                          // style:
+                                                          //     ktsCardMetricsAmount2,
+                                                          style: GoogleFonts
+                                                              .roboto(
+                                                            // color: kcPrimaryColor,
+                                                            fontSize: 26,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
                                                         ),
                                                       ],
                                                     ),
@@ -739,9 +816,15 @@ class _HomeViewState extends State<HomeView>
                                                     ),
                                                     horizontalSpaceminute2,
                                                     Text(
-                                                        "${viewModel.isChecked ? (viewModel.expenseForWeek?.percentageIncreaseInExpenseThisWeek ?? 0) : (viewModel.expenseForMonth?.percentageIncreaseInExpenseThisMonth ?? 0)}%",
-                                                        style:
-                                                            ktsCardMetricsStats),
+                                                      "${viewModel.isChecked ? (viewModel.expenseForWeek?.percentageIncreaseInExpenseThisWeek ?? 0) : (viewModel.expenseForMonth?.percentageIncreaseInExpenseThisMonth ?? 0)}%",
+                                                      style: GoogleFonts.roboto(
+                                                        color:
+                                                            kcButtonTextColor,
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
                                                   ])
                                             ],
                                           ),
@@ -753,7 +836,7 @@ class _HomeViewState extends State<HomeView>
                                           width: MediaQuery.of(context)
                                                   .size
                                                   .width *
-                                              0.65,
+                                              0.76,
                                           decoration: BoxDecoration(
                                             gradient: const LinearGradient(
                                               colors: [
@@ -783,7 +866,14 @@ class _HomeViewState extends State<HomeView>
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                      style: ktsButtonText,
+                                                      style:
+                                                          GoogleFonts.openSans(
+                                                        color:
+                                                            kcButtonTextColor,
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
                                                       'Purchases'),
                                                   verticalSpaceSmallMid,
                                                   verticalSpaceTiny,
@@ -798,10 +888,15 @@ class _HomeViewState extends State<HomeView>
                                                                       symbol:
                                                                           '₦')
                                                               .currencySymbol, // The remaining digits without the symbol
-                                                          style: ktsCardMetricsAmount2
-                                                              .copyWith(
-                                                                  fontFamily:
-                                                                      'Roboto'),
+                                                          style: GoogleFonts
+                                                              .roboto(
+                                                            // color: kcPrimaryColor,
+                                                            fontSize: 26,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ).copyWith(
+                                                              fontFamily:
+                                                                  'Roboto'),
                                                         ),
                                                         TextSpan(
                                                           text: viewModel
@@ -824,8 +919,13 @@ class _HomeViewState extends State<HomeView>
                                                                           .purchaseForMonth
                                                                           ?.totalPurchaseAmountThisMonth ??
                                                                       0), // The remaining digits without the symbol
-                                                          style:
-                                                              ktsCardMetricsAmount2,
+                                                          style: GoogleFonts
+                                                              .roboto(
+                                                            // color: kcPrimaryColor,
+                                                            fontSize: 26,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
                                                         ),
                                                       ],
                                                     ),
@@ -853,9 +953,15 @@ class _HomeViewState extends State<HomeView>
                                                     ),
                                                     horizontalSpaceminute2,
                                                     Text(
-                                                        "${viewModel.isChecked ? (viewModel.purchaseForWeek?.percentageIncreaseInPurchaseThisWeek ?? 0) : (viewModel.purchaseForMonth?.percentageIncreaseInPurchaseThisMonth ?? 0)}%",
-                                                        style:
-                                                            ktsCardMetricsStats),
+                                                      "${viewModel.isChecked ? (viewModel.purchaseForWeek?.percentageIncreaseInPurchaseThisWeek ?? 0) : (viewModel.purchaseForMonth?.percentageIncreaseInPurchaseThisMonth ?? 0)}%",
+                                                      style: GoogleFonts.roboto(
+                                                        color:
+                                                            kcButtonTextColor,
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
                                                   ])
                                             ],
                                           ),
@@ -889,21 +995,33 @@ class _HomeViewState extends State<HomeView>
                                           padding: EdgeInsets.zero,
                                           unselectedLabelColor:
                                               kcTextSubTitleColor,
-                                          unselectedLabelStyle: const TextStyle(
-                                            fontSize: 14,
-                                            fontFamily: 'Satoshi',
+                                          unselectedLabelStyle:
+                                              GoogleFonts.openSans(
+                                            // color: kcPrimaryColor,
+                                            fontSize: 16,
                                             fontWeight: FontWeight.w500,
-                                            height: 0,
-                                            letterSpacing: -0.3,
                                           ),
+                                          // unselectedLabelStyle: const TextStyle(
+                                          //   fontSize: 14,
+                                          //   fontFamily: 'Satoshi',
+                                          //   fontWeight: FontWeight.w500,
+                                          //   height: 0,
+                                          //   letterSpacing: -0.3,
+                                          // ),
                                           labelColor: kcPrimaryColor,
-                                          labelStyle: const TextStyle(
-                                            fontSize: 14,
-                                            fontFamily: 'Satoshi',
+                                          // labelStyle: const TextStyle(
+                                          //   fontSize: 14,
+                                          //   fontFamily: 'Satoshi',
+                                          //   fontWeight: FontWeight.w500,
+                                          //   height: 0,
+                                          //   letterSpacing: -0.3,
+                                          // ),
+                                          labelStyle: GoogleFonts.openSans(
+                                            // color: kcPrimaryColor,
+                                            fontSize: 16,
                                             fontWeight: FontWeight.w500,
-                                            height: 0,
-                                            letterSpacing: -0.3,
                                           ),
+
                                           labelPadding: EdgeInsets.zero,
                                           tabs: const [
                                             Tab(
@@ -1024,7 +1142,11 @@ class _InvoiceListViewState extends State<InvoiceListView> {
                             verticalSpaceSmall,
                             Text(
                               'No invoice available',
-                              style: ktsSubtitleTextAuthentication,
+                              style: GoogleFonts.roboto(
+                                color: kcTextSubTitleColor,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                              ),
                             ),
                             verticalSpaceTiny,
                             GestureDetector(
@@ -1041,7 +1163,11 @@ class _InvoiceListViewState extends State<InvoiceListView> {
                                   horizontalSpaceminute,
                                   Text(
                                     'Create invoice',
-                                    style: ktsAddNewText2,
+                                    style: GoogleFonts.roboto(
+                                      color: kcPrimaryColor,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -1098,7 +1224,12 @@ class SalesCard extends ViewModelWidget<HomeViewModel> {
       // tileColor: kcStrokeColor,
       title: Text(
         '#${sales.reference}',
-        style: ktsQuantityText,
+        style: GoogleFonts.roboto(
+          color: kcTextTitleColor.withOpacity(0.9),
+          fontSize: 18,
+          fontWeight: FontWeight.w500,
+        ),
+        // style: ktsHeroText,
         overflow: TextOverflow.ellipsis,
         maxLines: 1,
       ),
@@ -1108,12 +1239,20 @@ class SalesCard extends ViewModelWidget<HomeViewModel> {
             TextSpan(
               text: NumberFormat.currency(locale: 'en_NGN', symbol: '₦')
                   .currencySymbol, // The remaining digits without the symbol
-              style: ktsFormHintText.copyWith(fontFamily: 'Roboto'),
+              style: GoogleFonts.roboto(
+                color: kcTextSubTitleColor,
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+              ).copyWith(fontFamily: 'Roboto'),
             ),
             TextSpan(
               text: NumberFormat.currency(locale: 'en_NGN', symbol: '').format(
                   sales.totalAmount), // The remaining digits without the symbol
-              style: ktsFormHintText,
+              style: GoogleFonts.roboto(
+                color: kcTextSubTitleColor,
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+              ),
             ),
           ],
         ),
@@ -1189,7 +1328,12 @@ class _ExpenseListViewState extends State<ExpenseListView> {
                             verticalSpaceSmall,
                             Text(
                               'No expense available',
-                              style: ktsSubtitleTextAuthentication,
+                              style: GoogleFonts.roboto(
+                                color: kcTextSubTitleColor,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              // style: ktsSubtitleTextAuthentication,
                             ),
                             verticalSpaceTiny,
                             GestureDetector(
@@ -1206,7 +1350,12 @@ class _ExpenseListViewState extends State<ExpenseListView> {
                                   horizontalSpaceminute,
                                   Text(
                                     'Create expense',
-                                    style: ktsAddNewText2,
+                                    style: GoogleFonts.roboto(
+                                      color: kcPrimaryColor,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                    // style: ktsAddNewText2,
                                   ),
                                 ],
                               ),
@@ -1264,7 +1413,11 @@ class ExpenseCard extends ViewModelWidget<HomeViewModel> {
       ),
       title: Text(
         '#${expenses.reference}',
-        style: ktsQuantityText,
+        style: GoogleFonts.roboto(
+          color: kcTextTitleColor.withOpacity(0.9),
+          fontSize: 18,
+          fontWeight: FontWeight.w500,
+        ),
         overflow: TextOverflow.ellipsis,
         maxLines: 1,
       ),
@@ -1274,13 +1427,21 @@ class ExpenseCard extends ViewModelWidget<HomeViewModel> {
             TextSpan(
               text: NumberFormat.currency(locale: 'en_NGN', symbol: '₦')
                   .currencySymbol, // The remaining digits without the symbol
-              style: ktsFormHintText.copyWith(fontFamily: 'Roboto'),
+              style: GoogleFonts.roboto(
+                color: kcTextSubTitleColor,
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+              ).copyWith(fontFamily: 'Roboto'),
             ),
             TextSpan(
-              text: NumberFormat.currency(locale: 'en_NGN', symbol: '').format(
-                  expenses.amount), // The remaining digits without the symbol
-              style: ktsFormHintText,
-            ),
+                text: NumberFormat.currency(locale: 'en_NGN', symbol: '')
+                    .format(expenses
+                        .amount), // The remaining digits without the symbol
+                style: GoogleFonts.roboto(
+                  color: kcTextSubTitleColor,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                )),
           ],
         ),
       ),
@@ -1355,7 +1516,12 @@ class _PurchaseListViewState extends State<PurchaseListView> {
                             verticalSpaceSmall,
                             Text(
                               'No purchase available',
-                              style: ktsSubtitleTextAuthentication,
+                              style: GoogleFonts.roboto(
+                                color: kcTextSubTitleColor,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              // style: ktsSubtitleTextAuthentication,
                             ),
                             verticalSpaceTiny,
                             GestureDetector(
@@ -1372,7 +1538,11 @@ class _PurchaseListViewState extends State<PurchaseListView> {
                                   horizontalSpaceminute,
                                   Text(
                                     'Create purchase',
-                                    style: ktsAddNewText2,
+                                    style: GoogleFonts.roboto(
+                                      color: kcPrimaryColor,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -1428,7 +1598,11 @@ class PurchaseOrderCard extends ViewModelWidget<HomeViewModel> {
       contentPadding: const EdgeInsets.symmetric(horizontal: 24),
       title: Text(
         '#${purchase.reference}',
-        style: ktsQuantityText,
+        style: GoogleFonts.roboto(
+          color: kcTextTitleColor.withOpacity(0.9),
+          fontSize: 18,
+          fontWeight: FontWeight.w500,
+        ),
         overflow: TextOverflow.ellipsis,
         maxLines: 1,
       ),
@@ -1438,13 +1612,21 @@ class PurchaseOrderCard extends ViewModelWidget<HomeViewModel> {
             TextSpan(
               text: NumberFormat.currency(locale: 'en_NGN', symbol: '₦')
                   .currencySymbol, // The remaining digits without the symbol
-              style: ktsFormHintText.copyWith(fontFamily: 'Roboto'),
+              style: GoogleFonts.roboto(
+                color: kcTextSubTitleColor,
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+              ).copyWith(fontFamily: 'Roboto'),
             ),
             TextSpan(
-              text: NumberFormat.currency(locale: 'en_NGN', symbol: '').format(
-                  purchase.total), // The remaining digits without the symbol
-              style: ktsFormHintText,
-            ),
+                text: NumberFormat.currency(locale: 'en_NGN', symbol: '')
+                    .format(purchase
+                        .total), // The remaining digits without the symbol
+                style: GoogleFonts.roboto(
+                  color: kcTextSubTitleColor,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                )),
           ],
         ),
       ),

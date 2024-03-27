@@ -134,7 +134,7 @@ class AddProductView extends StackedView<AddProductViewModel>
                     // labelStyle: ktsFormText,
                     border: defaultFormBorder),
                 items: viewModel.productUnitdropdownItems,
-                // itemHeight: 12,
+                // itemHeight: 42,
                 value: productUnitIdController.text.isEmpty
                     ? null
                     : productUnitIdController.text,

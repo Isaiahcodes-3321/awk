@@ -1254,7 +1254,7 @@ class MockVerificationService extends _i1.Mock
       );
 
   @override
-  _i14.Future<_i5.VerificationResult> verifyOTP({required double? code}) =>
+  _i14.Future<_i5.VerificationResult> verifyOTP({required num? code}) =>
       (super.noSuchMethod(
         Invocation.method(
           #verifyOTP,

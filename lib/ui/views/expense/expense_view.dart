@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+
 import 'package:intl/intl.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.locator.dart';
@@ -62,186 +64,198 @@ class _ExpenseViewState extends State<ExpenseView>
           return PopScope(
             canPop: false,
             child: Scaffold(
-              backgroundColor: kcButtonTextColor,
-              floatingActionButtonLocation:
-                  FloatingActionButtonLocation.miniEndFloat,
-              floatingActionButton: FloatingActionButton(
-                elevation: 4,
-                highlightElevation: 8.0, // Elevation when button is pressed
-                focusElevation: 4.0, // Elevation when button is focused
-                hoverElevation: 4.0,
-                foregroundColor: kcButtonTextColor,
-                backgroundColor: kcPrimaryColor,
-                shape: const CircleBorder(
-                  eccentricity: 1,
-                  side: BorderSide.none,
+                backgroundColor: kcTextTitleColor,
+                floatingActionButtonLocation:
+                    FloatingActionButtonLocation.miniEndFloat,
+                floatingActionButton: FloatingActionButton(
+                  elevation: 4,
+                  highlightElevation: 8.0, // Elevation when button is pressed
+                  focusElevation: 4.0, // Elevation when button is focused
+                  hoverElevation: 4.0,
+                  foregroundColor: kcButtonTextColor,
+                  backgroundColor: kcPrimaryColor,
+                  shape: const CircleBorder(
+                    eccentricity: 1,
+                    side: BorderSide.none,
+                  ),
+                  onPressed: () {
+                    viewModel.navigationService
+                        .navigateTo(Routes.addExpenseView);
+                  },
+                  child: const Icon(
+                    Icons.add,
+                    size: 24,
+                  ),
                 ),
-                onPressed: () {
-                  viewModel.navigationService.navigateTo(Routes.addExpenseView);
-                },
-                child: const Icon(
-                  Icons.add,
-                  size: 24,
-                ),
-              ),
-              bottomNavigationBar: SizedBox(
-                height: 60,
-                child: BottomNavigationBar(
-                    backgroundColor: kcButtonTextColor,
-                    type: BottomNavigationBarType.fixed,
-                    selectedItemColor: kcIconColor,
-                    unselectedItemColor:
-                        kcTextColorLight, // Set unselected item color
-                    selectedLabelStyle:
-                        ktsFormHintText, // Set selected label color
-                    unselectedLabelStyle: ktsFormHintText,
-                    iconSize: 24,
-                    currentIndex: selectedPageIndex,
-                    onTap: (index) {
-                      if (index == 0) {
-                        onHomeTapped();
-                      } else if (index == 1) {
-                        onInvoicingTapped();
-                      } else if (index == 3) {
-                        onPurchaseTapped();
-                      }
-                    },
-                    items: <BottomNavigationBarItem>[
-                      BottomNavigationBarItem(
-                        icon: SvgPicture.asset(
-                          'assets/images/home-02.svg',
-                          width: 24,
-                          height: 24,
-                        ),
-                        label: 'Home',
-                      ),
-                      BottomNavigationBarItem(
+                bottomNavigationBar: SizedBox(
+                  height: 60,
+                  child: BottomNavigationBar(
+                      backgroundColor: kcButtonTextColor,
+                      type: BottomNavigationBarType.fixed,
+                      selectedItemColor: kcIconColor,
+                      unselectedItemColor:
+                          kcTextColorLight, // Set unselected item color
+                      selectedLabelStyle:
+                          ktsFormHintText, // Set selected label color
+                      unselectedLabelStyle: ktsFormHintText,
+                      iconSize: 24,
+                      currentIndex: selectedPageIndex,
+                      onTap: (index) {
+                        if (index == 0) {
+                          onHomeTapped();
+                        } else if (index == 1) {
+                          onInvoicingTapped();
+                        } else if (index == 3) {
+                          onPurchaseTapped();
+                        }
+                      },
+                      items: <BottomNavigationBarItem>[
+                        BottomNavigationBarItem(
                           icon: SvgPicture.asset(
-                            'assets/images/receipt-lines.svg',
+                            'assets/images/home-02.svg',
                             width: 24,
                             height: 24,
                           ),
-                          label: 'Invoice'),
-                      BottomNavigationBarItem(
-                        icon: SvgPicture.asset(
-                          'assets/images/card-minus-2.svg',
-                          width: 24,
-                          height: 24,
+                          label: 'Home',
                         ),
-                        label: 'Expense',
-                      ),
-                      BottomNavigationBarItem(
-                        icon: SvgPicture.asset(
-                          'assets/images/cart.svg',
-                          width: 24,
-                          height: 24,
-                        ),
-                        label: 'Purchase',
-                      )
-                    ]),
-              ),
-              body: Padding(
-                padding: const EdgeInsets.only(
-                    top: 4, bottom: 0, left: 28, right: 28),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    verticalSpaceRegular,
-                    if (!viewModel.isSearchActive)
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Expense',
-                                style: ktsHeaderText,
-                              ),
-                              verticalSpaceTinyt,
-                              Text(
-                                'Create and manage expenses',
-                                style: ktsSubtitleTextAuthentication,
-                              ),
-                            ],
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              viewModel.toggleSearch();
-                            },
-                            child: SvgPicture.asset(
-                              'assets/images/Group_search.svg',
-                              width: 36,
-                              height: 36,
+                        BottomNavigationBarItem(
+                            icon: SvgPicture.asset(
+                              'assets/images/receipt-lines.svg',
+                              width: 24,
+                              height: 24,
                             ),
+                            label: 'Invoice'),
+                        BottomNavigationBarItem(
+                          icon: SvgPicture.asset(
+                            'assets/images/card-minus-2.svg',
+                            width: 24,
+                            height: 24,
                           ),
-                        ],
-                      ),
-                    if (viewModel.isSearchActive)
-                      TextField(
-                        controller: viewModel
-                            .searchController, // Use the search controller
-                        onChanged: (value) {
-                          if (value.isEmpty) {
-                            viewModel.reloadExpense();
-                          } // Call the search function as you type
-                          else {
-                            viewModel.searchExpense();
-                          }
-                        },
-                        style: ktsBodyText,
-                        cursorColor: kcPrimaryColor,
-                        decoration: InputDecoration(
-                          focusColor: kcButtonTextColor,
-                          hoverColor: kcPrimaryColor,
-                          fillColor: kcPrimaryColor,
-                          contentPadding: const EdgeInsets.only(top: 10),
-                          prefixIconColor: kcTextSubTitleColor,
-                          hintText: 'Search expense...',
-                          hintStyle: const TextStyle(
-                              color: kcTextSubTitleColor,
-                              fontSize: 16,
-                              fontFamily: 'Satoshi',
-                              fontWeight: FontWeight.w500,
-                              height: 0,
-                              letterSpacing: -0.3),
-                          prefixIcon: const Icon(
-                            Icons.search,
-                            size: 20,
+                          label: 'Expense',
+                        ),
+                        BottomNavigationBarItem(
+                          icon: SvgPicture.asset(
+                            'assets/images/cart.svg',
+                            width: 24,
+                            height: 24,
                           ),
-                          suffixIconColor: kcTextTitleColor,
-                          suffixIcon: IconButton(
-                            icon: const Icon(Icons.close, size: 20),
-                            onPressed: () {
-                              viewModel
-                                  .toggleSearch(); // Call toggleSearch to hide the search bar
-                            },
-                          ),
-                          enabledBorder: const UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(width: 1, color: kcBorderColor)),
-                          focusedBorder: const UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(width: 1, color: kcPrimaryColor)),
-                          // border: const UnderlineInputBorder(
-                          //     borderSide: BorderSide(
-                          //         width: 1, color: kcPrimaryColor)),
+                          label: 'Purchase',
+                        )
+                      ]),
+                ),
+                body: SizedBox(
+                  height: 100.h,
+                  width: 100.w,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        height: 14.h,
+                        color: kcTextTitleColor,
+                        padding:
+                            const EdgeInsets.only(left: 28, right: 28, top: 4),
+                        child: Column(
+                          children: [
+                            verticalSpaceRegular,
+                            if (!viewModel.isSearchActive)
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Expense',
+                                        style: ktsHeaderText1,
+                                      ),
+                                      verticalSpaceTinyt,
+                                      Text(
+                                        'Create and manage expenses',
+                                        style: ktsSubtitleTextAuthentication1,
+                                      ),
+                                    ],
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      viewModel.toggleSearch();
+                                    },
+                                    child: SvgPicture.asset(
+                                      'assets/images/Group_search.svg',
+                                      width: 28,
+                                      height: 28,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            if (viewModel.isSearchActive)
+                              TextField(
+                                controller: viewModel
+                                    .searchController, // Use the search controller
+                                onChanged: (value) {
+                                  if (value.isEmpty) {
+                                    viewModel.reloadExpense();
+                                  } // Call the search function as you type
+                                  else {
+                                    viewModel.searchExpense();
+                                  }
+                                },
+                                style: ktsBodyTextWhite,
+                                cursorColor: kcPrimaryColor,
+                                decoration: InputDecoration(
+                                  focusColor: kcButtonTextColor,
+                                  hoverColor: kcPrimaryColor,
+                                  fillColor: kcPrimaryColor,
+                                  contentPadding:
+                                      const EdgeInsets.only(top: 10),
+                                  prefixIconColor: kcTextSubTitleColor,
+                                  hintText: 'Search expense...',
+                                  hintStyle: const TextStyle(
+                                      color: kcTextSubTitleColor,
+                                      fontSize: 16,
+                                      fontFamily: 'Satoshi',
+                                      fontWeight: FontWeight.w500,
+                                      height: 0,
+                                      letterSpacing: -0.3),
+                                  prefixIcon: const Icon(
+                                    Icons.search,
+                                    size: 20,
+                                  ),
+                                  suffixIconColor: kcTextSubTitleColor,
+                                  suffixIcon: IconButton(
+                                    icon: const Icon(Icons.close, size: 20),
+                                    onPressed: () {
+                                      viewModel
+                                          .toggleSearch(); // Call toggleSearch to hide the search bar
+                                    },
+                                  ),
+                                  enabledBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          width: 1, color: kcBorderColor)),
+                                  focusedBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          width: 1, color: kcPrimaryColor)),
+                                  // border: const UnderlineInputBorder(
+                                  //     borderSide: BorderSide(
+                                  //         width: 1, color: kcPrimaryColor)),
+                                ),
+                              ),
+                            if (viewModel.isSearchActive) verticalSpaceTinyt,
+                          ],
                         ),
                       ),
-                    if (viewModel.isSearchActive) verticalSpaceTinyt,
-                    verticalSpaceSmallMid,
-                    Expanded(
-                      child: Container(
-                        height: MediaQuery.of(context).size.height * 0.762,
-                        width: double.infinity,
-                        clipBehavior: Clip.antiAlias,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 0, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: kcButtonTextColor,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+                      verticalSpaceSmall,
+                      Container(
+                        padding:
+                            const EdgeInsets.only(left: 28, right: 28, top: 6),
+                        height: 76.h,
+                        decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(32),
+                                topRight: Radius.circular(32)),
+                            color: kcButtonTextColor),
                         child: Column(
                           children: [
                             if (!viewModel.isSearchActive)
@@ -516,12 +530,10 @@ class _ExpenseViewState extends State<ExpenseView>
                             ),
                           ],
                         ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+                      )
+                    ],
+                  ),
+                )),
           );
         });
   }

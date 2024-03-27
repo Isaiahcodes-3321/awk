@@ -19,7 +19,7 @@ class AddProductViewModel extends FormViewModel {
   Future<List<ProductUnit>> getProductUnits() async {
     final productUnits = await _productxService.getProductUnits();
     productUnitdropdownItems = productUnits.map((productUnit) {
-      return DropdownMenuItem<String>(
+      return DropdownMenuItem(
         value: productUnit.id.toString(),
         child: Text(productUnit.unitName),
       );

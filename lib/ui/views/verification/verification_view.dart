@@ -75,7 +75,7 @@ class VerificationView extends StackedView<VerificationViewModel>
                       onSaved: (pin1) {},
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter a valid number';
+                          return '';
                         }
 
                         return null;
@@ -112,7 +112,7 @@ class VerificationView extends StackedView<VerificationViewModel>
                       onSaved: (pin2) {},
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter a valid number';
+                          return '';
                         }
 
                         return null;
@@ -149,7 +149,7 @@ class VerificationView extends StackedView<VerificationViewModel>
                       onSaved: (pin3) {},
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter a valid number';
+                          return '';
                         }
 
                         return null;
@@ -186,7 +186,11 @@ class VerificationView extends StackedView<VerificationViewModel>
                       onSaved: (pin4) {},
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter a valid number';
+                          return '';
+                        }
+                        final parsedValue = int.tryParse(value);
+                        if (parsedValue == null || parsedValue < 0) {
+                          return '';
                         }
 
                         return null;

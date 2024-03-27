@@ -38,9 +38,9 @@ class LoginViewModel extends FormViewModel {
     final result = await runBusyFuture(runAuthentication());
 
     if (result.tokens != null) {
-      if (result.tokens!.verified != true) {
-        await navigationService.replaceWith(Routes.verificationView);
-      }
+      // if (result.tokens!.verified != true) {
+      //   await navigationService.replaceWith(Routes.verificationView);
+      // }
       await getUserAndBusinessData();
       // navigate to success route
       navigationService.replaceWith(Routes.homeView);

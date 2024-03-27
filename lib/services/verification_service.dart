@@ -28,7 +28,7 @@ class VerificationService {
       '''),
         );
 
-  Future<VerificationResult> verifyOTP({required double code}) async {
+  Future<VerificationResult> verifyOTP({required num code}) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('access_token');
 

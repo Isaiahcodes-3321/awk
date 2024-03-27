@@ -109,7 +109,7 @@ class VerificationViewModel extends FormViewModel {
   Future<VerificationResult> runVerification() {
     final otpValue =
         '${otp1Value ?? ''}${otp2Value ?? ''}${otp3Value ?? ''}${otp4Value ?? ''}';
-    final otpCode = double.tryParse(otpValue) ?? 0.0;
+    final otpCode = int.tryParse(otpValue) ?? 0.0;
 
     return _otpVerificationService.verifyOTP(code: otpCode);
   }

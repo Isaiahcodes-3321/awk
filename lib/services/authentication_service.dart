@@ -3,6 +3,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.locator.dart';
+import 'package:verzo/app/app.router.dart';
 
 class AuthenticationService {
   final navigationService = locator<NavigationService>();
@@ -80,7 +81,7 @@ class AuthenticationService {
     var verified = result.data?['signIn']['verified'];
 
     if (verified == null) {
-      // navigationService.replaceWith(Routes.verificationView);
+      navigationService.replaceWith(Routes.verificationView);
       return AuthenticationResult.error(
         error: GraphQLAuthError(
           message: "No verification found",

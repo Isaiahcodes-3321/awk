@@ -160,7 +160,7 @@ class UpdateCustomerView extends StackedView<UpdateCustomerViewModel> {
                       // textCapitalization: TextCapitalization.words,
                       style: ktsBodyText,
                       controller: viewModel.updateCustomerMobileController,
-                      keyboardType: TextInputType.emailAddress,
+                      keyboardType: TextInputType.number,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter a phone number';
