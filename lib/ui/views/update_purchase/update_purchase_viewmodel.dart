@@ -37,6 +37,11 @@ class UpdatePurchaseViewModel extends FormViewModel {
     return purchases;
   }
 
+  Future getPurchaseById1() async {
+    await runBusyFuture(getPurchaseById());
+    await runBusyFuture(getMerchantsByBusiness());
+  }
+
   Future<void> showDatePickerDialog(BuildContext context) async {
     pickedDate = await showModalBottomSheet<DateTime>(
       context: context,

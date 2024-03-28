@@ -490,9 +490,9 @@ class ExpenseService {
     final List<Expenses> expenses = expensesData.map((data) {
       return Expenses(
         id: data['id'],
-        description: '',
+        description: data['description'],
         amount: data['amount'],
-        expenseDate: '',
+        expenseDate: data['expenseDate'],
         reference: data['reference'],
         merchantId: '',
         expenseStatusId: 0,
@@ -553,9 +553,9 @@ class ExpenseService {
     final List<Expenses> expenses = expensesData.map((data) {
       return Expenses(
         id: data['id'],
-        description: '',
+        description: data['description'],
         amount: data['amount'],
-        expenseDate: '',
+        expenseDate: data['expenseDate'],
         reference: data['reference'],
         merchantId: '',
         expenseStatusId: 0,

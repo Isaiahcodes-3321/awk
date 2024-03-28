@@ -1217,62 +1217,61 @@ class SalesCard extends ViewModelWidget<HomeViewModel> {
 
   @override
   Widget build(BuildContext context, HomeViewModel viewModel) {
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: 24,
-      ),
-      // tileColor: kcStrokeColor,
-      title: Text(
-        '#${sales.reference}',
-        style: GoogleFonts.roboto(
-          color: kcTextTitleColor.withOpacity(0.9),
-          fontSize: 18,
-          fontWeight: FontWeight.w500,
+    return InkWell(
+      onTap: (() {
+        viewModel.navigationService
+            .navigateTo(Routes.viewSalesView, arguments: saleId);
+      }),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 24,
         ),
-        // style: ktsHeroText,
-        overflow: TextOverflow.ellipsis,
-        maxLines: 1,
-      ),
-      subtitle: RichText(
-        text: TextSpan(
-          children: [
-            TextSpan(
-              text: NumberFormat.currency(locale: 'en_NGN', symbol: '₦')
-                  .currencySymbol, // The remaining digits without the symbol
-              style: GoogleFonts.roboto(
-                color: kcTextSubTitleColor,
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
-              ).copyWith(fontFamily: 'Roboto'),
-            ),
-            TextSpan(
-              text: NumberFormat.currency(locale: 'en_NGN', symbol: '').format(
-                  sales.totalAmount), // The remaining digits without the symbol
-              style: GoogleFonts.roboto(
-                color: kcTextSubTitleColor,
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ],
-        ),
-      ),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            padding: EdgeInsets.zero,
-            icon: SvgPicture.asset(
-              'assets/images/eye.svg',
-              width: 20,
-              height: 20,
-            ),
-            onPressed: (() {
-              viewModel.navigationService
-                  .navigateTo(Routes.viewSalesView, arguments: saleId);
-            }),
+        // tileColor: kcStrokeColor,
+        title: Text(
+          // '#${sales.reference}',
+          '${sales.description[0].toUpperCase()}${sales.description.substring(1)}',
+          style: GoogleFonts.roboto(
+            color: kcTextTitleColor.withOpacity(0.9),
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
           ),
-        ],
+          // style: ktsHeroText,
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
+        ),
+        subtitle: RichText(
+          text: TextSpan(
+            children: [
+              TextSpan(
+                text: NumberFormat.currency(locale: 'en_NGN', symbol: '₦')
+                    .currencySymbol, // The remaining digits without the symbol
+                style: GoogleFonts.roboto(
+                  color: kcTextSubTitleColor,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                ).copyWith(fontFamily: 'Roboto'),
+              ),
+              TextSpan(
+                text: NumberFormat.currency(locale: 'en_NGN', symbol: '')
+                    .format(sales
+                        .totalAmount), // The remaining digits without the symbol
+                style: GoogleFonts.roboto(
+                  color: kcTextSubTitleColor,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
+          ),
+        ),
+        trailing: Text(
+          sales.transactionDate,
+          style: GoogleFonts.roboto(
+            color: kcTextTitleColor.withOpacity(0.9),
+            fontSize: 16,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
       ),
     );
   }
@@ -1407,60 +1406,57 @@ class ExpenseCard extends ViewModelWidget<HomeViewModel> {
 
   @override
   Widget build(BuildContext context, HomeViewModel viewModel) {
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: 24,
-      ),
-      title: Text(
-        '#${expenses.reference}',
-        style: GoogleFonts.roboto(
-          color: kcTextTitleColor.withOpacity(0.9),
-          fontSize: 18,
-          fontWeight: FontWeight.w500,
+    return InkWell(
+      onTap: (() {
+        viewModel.navigationService
+            .navigateTo(Routes.viewExpenseView, arguments: expenseId);
+      }),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 24,
         ),
-        overflow: TextOverflow.ellipsis,
-        maxLines: 1,
-      ),
-      subtitle: RichText(
-        text: TextSpan(
-          children: [
-            TextSpan(
-              text: NumberFormat.currency(locale: 'en_NGN', symbol: '₦')
-                  .currencySymbol, // The remaining digits without the symbol
-              style: GoogleFonts.roboto(
-                color: kcTextSubTitleColor,
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
-              ).copyWith(fontFamily: 'Roboto'),
-            ),
-            TextSpan(
-                text: NumberFormat.currency(locale: 'en_NGN', symbol: '')
-                    .format(expenses
-                        .amount), // The remaining digits without the symbol
+        title: Text(
+          '#${expenses.reference}',
+          style: GoogleFonts.roboto(
+            color: kcTextTitleColor.withOpacity(0.9),
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          ),
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
+        ),
+        subtitle: RichText(
+          text: TextSpan(
+            children: [
+              TextSpan(
+                text: NumberFormat.currency(locale: 'en_NGN', symbol: '₦')
+                    .currencySymbol, // The remaining digits without the symbol
                 style: GoogleFonts.roboto(
                   color: kcTextSubTitleColor,
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
-                )),
-          ],
-        ),
-      ),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            padding: EdgeInsets.zero,
-            icon: SvgPicture.asset(
-              'assets/images/eye.svg',
-              width: 20,
-              height: 20,
-            ),
-            onPressed: (() {
-              viewModel.navigationService
-                  .navigateTo(Routes.viewExpenseView, arguments: expenseId);
-            }),
+                ).copyWith(fontFamily: 'Roboto'),
+              ),
+              TextSpan(
+                  text: NumberFormat.currency(locale: 'en_NGN', symbol: '')
+                      .format(expenses
+                          .amount), // The remaining digits without the symbol
+                  style: GoogleFonts.roboto(
+                    color: kcTextSubTitleColor,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                  )),
+            ],
           ),
-        ],
+        ),
+        trailing: Text(
+          expenses.expenseDate,
+          style: GoogleFonts.roboto(
+            color: kcTextTitleColor.withOpacity(0.9),
+            fontSize: 16,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
       ),
     );
   }
@@ -1594,69 +1590,55 @@ class PurchaseOrderCard extends ViewModelWidget<HomeViewModel> {
 
   @override
   Widget build(BuildContext context, HomeViewModel viewModel) {
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 24),
-      title: Text(
-        '#${purchase.reference}',
-        style: GoogleFonts.roboto(
-          color: kcTextTitleColor.withOpacity(0.9),
-          fontSize: 18,
-          fontWeight: FontWeight.w500,
+    return InkWell(
+      onTap: (() {
+        viewModel.navigationService
+            .navigateTo(Routes.viewPurchaseView, arguments: purchaseId);
+      }),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+        title: Text(
+          '#${purchase.reference}',
+          style: GoogleFonts.roboto(
+            color: kcTextTitleColor.withOpacity(0.9),
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          ),
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
         ),
-        overflow: TextOverflow.ellipsis,
-        maxLines: 1,
-      ),
-      subtitle: RichText(
-        text: TextSpan(
-          children: [
-            TextSpan(
-              text: NumberFormat.currency(locale: 'en_NGN', symbol: '₦')
-                  .currencySymbol, // The remaining digits without the symbol
-              style: GoogleFonts.roboto(
-                color: kcTextSubTitleColor,
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
-              ).copyWith(fontFamily: 'Roboto'),
-            ),
-            TextSpan(
-                text: NumberFormat.currency(locale: 'en_NGN', symbol: '')
-                    .format(purchase
-                        .total), // The remaining digits without the symbol
+        subtitle: RichText(
+          text: TextSpan(
+            children: [
+              TextSpan(
+                text: NumberFormat.currency(locale: 'en_NGN', symbol: '₦')
+                    .currencySymbol, // The remaining digits without the symbol
                 style: GoogleFonts.roboto(
                   color: kcTextSubTitleColor,
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
-                )),
-          ],
-        ),
-      ),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            padding: EdgeInsets.zero,
-            icon: SvgPicture.asset(
-              'assets/images/eye.svg',
-              width: 20,
-              height: 20,
-            ),
-            onPressed: (() {
-              viewModel.navigationService
-                  .navigateTo(Routes.viewPurchaseView, arguments: purchaseId);
-            }),
+                ).copyWith(fontFamily: 'Roboto'),
+              ),
+              TextSpan(
+                  text: NumberFormat.currency(locale: 'en_NGN', symbol: '')
+                      .format(purchase
+                          .total), // The remaining digits without the symbol
+                  style: GoogleFonts.roboto(
+                    color: kcTextSubTitleColor,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                  )),
+            ],
           ),
-          // IconButton(
-          //   padding: EdgeInsets.zero,
-          //   onPressed: () async {
-          //     // viewModel.archivePurchase(purchaseId);
-          //   },
-          //   icon: SvgPicture.asset(
-          //     'assets/images/archive.svg',
-          //     // width: 20,
-          //     // height: 20,
-          //   ),
-          // ),
-        ],
+        ),
+        trailing: Text(
+          purchase.transactionDate,
+          style: GoogleFonts.roboto(
+            color: kcTextTitleColor.withOpacity(0.9),
+            fontSize: 16,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
       ),
     );
   }

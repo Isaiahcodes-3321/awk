@@ -32,6 +32,11 @@ class UpdateProductViewModel extends FormViewModel {
     return productUnits;
   }
 
+  Future getProductsById1() async {
+    await runBusyFuture(getProductsById());
+    await runBusyFuture(getProductUnits());
+  }
+
   Future<Products> getProductsById() async {
     final products = await productService.getProductById(productId: productId);
     product = products;

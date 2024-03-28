@@ -32,6 +32,11 @@ class UpdateServiceViewModel extends FormViewModel {
     return serviceUnits;
   }
 
+  Future getServicesById1() async {
+    await runBusyFuture(getServicesById());
+    await runBusyFuture(getServiceUnits());
+  }
+
   Future<Services> getServicesById() async {
     final services = await serviceService.getServiceById(serviceId: serviceId);
     service = services;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:stacked/stacked.dart';
@@ -246,7 +247,7 @@ class AddSalesView extends StackedView<AddSalesViewModel> with $AddSalesView {
                     focusedErrorBorder: defaultErrorFormBorder,
                     errorStyle: ktsErrorText,
                     errorBorder: defaultErrorFormBorder),
-                textCapitalization: TextCapitalization.words,
+                textCapitalization: TextCapitalization.sentences,
                 style: ktsBodyText,
                 controller: descriptionController,
                 keyboardType: TextInputType.name,
@@ -257,6 +258,19 @@ class AddSalesView extends StackedView<AddSalesViewModel> with $AddSalesView {
 
                   return null;
                 },
+                inputFormatters: [
+                  TextInputFormatter.withFunction((oldValue, newValue) {
+                    // Ensure the first letter of the input is capitalized
+                    if (newValue.text.isNotEmpty) {
+                      return TextEditingValue(
+                        text: newValue.text[0].toUpperCase() +
+                            newValue.text.substring(1),
+                        selection: newValue.selection,
+                      );
+                    }
+                    return newValue;
+                  }),
+                ],
               ),
             ],
           ),

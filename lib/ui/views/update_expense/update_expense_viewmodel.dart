@@ -35,6 +35,12 @@ class UpdateExpenseViewModel extends FormViewModel {
     return expenses;
   }
 
+  Future getExpenseById1() async {
+    await runBusyFuture(getExpenseById());
+    await runBusyFuture(getMerchantsByBusiness());
+    await runBusyFuture(getExpenseCategoryWithSets());
+  }
+
   List<ExpenseDetail> get selectedItems => expenseItems;
 
   void setSelectedExpense() {

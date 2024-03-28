@@ -13,7 +13,8 @@ class UpdateCustomerView extends StackedView<UpdateCustomerViewModel> {
   @override
   void onViewModelReady(UpdateCustomerViewModel viewModel) async {
     // syncFormWithViewModel(viewModel);
-    await viewModel.getCustomerById();
+    // await viewModel.getCustomerById();
+    await viewModel.getCustomerById1();
     viewModel.setSelectedCustomer();
   }
 
@@ -34,18 +35,12 @@ class UpdateCustomerView extends StackedView<UpdateCustomerViewModel> {
   ) {
     if (viewModel.isBusy) {
       return const Scaffold(
-          backgroundColor: kcButtonTextColor,
-          body: SizedBox(
-              height: 500,
-              child: Center(
-                  child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(
-                    color: kcPrimaryColor,
-                  ),
-                ],
-              ))));
+        backgroundColor: kcButtonTextColor,
+        body: Center(
+            child: CircularProgressIndicator(
+          color: kcPrimaryColor,
+        )),
+      );
     }
     return Scaffold(
       backgroundColor: kcButtonTextColor,

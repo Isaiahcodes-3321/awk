@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:stacked/stacked.dart';
@@ -18,9 +19,9 @@ class UpdateExpenseView extends StackedView<UpdateExpenseViewModel> {
 
   @override
   void onViewModelReady(UpdateExpenseViewModel viewModel) async {
-    await viewModel.getExpenseById();
-    await viewModel.getMerchantsByBusiness();
-    await viewModel.getExpenseCategoryWithSets();
+    await viewModel.getExpenseById1();
+    // await viewModel.getMerchantsByBusiness();
+    // await viewModel.getExpenseCategoryWithSets();
     viewModel.setSelectedExpense();
 
     // syncFormWithViewModel(viewModel);
@@ -32,6 +33,15 @@ class UpdateExpenseView extends StackedView<UpdateExpenseViewModel> {
     UpdateExpenseViewModel viewModel,
     Widget? child,
   ) {
+    if (viewModel.isBusy) {
+      return const Scaffold(
+        backgroundColor: kcButtonTextColor,
+        body: Center(
+            child: CircularProgressIndicator(
+          color: kcPrimaryColor,
+        )),
+      );
+    }
     return Scaffold(
         backgroundColor: kcButtonTextColor,
         body: AuthenticationLayout(
@@ -249,7 +259,7 @@ class UpdateExpenseView extends StackedView<UpdateExpenseViewModel> {
                       focusedErrorBorder: defaultErrorFormBorder,
                       errorStyle: ktsErrorText,
                       errorBorder: defaultErrorFormBorder),
-                  textCapitalization: TextCapitalization.words,
+                  textCapitalization: TextCapitalization.sentences,
                   style: ktsBodyText,
                   controller: viewModel.updateDescriptionController,
                   keyboardType: TextInputType.name,
@@ -260,6 +270,19 @@ class UpdateExpenseView extends StackedView<UpdateExpenseViewModel> {
 
                     return null;
                   },
+                  inputFormatters: [
+                    TextInputFormatter.withFunction((oldValue, newValue) {
+                      // Ensure the first letter of the input is capitalized
+                      if (newValue.text.isNotEmpty) {
+                        return TextEditingValue(
+                          text: newValue.text[0].toUpperCase() +
+                              newValue.text.substring(1),
+                          selection: newValue.selection,
+                        );
+                      }
+                      return newValue;
+                    }),
+                  ],
                 ),
                 verticalSpaceIntermitent,
                 Row(

@@ -130,8 +130,10 @@ class SalesService {
           getSaleByBusinessMobile (businessId: \$businessId, cursor: \$cursor, take: \$take) {
             salesByBusiness{
             id
+            description
             reference
             saleAmount
+            transactionDate
             }
             cursorId
             }
@@ -144,8 +146,10 @@ class SalesService {
           getArchivedSalesByBusinessMobile (businessId: \$businessId, cursor: \$cursor, take: \$take) {
             salesByBusiness{
             id
+            description
             reference
             saleAmount
+            transactionDate
             }
             cursorId
             }
@@ -665,12 +669,12 @@ class SalesService {
       return Sales(
           id: data['id'],
           invoiceId: '',
-          description: '',
+          description: data['description'],
           invoiceDetails: [],
           saleServiceExpenses: [],
           saleExpenses: [],
           dueDate: '',
-          transactionDate: '',
+          transactionDate: data['transactionDate'],
           reference: data['reference'],
           customerId: '',
           customerName: '',
@@ -730,13 +734,13 @@ class SalesService {
       return Sales(
           id: data['id'],
           invoiceId: '',
-          description: '',
+          description: data['description'],
           paid: false,
           invoiceDetails: [],
           saleServiceExpenses: [],
           saleExpenses: [],
           dueDate: '',
-          transactionDate: '',
+          transactionDate: data['transactionDate'],
           reference: data['reference'],
           customerId: '',
           customerName: '',

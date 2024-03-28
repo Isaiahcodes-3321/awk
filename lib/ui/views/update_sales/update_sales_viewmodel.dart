@@ -103,6 +103,11 @@ class UpdateSalesViewModel extends FormViewModel {
     return sales;
   }
 
+  Future getSaleById1() async {
+    await runBusyFuture(getSaleById());
+    await runBusyFuture(getCustomersByBusiness());
+  }
+
   List<SaleExpenses> get selectedSaleExpenseItem => saleExpenseItems;
   List<SaleServiceExpenseEntry> get selectedSaleServiceExpenseItem =>
       saleServiceExpense;

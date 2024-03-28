@@ -20,6 +20,10 @@ class UpdateCustomerViewModel extends FormViewModel {
 
   UpdateCustomerViewModel({required this.customerId});
 
+  Future getCustomerById1() async {
+    await runBusyFuture(getCustomerById());
+  }
+
   Future<Customers> getCustomerById() async {
     final customers =
         await _saleService.getCustomerById(customerId: customerId);

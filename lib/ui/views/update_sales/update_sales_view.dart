@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:stacked/stacked.dart';
@@ -17,8 +18,8 @@ class UpdateSalesView extends StackedView<UpdateSalesViewModel> {
 
   @override
   void onViewModelReady(UpdateSalesViewModel viewModel) async {
-    await viewModel.getSaleById();
-    await viewModel.getCustomersByBusiness();
+    await viewModel.getSaleById1();
+    // await viewModel.getCustomersByBusiness();
 
     viewModel.setSelectedSale();
 
@@ -249,7 +250,7 @@ class UpdateSalesView extends StackedView<UpdateSalesViewModel> {
                           focusedErrorBorder: defaultErrorFormBorder,
                           errorStyle: ktsErrorText,
                           errorBorder: defaultErrorFormBorder),
-                      textCapitalization: TextCapitalization.words,
+                      textCapitalization: TextCapitalization.sentences,
                       style: ktsBodyText,
                       controller: viewModel.updateDescriptionController,
                       keyboardType: TextInputType.name,
@@ -260,6 +261,19 @@ class UpdateSalesView extends StackedView<UpdateSalesViewModel> {
 
                         return null;
                       },
+                      inputFormatters: [
+                        TextInputFormatter.withFunction((oldValue, newValue) {
+                          // Ensure the first letter of the input is capitalized
+                          if (newValue.text.isNotEmpty) {
+                            return TextEditingValue(
+                              text: newValue.text[0].toUpperCase() +
+                                  newValue.text.substring(1),
+                              selection: newValue.selection,
+                            );
+                          }
+                          return newValue;
+                        }),
+                      ],
                     ),
                     verticalSpaceIntermitent,
                     Row(

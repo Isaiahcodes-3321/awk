@@ -375,7 +375,7 @@ class _CustomerViewState extends State<CustomerView>
                                                     BorderRadius.circular(12),
                                                 border: Border.all(
                                                     width: 1,
-                                                    color: kcBorderColor),
+                                                    color: kcPrimaryColor),
                                               ),
                                               child: ListView.separated(
                                                 scrollDirection: Axis.vertical,

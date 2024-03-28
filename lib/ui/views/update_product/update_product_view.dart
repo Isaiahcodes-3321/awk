@@ -13,8 +13,8 @@ class UpdateProductView extends StackedView<UpdateProductViewModel> {
   @override
   void onViewModelReady(UpdateProductViewModel viewModel) async {
     // syncFormWithViewModel(viewModel);
-    await viewModel.getProductsById();
-    await viewModel.getProductUnits();
+    await viewModel.getProductsById1();
+    // await viewModel.getProductUnits();
     viewModel.setSelectedProduct();
   }
 
@@ -33,6 +33,15 @@ class UpdateProductView extends StackedView<UpdateProductViewModel> {
     UpdateProductViewModel viewModel,
     Widget? child,
   ) {
+    if (viewModel.isBusy) {
+      return const Scaffold(
+        backgroundColor: kcButtonTextColor,
+        body: Center(
+            child: CircularProgressIndicator(
+          color: kcPrimaryColor,
+        )),
+      );
+    }
     return Scaffold(
       backgroundColor: kcButtonTextColor,
       body: AuthenticationLayout(

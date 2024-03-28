@@ -128,7 +128,8 @@ class PurchaseService {
               id
               reference 
               total
-
+              transactionDate
+              description
             }
           }
           }
@@ -142,7 +143,8 @@ class PurchaseService {
               id
               reference 
               total
-
+              transactionDate
+              description
             }
           }
           }
@@ -762,8 +764,8 @@ class PurchaseService {
     final List<Purchases> purchases = purchaseData.map((data) {
       return Purchases(
           id: data['id'],
-          description: '',
-          transactionDate: '',
+          description: data['description'],
+          transactionDate: data['transactionDate'],
           reference: data['reference'],
           merchantId: '',
           merchantName: '',
@@ -819,8 +821,8 @@ class PurchaseService {
     final List<Purchases> purchases = purchaseData.map((data) {
       return Purchases(
           id: data['id'],
-          description: '',
-          transactionDate: '',
+          description: data['description'],
+          transactionDate: data['transactionDate'],
           reference: data['reference'],
           merchantId: '',
           merchantName: '',

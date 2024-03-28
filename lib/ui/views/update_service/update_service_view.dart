@@ -13,8 +13,8 @@ class UpdateServiceView extends StackedView<UpdateServiceViewModel> {
   @override
   void onViewModelReady(UpdateServiceViewModel viewModel) async {
     // syncFormWithViewModel(viewModel);
-    await viewModel.getServicesById();
-    await viewModel.getServiceUnits();
+    await viewModel.getServicesById1();
+    // await viewModel.getServiceUnits();
     viewModel.setSelectedService();
   }
 
@@ -33,6 +33,15 @@ class UpdateServiceView extends StackedView<UpdateServiceViewModel> {
     UpdateServiceViewModel viewModel,
     Widget? child,
   ) {
+    if (viewModel.isBusy) {
+      return const Scaffold(
+        backgroundColor: kcButtonTextColor,
+        body: Center(
+            child: CircularProgressIndicator(
+          color: kcPrimaryColor,
+        )),
+      );
+    }
     return Scaffold(
       backgroundColor: kcButtonTextColor,
       body: AuthenticationLayout(
