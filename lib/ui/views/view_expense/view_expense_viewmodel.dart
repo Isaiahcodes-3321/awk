@@ -1,8 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.dialogs.dart';
 import 'package:verzo/app/app.locator.dart';
-import 'package:verzo/app/app.router.dart';
+
 import 'package:verzo/services/expense_service.dart';
 import 'package:verzo/ui/common/database_helper.dart';
 
@@ -24,8 +25,9 @@ class ViewExpenseViewModel extends BaseViewModel {
     return expenses;
   }
 
-  Future<bool> deleteExpense() async {
+  Future<bool> deleteExpense(BuildContext context) async {
     final db = await getExpenseDatabase();
+    final db2 = await getExpenseDatabaseList();
     final dbExpenseWeek = await getExpensesForWeekDatabase();
     final dbExpenseMonth = await getExpensesForMonthDatabase();
     final DialogResponse? response = await dialogService.showCustomDialog(
@@ -52,11 +54,57 @@ class ViewExpenseViewModel extends BaseViewModel {
           mainButtonTitle: 'Ok',
         );
         await db.delete('expenses');
+        await db2.delete('expenses');
         await dbExpenseWeek.delete('expenses_for_week');
         await dbExpenseMonth.delete('expenses_for_month');
       }
-      navigationService.replaceWith(Routes.expenseView);
+      navigationService.back(result: true);
+      rebuildUi();
       return isDeleted;
+    } else {
+      // User canceled the action
+      return false;
+    }
+  }
+
+  Future<bool> archiveExpense(BuildContext context) async {
+    final db = await getExpenseDatabase();
+    final db2 = await getExpenseDatabaseList();
+    final dbExpenseWeek = await getExpensesForWeekDatabase();
+    final dbExpenseMonth = await getExpensesForMonthDatabase();
+
+    final DialogResponse? response = await dialogService.showCustomDialog(
+        variant: DialogType.archive,
+        title: 'Archive Expense',
+        description:
+            "Are you sure you want to archive this expense? You can’t undo this action",
+        barrierDismissible: true,
+        mainButtonTitle: 'Archive'
+        // cancelTitle: 'Cancel',
+        // confirmationTitle: 'Ok',
+        );
+
+    if (response?.confirmed == true) {
+      final bool isArchived =
+          await _expenseService.archiveExpense(expenseId: expenseId);
+
+      if (isArchived) {
+        await dialogService.showCustomDialog(
+            variant: DialogType.archiveSuccess,
+            title: 'Archived!',
+            description: 'Your expense has been successfully archived.',
+            barrierDismissible: true,
+            mainButtonTitle: 'Ok');
+
+        await db.delete('expenses');
+        await db2.delete('expenses');
+        await dbExpenseWeek.delete('expenses_for_week');
+        await dbExpenseMonth.delete('expenses_for_month');
+      }
+      navigationService.back(result: true);
+
+      rebuildUi();
+      return isArchived;
     } else {
       // User canceled the action
       return false;

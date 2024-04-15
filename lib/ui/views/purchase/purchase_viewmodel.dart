@@ -1,11 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
-import 'package:verzo/app/app.dialogs.dart';
+
 import 'package:verzo/app/app.locator.dart';
 import 'package:verzo/services/purchase_service.dart';
 import 'package:verzo/ui/common/database_helper.dart';
+
 import 'package:verzo/ui/common/typesense.dart';
 
 class PurchaseViewModel extends FutureViewModel<List<Purchases>> {
@@ -15,8 +19,8 @@ class PurchaseViewModel extends FutureViewModel<List<Purchases>> {
   TextEditingController searchController = TextEditingController();
 
   List<Purchases> purchases = [];
-  List<Purchases> archivedPurchases = [];
-  List<Purchases> allPurchases = [];
+  // List<Purchases> archivedPurchases = [];
+  // List<Purchases> allPurchases = [];
   List<Purchases> searchResults = [];
 
   bool isSearchActive = false;
@@ -31,7 +35,60 @@ class PurchaseViewModel extends FutureViewModel<List<Purchases>> {
   }
 
   @override
-  Future<List<Purchases>> futureToRun() => getPurchaseByBusiness();
+  Future<List<Purchases>> futureToRun() async {
+    final db = await getPurchaseDatabaseList();
+
+    // Retrieve purchases from the database.
+    final List<Map<String, dynamic>> maps = await db.query('purchases');
+    List<Purchases> purchasesFromDatabase;
+
+    if (maps.isNotEmpty) {
+      purchasesFromDatabase = List.generate(maps.length, (i) {
+        return Purchases(
+          id: maps[i]['id'],
+          transactionDate: maps[i]['transactionDate'],
+          description: maps[i]['description'],
+          reference: maps[i]['reference'],
+          merchantId: maps[i]['merchantId'],
+          merchantName: maps[i]['merchantName'],
+          merchantEmail: maps[i]['merchantEmail'],
+          paid: maps[i]['paid'] == 1 ? true : false,
+          total: maps[i]['total'],
+          purchaseItems: List<PurchaseItemDetail>.from(
+            (jsonDecode(maps[i]['purchaseItems']) as List)
+                .map((item) => PurchaseItemDetail.fromMap(item)),
+          ),
+          purchaseStatusId: maps[i]['purchaseStatusId'],
+        );
+      });
+    } else {
+      purchasesFromDatabase = [];
+    }
+
+    if (purchasesFromDatabase != null && purchasesFromDatabase.isNotEmpty) {
+      // If there are purchases in the database, set them in your ViewModel.
+      purchases = purchasesFromDatabase;
+    } else {
+      // If the database is empty, fetch data from your service.
+      final purchaseList = await getPurchaseByBusiness();
+
+      // Save purchases to the SQLite database.
+      for (final purchase in purchaseList) {
+        await db.insert(
+          'purchases',
+          purchase.toMap(),
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+      }
+      rebuildUi();
+      // purchases.addAll(purchaseList);
+    }
+
+    return purchases;
+  }
+
+  // @override
+  // Future<List<Purchases>> futureToRun() => getPurchaseByBusiness();
   Future<List<Purchases>> getPurchaseByBusiness() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String businessIdValue = prefs.getString('businessId') ?? '';
@@ -40,15 +97,7 @@ class PurchaseViewModel extends FutureViewModel<List<Purchases>> {
     purchases = await _purchaseService.getPurchaseByBusiness(
         businessId: businessIdValue);
     rebuildUi();
-
-    archivedPurchases = await _purchaseService.getArchivedPurchaseByBusiness(
-        businessId: businessIdValue);
-    rebuildUi();
-
-    allPurchases = [...purchases, ...archivedPurchases];
-    rebuildUi();
-
-    return allPurchases;
+    return purchases;
   }
 
   Future<void> searchPurchase() async {
@@ -72,136 +121,23 @@ class PurchaseViewModel extends FutureViewModel<List<Purchases>> {
     }
     // print(searchResults);
 
-    purchases = searchResults;
-    archivedPurchases = searchResults;
+    data = searchResults;
+
     rebuildUi();
     // return searchResults;
   }
 
-  Future<bool> deletePurchase(String purchaseId) async {
-    final db = await getPurchaseDatabase();
-    final dbPurchaseWeek = await getPurchasesForWeekDatabase();
-    final dbPurchaseMonth = await getPurchasesForMonthDatabase();
-    final DialogResponse? response = await dialogService.showCustomDialog(
-        variant: DialogType.delete,
-        title: 'Delete Purchase',
-        description:
-            "Are you sure you want to delete this purchase? You can’t undo this action",
-        barrierDismissible: true,
-        mainButtonTitle: 'Delete'
-        // cancelTitle: 'Cancel',
-        // confirmationTitle: 'Ok',
-        );
-
-    if (response?.confirmed == true) {
-      final bool isDeleted =
-          await _purchaseService.deletePurchase(purchaseId: purchaseId);
-      if (isDeleted) {
-        await dialogService.showCustomDialog(
-          variant: DialogType.deleteSuccess,
-          title: 'Deleted!',
-          description: 'Your purchase has been successfully deleted.',
-          barrierDismissible: true,
-          mainButtonTitle: 'Ok',
-        );
-        await db.delete('purchases');
-        await dbPurchaseWeek.delete('purchases_for_week');
-        await dbPurchaseMonth.delete('purchases_for_month');
-      }
-      await reloadPurchaseData();
-
-      return isDeleted;
-    } else {
-      // User canceled the action
-      return false;
-    }
-  }
-
-  Future<bool> archivePurchase(String purchaseId) async {
-    final db = await getPurchaseDatabase();
-    final dbPurchaseWeek = await getPurchasesForWeekDatabase();
-    final dbPurchaseMonth = await getPurchasesForMonthDatabase();
-    final DialogResponse? response = await dialogService.showCustomDialog(
-        variant: DialogType.archive,
-        title: 'Archive Purchase',
-        description:
-            "Are you sure you want to archive this purchase? You can’t undo this action",
-        barrierDismissible: true,
-        mainButtonTitle: 'Archive'
-        // cancelTitle: 'Cancel',
-        // confirmationTitle: 'Ok',
-        );
-    if (response?.confirmed == true) {
-      final bool isArchived =
-          await _purchaseService.archivePurchase(purchaseId: purchaseId);
-      if (isArchived) {
-        await dialogService.showCustomDialog(
-          variant: DialogType.archiveSuccess,
-          title: 'Archived!',
-          description: 'Your purchase has been successfully archived.',
-          barrierDismissible: true,
-          mainButtonTitle: 'Ok',
-        );
-        await db.delete('purchases');
-        await dbPurchaseWeek.delete('purchases_for_week');
-        await dbPurchaseMonth.delete('purchases_for_month');
-      }
-      await reloadPurchaseData();
-      return isArchived;
-    } else {
-      // User canceled the action
-      return false;
-    }
-  }
-
-  Future<bool> unArchivePurchase(String purchaseId) async {
-    final db = await getPurchaseDatabase();
-    final dbPurchaseWeek = await getPurchasesForWeekDatabase();
-    final dbPurchaseMonth = await getPurchasesForMonthDatabase();
-    final DialogResponse? response = await dialogService.showCustomDialog(
-        variant: DialogType.archive,
-        title: 'Unarchive Purchase',
-        description:
-            "Are you sure you want to unarchive this purchase? You can’t undo this action",
-        barrierDismissible: true,
-        mainButtonTitle: 'Unarchive'
-        // cancelTitle: 'Cancel',
-        // confirmationTitle: 'Ok',
-        );
-    if (response?.confirmed == true) {
-      final bool isArchived =
-          await _purchaseService.unArchivePurchase(purchaseId: purchaseId);
-      if (isArchived) {
-        await dialogService.showCustomDialog(
-          variant: DialogType.archiveSuccess,
-          title: 'Unarchived!',
-          description: 'Your purchase has been successfully unarchived.',
-          barrierDismissible: true,
-          mainButtonTitle: 'Ok',
-        );
-        await db.delete('purchases');
-        await dbPurchaseWeek.delete('purchases_for_week');
-        await dbPurchaseMonth.delete('purchases_for_month');
-      }
-      await reloadPurchaseData();
-      return isArchived;
-    } else {
-      // User canceled the action
-      return false;
-    }
-  }
-
   Future<void> reloadPurchaseData() async {
-    final allPurchases = await getPurchaseByBusiness();
+    final purchases = await getPurchaseByBusiness();
     // Update the data with the new list of purchases
-    data = allPurchases;
+    data = purchases;
     rebuildUi();
   }
 
   Future<List<Purchases>> reloadPurchase() async {
-    allPurchases = await getPurchaseByBusiness();
+    purchases = await getPurchaseByBusiness();
     rebuildUi();
-    return allPurchases;
+    return purchases;
   }
 
   Future reload() async {

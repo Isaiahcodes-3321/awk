@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:stacked/stacked.dart';
-import 'package:stacked_services/stacked_services.dart';
-import 'package:verzo/app/app.locator.dart';
 import 'package:verzo/app/app.router.dart';
 import 'package:verzo/services/sales_service.dart';
 import 'package:verzo/ui/common/app_colors.dart';
@@ -21,39 +20,7 @@ class SalesView extends StatefulWidget {
   State<SalesView> createState() => _SalesViewState();
 }
 
-class _SalesViewState extends State<SalesView>
-    with SingleTickerProviderStateMixin {
-  final navigationService = locator<NavigationService>();
-  late TabController tabController;
-
-  @override
-  void initState() {
-    super.initState();
-    tabController = TabController(length: 2, vsync: this, initialIndex: 0);
-  }
-
-  int selectedPageIndex = 1;
-  void onHomeTapped() {
-    setState(() {
-      selectedPageIndex = 0;
-    });
-    navigationService.replaceWith(Routes.homeView);
-  }
-
-  void onExpensesTapped() {
-    setState(() {
-      selectedPageIndex = 2;
-    });
-    navigationService.replaceWith(Routes.expenseView);
-  }
-
-  void onPurchaseTapped() {
-    setState(() {
-      selectedPageIndex = 3;
-    });
-    navigationService.replaceWith(Routes.purchaseView);
-  }
-
+class _SalesViewState extends State<SalesView> {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<SalesViewModel>.reactive(
@@ -64,7 +31,7 @@ class _SalesViewState extends State<SalesView>
           return PopScope(
             canPop: false,
             child: Scaffold(
-              backgroundColor: kcTextTitleColor,
+              backgroundColor: Color(0XFF2A5DC8),
               floatingActionButtonLocation:
                   FloatingActionButtonLocation.miniEndFloat,
               floatingActionButton: FloatingActionButton(
@@ -73,74 +40,23 @@ class _SalesViewState extends State<SalesView>
                 focusElevation: 4.0, // Elevation when button is focused
                 hoverElevation: 4.0,
                 foregroundColor: kcButtonTextColor,
-                backgroundColor: kcPrimaryColor,
+                backgroundColor: kcPrimaryColor.withOpacity(0.7),
                 shape: const CircleBorder(
                   eccentricity: 1,
                   side: BorderSide.none,
                 ),
-                onPressed: () {
-                  viewModel.navigationService.navigateTo(Routes.addSalesView);
+                onPressed: () async {
+                  final result = await viewModel.navigationService
+                      .navigateTo(Routes.addSalesView);
+
+                  if (result == true) {
+                    viewModel.reloadSaleData();
+                  }
                 },
                 child: const Icon(
                   Icons.add,
                   size: 24,
                 ),
-              ),
-              bottomNavigationBar: SizedBox(
-                height: 60,
-                child: BottomNavigationBar(
-                    backgroundColor: kcButtonTextColor,
-                    type: BottomNavigationBarType.fixed,
-                    selectedItemColor: kcIconColor,
-                    unselectedItemColor:
-                        kcTextColorLight, // Set unselected item color
-                    selectedLabelStyle:
-                        ktsFormHintText, // Set selected label color
-                    unselectedLabelStyle: ktsFormHintText,
-                    iconSize: 24,
-                    currentIndex: selectedPageIndex,
-                    onTap: (index) {
-                      if (index == 0) {
-                        onHomeTapped();
-                      } else if (index == 2) {
-                        onExpensesTapped();
-                      } else if (index == 3) {
-                        onPurchaseTapped();
-                      }
-                    },
-                    items: <BottomNavigationBarItem>[
-                      BottomNavigationBarItem(
-                        icon: SvgPicture.asset(
-                          'assets/images/home-02.svg',
-                          width: 24,
-                          height: 24,
-                        ),
-                        label: 'Home',
-                      ),
-                      BottomNavigationBarItem(
-                          icon: SvgPicture.asset(
-                            'assets/images/receipt-lines-2.svg',
-                            width: 24,
-                            height: 24,
-                          ),
-                          label: 'Invoice'),
-                      BottomNavigationBarItem(
-                        icon: SvgPicture.asset(
-                          'assets/images/card-minus.svg',
-                          width: 24,
-                          height: 24,
-                        ),
-                        label: 'Expense',
-                      ),
-                      BottomNavigationBarItem(
-                        icon: SvgPicture.asset(
-                          'assets/images/cart.svg',
-                          width: 24,
-                          height: 24,
-                        ),
-                        label: 'Purchase',
-                      )
-                    ]),
               ),
               body: SizedBox(
                 height: 100.h,
@@ -150,7 +66,7 @@ class _SalesViewState extends State<SalesView>
                   children: [
                     Container(
                       height: 14.h,
-                      color: kcTextTitleColor,
+                      color: Color(0XFF2A5DC8),
                       padding:
                           const EdgeInsets.only(left: 28, right: 28, top: 4),
                       child: Column(
@@ -176,15 +92,36 @@ class _SalesViewState extends State<SalesView>
                                     ),
                                   ],
                                 ),
-                                GestureDetector(
-                                  onTap: () {
-                                    viewModel.toggleSearch();
-                                  },
-                                  child: SvgPicture.asset(
-                                    'assets/images/Group_search.svg',
-                                    width: 28,
-                                    height: 28,
-                                  ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    GestureDetector(
+                                        onTap: () async {
+                                          final result = viewModel
+                                              .navigationService
+                                              .navigateTo(
+                                                  Routes.archivedSaleView);
+                                          if (result == true) {
+                                            viewModel.reloadSaleData();
+                                          }
+                                        },
+                                        child: const Icon(
+                                          Icons.inventory_2_outlined,
+                                          color: kcButtonTextColor,
+                                          size: 20,
+                                        )),
+                                    horizontalSpaceRegular,
+                                    GestureDetector(
+                                        onTap: () {
+                                          viewModel.toggleSearch();
+                                        },
+                                        child: const Icon(
+                                          Icons.search,
+                                          color: kcButtonTextColor,
+                                        )),
+                                  ],
                                 ),
                               ],
                             ),
@@ -201,26 +138,26 @@ class _SalesViewState extends State<SalesView>
                                 }
                               },
                               style: ktsBodyTextWhite,
-                              cursorColor: kcPrimaryColor,
+                              cursorColor: kcButtonTextColor,
                               decoration: InputDecoration(
                                 focusColor: kcButtonTextColor,
                                 hoverColor: kcPrimaryColor,
-                                fillColor: kcPrimaryColor,
-                                contentPadding: const EdgeInsets.all(12),
+                                fillColor: kcButtonTextColor,
+                                contentPadding: const EdgeInsets.only(top: 10),
                                 hintText: 'Search invoice...',
-                                hintStyle: const TextStyle(
-                                    color: kcTextSubTitleColor,
+                                hintStyle: TextStyle(
+                                    color: kcButtonTextColor.withOpacity(0.4),
                                     fontSize: 16,
                                     fontFamily: 'Satoshi',
                                     fontWeight: FontWeight.w500,
                                     height: 0,
                                     letterSpacing: -0.3),
-                                prefixIconColor: kcTextSubTitleColor,
+                                prefixIconColor: kcButtonTextColor,
                                 prefixIcon: const Icon(
                                   Icons.search,
-                                  size: 16,
+                                  size: 20,
                                 ),
-                                suffixIconColor: kcTextSubTitleColor,
+                                suffixIconColor: kcButtonTextColor,
 
                                 suffixIcon: IconButton(
                                   icon: const Icon(Icons.close, size: 20),
@@ -246,8 +183,7 @@ class _SalesViewState extends State<SalesView>
                     ),
                     verticalSpaceSmall,
                     Container(
-                      padding:
-                          const EdgeInsets.only(left: 28, right: 28, top: 6),
+                      padding: const EdgeInsets.only(left: 0, right: 0, top: 6),
                       height: 76.h,
                       decoration: const BoxDecoration(
                           borderRadius: BorderRadius.only(
@@ -256,277 +192,149 @@ class _SalesViewState extends State<SalesView>
                           color: kcButtonTextColor),
                       child: Column(
                         children: [
-                          if (!viewModel.isSearchActive)
-                            Container(
-                              clipBehavior: Clip.antiAlias,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 4, vertical: 6),
-                              decoration: BoxDecoration(
-                                color: kcArchiveColor,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              height: 32,
-                              child: TabBar(
-                                indicatorPadding: EdgeInsets.zero,
-                                indicatorSize: TabBarIndicatorSize
-                                    .tab, // Adjust the indicatorSize
-                                indicator: BoxDecoration(
-                                  border: Border.all(
-                                      width: 2, color: kcButtonTextColor),
-                                  color:
-                                      kcButtonTextColor, // Use your desired color
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                dividerColor: kcArchiveColor,
-                                indicatorColor: kcTextSubTitleColor,
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8),
-                                labelColor: kcTextTitleColor,
-                                labelStyle: const TextStyle(
-                                  fontSize: 11.44,
-                                  fontFamily: 'Satoshi',
-                                  fontWeight: FontWeight.w700,
-                                  height: 0,
-                                  letterSpacing: -0.25,
-                                ),
-                                // Use your desired label color
-                                unselectedLabelColor: kcTextSubTitleColor,
-                                unselectedLabelStyle: const TextStyle(
-                                  fontSize: 11.44,
-                                  fontFamily: 'Satoshi',
-                                  fontWeight: FontWeight.w500,
-                                  height: 0,
-                                  letterSpacing: -0.25,
-                                ),
-                                // Use your desired unselected label color
-
-                                tabs: [
-                                  Tab(
-                                    child: Text(
-                                      'All (${viewModel.sales.length})', // Use your label text
-                                    ),
-                                  ),
-                                  Tab(
-                                    child: Text(
-                                      'Archived (${viewModel.archivedSales.length})', // Use your label text
-                                    ),
-                                  ),
-                                ],
-                                controller: tabController,
-                              ),
-                            ),
                           verticalSpaceSmall,
                           Expanded(
-                            child: TabBarView(
-                              controller: tabController,
-                              children: [
-                                Builder(builder: (context) {
-                                  if (viewModel.isBusy) {
-                                    return const SizedBox(
-                                        height: 500,
-                                        child: Center(
-                                            child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            CircularProgressIndicator(
-                                              color: kcPrimaryColor,
-                                            ),
-                                          ],
-                                        )));
-                                  }
-                                  if (viewModel.isSearchActive &&
-                                      viewModel.sales.isEmpty) {
-                                    return SizedBox(
-                                        height: 400,
-                                        child: Center(
-                                            child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            SvgPicture.asset(
-                                              'assets/images/Group 1000007841.svg',
-                                              width: 200,
-                                              height: 150,
-                                            ),
-                                            verticalSpaceSmall,
-                                            Text(
-                                              'No invoice available',
-                                              style:
-                                                  ktsSubtitleTextAuthentication,
-                                            ),
-                                          ],
-                                        )));
-                                  }
-                                  if (viewModel.isSearchActive &&
-                                      viewModel.sales.isNotEmpty) {
-                                    return ListView.separated(
-                                      padding: const EdgeInsets.all(2),
-                                      scrollDirection: Axis.vertical,
-                                      // physics:
-                                      //     const NeverScrollableScrollPhysics(),
-                                      primary: true,
-                                      shrinkWrap: true,
-                                      itemCount: viewModel.sales.length,
-                                      itemBuilder: (context, index) {
-                                        var sale = viewModel.sales[index];
-                                        return Container(
-                                          clipBehavior: Clip.antiAlias,
-                                          padding: EdgeInsets.zero,
-                                          width: double.infinity,
-                                          decoration: BoxDecoration(
-                                            // color: kcButtonTextColor,
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                            border: Border.all(
-                                                width: 1.3,
-                                                color: kcBorderColor),
-                                          ),
-                                          child: SalesCard(
-                                            sales: sale,
-                                            saleId: sale.id,
-                                          ),
-                                        );
-                                        // }
-                                      },
-                                      separatorBuilder:
-                                          (BuildContext context, int index) {
-                                        return verticalSpaceTiny1;
-                                      },
+                            child: Builder(builder: (context) {
+                              if (viewModel.isBusy) {
+                                return const SizedBox(
+                                    height: 500,
+                                    child: Center(
+                                        child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        CircularProgressIndicator(
+                                          color: kcPrimaryColor,
+                                        ),
+                                      ],
+                                    )));
+                              }
+                              if (viewModel.isSearchActive &&
+                                  viewModel.data!.isEmpty) {
+                                return SizedBox(
+                                    height: 400,
+                                    child: Center(
+                                        child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        SvgPicture.asset(
+                                          'assets/images/Group 1000007841.svg',
+                                          width: 200,
+                                          height: 150,
+                                        ),
+                                        verticalSpaceSmall,
+                                        Text(
+                                          'No invoice available',
+                                          style: ktsSubtitleTextAuthentication,
+                                        ),
+                                      ],
+                                    )));
+                              }
+                              if (viewModel.isSearchActive &&
+                                  viewModel.data!.isNotEmpty) {
+                                return Material(
+                                  color: Colors.transparent,
+                                  child: ListView.separated(
+                                    padding: const EdgeInsets.all(2),
+                                    scrollDirection: Axis.vertical,
+                                    // physics:
+                                    //     const NeverScrollableScrollPhysics(),
+                                    primary: true,
+                                    shrinkWrap: true,
+                                    itemCount: viewModel.data!.length,
+                                    itemBuilder: (context, index) {
+                                      var sale = viewModel.data![index];
+                                      return
+                                          //  Container(
+                                          //   clipBehavior: Clip.antiAlias,
+                                          //   padding: EdgeInsets.zero,
+                                          //   width: double.infinity,
+                                          //   decoration: BoxDecoration(
+                                          //     // color: kcButtonTextColor,
+                                          //     borderRadius: BorderRadius.circular(12),
+                                          //     border: Border.all(
+                                          //         width: 1.3, color: kcBorderColor),
+                                          //   ),
+                                          //   child:
+                                          SalesCard(
+                                        sales: sale,
+                                        saleId: sale.id,
+                                      );
+                                      // }
+                                    },
+                                    separatorBuilder:
+                                        (BuildContext context, int index) {
+                                      return const Divider(
+                                        thickness: 0.2,
+                                      );
+                                    },
+                                  ),
+                                );
+                              }
+                              if (viewModel.data!.isEmpty) {
+                                return SizedBox(
+                                    height: 400,
+                                    child: Center(
+                                        child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        SvgPicture.asset(
+                                          'assets/images/Group_2780.svg',
+                                          width: 200,
+                                          height: 150,
+                                        ),
+                                        verticalSpaceSmall,
+                                        Text(
+                                          'No invoice available',
+                                          style: ktsSubtitleTextAuthentication,
+                                        ),
+                                      ],
+                                    )));
+                              }
+
+                              return Material(
+                                color: Colors.transparent,
+                                child: ListView.separated(
+                                  padding: const EdgeInsets.all(2),
+                                  scrollDirection: Axis.vertical,
+                                  // physics:
+                                  //     const NeverScrollableScrollPhysics(),
+                                  primary: true,
+                                  shrinkWrap: true,
+                                  itemCount: viewModel.data!.length,
+                                  itemBuilder: (context, index) {
+                                    var sale = viewModel.data![index];
+                                    return
+                                        // Container(
+                                        //   clipBehavior: Clip.antiAlias,
+                                        //   padding: EdgeInsets.zero,
+                                        //   width: double.infinity,
+                                        //   decoration: BoxDecoration(
+                                        //     // color: kcButtonTextColor,
+                                        //     borderRadius:
+                                        //         BorderRadius.circular(12),
+                                        //     border: Border.all(
+                                        //         width: 1.3, color: kcBorderColor),
+                                        //   ),
+                                        //   child:
+                                        SalesCard(
+                                      sales: sale,
+                                      saleId: sale.id,
+                                      // ),
                                     );
-                                  }
-                                  if (viewModel.sales.isEmpty) {
-                                    return SizedBox(
-                                        height: 400,
-                                        child: Center(
-                                            child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            SvgPicture.asset(
-                                              'assets/images/Group_2780.svg',
-                                              width: 200,
-                                              height: 150,
-                                            ),
-                                            verticalSpaceSmall,
-                                            Text(
-                                              'No invoice available',
-                                              style:
-                                                  ktsSubtitleTextAuthentication,
-                                            ),
-                                          ],
-                                        )));
-                                  }
-
-                                  return ListView.separated(
-                                    padding: const EdgeInsets.all(2),
-                                    scrollDirection: Axis.vertical,
-                                    // physics:
-                                    //     const NeverScrollableScrollPhysics(),
-                                    primary: true,
-                                    shrinkWrap: true,
-                                    itemCount: viewModel.sales.length,
-                                    itemBuilder: (context, index) {
-                                      var sale = viewModel.sales[index];
-                                      return Container(
-                                        clipBehavior: Clip.antiAlias,
-                                        padding: EdgeInsets.zero,
-                                        width: double.infinity,
-                                        decoration: BoxDecoration(
-                                          // color: kcButtonTextColor,
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          border: Border.all(
-                                              width: 1.3, color: kcBorderColor),
-                                        ),
-                                        child: SalesCard(
-                                          sales: sale,
-                                          saleId: sale.id,
-                                        ),
-                                      );
-                                      // }
-                                    },
-                                    separatorBuilder:
-                                        (BuildContext context, int index) {
-                                      return verticalSpaceTiny1;
-                                    },
-                                  );
-                                }),
-                                Builder(builder: (context) {
-                                  if (viewModel.isBusy) {
-                                    return const SizedBox(
-                                        height: 500,
-                                        child: Center(
-                                            child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            CircularProgressIndicator(
-                                              color: kcPrimaryColor,
-                                            ),
-                                          ],
-                                        )));
-                                  }
-
-                                  if (viewModel.archivedSales.isEmpty) {
-                                    return SizedBox(
-                                        height: 400,
-                                        child: Center(
-                                            child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            SvgPicture.asset(
-                                              'assets/images/Group_2780.svg',
-                                              width: 200,
-                                              height: 150,
-                                            ),
-                                            verticalSpaceSmall,
-                                            Text(
-                                              'No invoice available',
-                                              style:
-                                                  ktsSubtitleTextAuthentication,
-                                            ),
-                                          ],
-                                        )));
-                                  }
-
-                                  return ListView.separated(
-                                    padding: const EdgeInsets.all(2),
-                                    scrollDirection: Axis.vertical,
-                                    // physics:
-                                    //     const NeverScrollableScrollPhysics(),
-                                    primary: true,
-                                    shrinkWrap: true,
-                                    itemCount: viewModel.archivedSales.length,
-                                    itemBuilder: (context, index) {
-                                      var sale = viewModel.archivedSales[index];
-                                      return Container(
-                                        clipBehavior: Clip.antiAlias,
-                                        padding: EdgeInsets.zero,
-                                        width: double.infinity,
-                                        decoration: BoxDecoration(
-                                          // color: kcButtonTextColor,
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          border: Border.all(
-                                              width: 1.3, color: kcBorderColor),
-                                        ),
-                                        child: ArchivedSalesCard(
-                                          sales: sale,
-                                          saleId: sale.id,
-                                        ),
-                                      );
-                                      // }
-                                    },
-                                    separatorBuilder:
-                                        (BuildContext context, int index) {
-                                      return verticalSpaceTiny1;
-                                    },
-                                  );
-                                }),
-                              ],
-                            ),
+                                    // }
+                                  },
+                                  separatorBuilder:
+                                      (BuildContext context, int index) {
+                                    return const Divider(
+                                      thickness: 0.2,
+                                    );
+                                  },
+                                ),
+                              );
+                            }),
                           ),
                         ],
                       ),
@@ -551,60 +359,105 @@ class SalesCard extends ViewModelWidget<SalesViewModel> {
 
   @override
   Widget build(BuildContext context, SalesViewModel viewModel) {
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: 14,
-      ),
-      // tileColor: kcStrokeColor,
-      title: Text(
-        '#${sales.reference}',
-        style: ktsBorderText,
-        overflow: TextOverflow.ellipsis,
-        maxLines: 1,
-      ),
-      subtitle: RichText(
-        text: TextSpan(
-          children: [
-            TextSpan(
-              text: NumberFormat.currency(locale: 'en_NGN', symbol: '₦')
-                  .currencySymbol, // The remaining digits without the symbol
-              style: ktsSubtitleTileText.copyWith(fontFamily: 'Roboto'),
-            ),
-            TextSpan(
-              text: NumberFormat.currency(locale: 'en_NGN', symbol: '').format(
-                  sales.totalAmount), // The remaining digits without the symbol
-              style: ktsSubtitleTileText,
-            ),
-          ],
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        splashColor: kcFormBorderColor.withOpacity(0.3),
+        onTap: (() async {
+          final result = await viewModel.navigationService
+              .navigateTo(Routes.viewSalesView, arguments: saleId);
+          if (result == true) {
+            viewModel.reloadSaleData();
+          }
+        }),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 6),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    // '#${purchase.reference}',
+                    sales.customerName,
+                    // '${purchase.description[0].toUpperCase()}${purchase.description.substring(1)}',
+                    style: TextStyle(
+                      fontFamily: 'Satoshi',
+                      color: kcTextTitleColor.withOpacity(0.9),
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: NumberFormat.currency(
+                                  locale: 'en_NGN', symbol: '₦')
+                              .currencySymbol, // The remaining digits without the symbol
+                          style: GoogleFonts.openSans(
+                            color: kcTextTitleColor.withOpacity(0.8),
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                          ).copyWith(fontFamily: 'Roboto'),
+                        ),
+                        TextSpan(
+                          text: NumberFormat.currency(
+                                  locale: 'en_NGN', symbol: '')
+                              .format(sales
+                                  .totalAmount), // The remaining digits without the symbol
+                          style: TextStyle(
+                              fontFamily: 'Satoshi',
+                              color: kcTextTitleColor.withOpacity(0.9),
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0.5),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              // verticalSpaceTinyt1,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    sales.transactionDate,
+                    style: TextStyle(
+                      fontFamily: 'Satoshi',
+                      color: kcTextSubTitleColor,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                  Text(
+                    sales.paid
+                        ? 'Paid'
+                        : (sales.overdue! ? 'Overdue' : 'Pending'),
+                    style: TextStyle(
+                      fontFamily: 'Satoshi',
+                      color: sales.paid
+                          ? kcSuccessColor
+                          : (sales.overdue!
+                              ? kcErrorColor
+                              : kcTextSubTitleColor),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                ],
+              )
+            ],
+          ),
         ),
-      ),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            padding: EdgeInsets.zero,
-            icon: SvgPicture.asset(
-              'assets/images/eye.svg',
-              width: 20,
-              height: 20,
-            ),
-            onPressed: (() {
-              viewModel.navigationService
-                  .navigateTo(Routes.viewSalesView, arguments: saleId);
-            }),
-          ),
-          IconButton(
-            padding: EdgeInsets.zero,
-            onPressed: () {
-              viewModel.archiveSale(saleId);
-            },
-            icon: SvgPicture.asset(
-              'assets/images/archive.svg',
-              // width: 20,
-              // height: 20,
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -654,7 +507,7 @@ class ArchivedSalesCard extends ViewModelWidget<SalesViewModel> {
           IconButton(
             padding: const EdgeInsets.only(top: 2),
             onPressed: () {
-              viewModel.unArchiveSale(saleId);
+              // viewModel.unArchiveSale(saleId);
             },
             icon: SvgPicture.asset(
               'assets/images/unarchive2.svg',
@@ -670,7 +523,7 @@ class ArchivedSalesCard extends ViewModelWidget<SalesViewModel> {
               height: 18,
             ),
             onPressed: (() {
-              viewModel.deleteSale(saleId);
+              // viewModel.deleteSale(saleId);
             }),
           ),
         ],

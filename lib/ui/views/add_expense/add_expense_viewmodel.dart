@@ -4,7 +4,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.locator.dart';
-import 'package:verzo/app/app.router.dart';
 import 'package:verzo/services/expense_service.dart';
 import 'package:verzo/services/merchant_service.dart';
 import 'package:verzo/ui/common/app_colors.dart';
@@ -210,16 +209,20 @@ class AddExpenseViewModel extends FormViewModel {
 
   Future saveExpenseData(BuildContext context) async {
     final db = await getExpenseDatabase();
+    final db2 = await getExpenseDatabaseList();
     final dbExpenseWeek = await getExpensesForWeekDatabase();
     final dbExpenseMonth = await getExpensesForMonthDatabase();
     final result = await runBusyFuture(runExpenseCreation());
 
     if (result.expense != null) {
       await db.delete('expenses');
+      await db2.delete('expenses');
       await dbExpenseWeek.delete('expenses_for_week');
       await dbExpenseMonth.delete('expenses_for_month');
       // navigate to success route
-      navigationService.replaceWith(Routes.expenseView);
+      // navigationService.replaceWith(Routes.expenseView);
+      navigationService.back(result: true);
+      rebuildUi();
     } else if (result.error != null) {
       setValidationMessage(result.error?.message);
 

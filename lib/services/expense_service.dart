@@ -96,6 +96,9 @@ class ExpenseService {
             reference
             amount
             expenseDate
+            merchant{
+              name
+            }
             }
             cursorId
             }
@@ -112,6 +115,9 @@ class ExpenseService {
             reference
             amount
             expenseDate
+            merchant{
+              name
+            }
             }
             cursorId
             }
@@ -488,6 +494,7 @@ class ExpenseService {
     // prefs.setString('cursorId', cursorId);
 
     final List<Expenses> expenses = expensesData.map((data) {
+      final merchantData = data['merchant']; // Access merchant data
       return Expenses(
         id: data['id'],
         description: data['description'],
@@ -496,7 +503,7 @@ class ExpenseService {
         reference: data['reference'],
         merchantId: '',
         expenseStatusId: 0,
-        merchantName: '',
+        merchantName: merchantData['name'],
         expenseItems: [],
         expenseCategoryName: '',
         expenseCategoryId: '',
@@ -551,6 +558,7 @@ class ExpenseService {
     // prefs.setString('cursorId', cursorId);
 
     final List<Expenses> expenses = expensesData.map((data) {
+      final merchantData = data['merchant']; // Access merchant data
       return Expenses(
         id: data['id'],
         description: data['description'],
@@ -559,7 +567,7 @@ class ExpenseService {
         reference: data['reference'],
         merchantId: '',
         expenseStatusId: 0,
-        merchantName: '',
+        merchantName: merchantData['name'],
         expenseItems: [],
         expenseCategoryName: '',
         expenseCategoryId: '',

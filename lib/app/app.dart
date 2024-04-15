@@ -69,6 +69,16 @@ import 'package:verzo/ui/dialogs/logout/logout_dialog.dart';
 import 'package:verzo/ui/views/mark_purchase_item_as_received/mark_purchase_item_as_received_view.dart';
 import 'package:verzo/ui/views/mark_expense_item_as_received/mark_expense_item_as_received_view.dart';
 import 'package:verzo/ui/views/record_sale_expense/record_sale_expense_view.dart';
+import 'package:verzo/ui/views/archived_expense/archived_expense_view.dart';
+import 'package:verzo/ui/views/archived_purchase/archived_purchase_view.dart';
+import 'package:verzo/ui/views/archived_sale/archived_sale_view.dart';
+import 'package:verzo/ui/views/archived_customer/archived_customer_view.dart';
+import 'package:verzo/ui/views/archived_product/archived_product_view.dart';
+import 'package:verzo/ui/views/archived_service/archived_service_view.dart';
+import 'package:verzo/ui/views/employee_login/employee_login_view.dart';
+import 'package:verzo/ui/views/employee_home/employee_home_view.dart';
+import 'package:verzo/ui/views/employee_inbox/employee_inbox_view.dart';
+import 'package:verzo/ui/views/employee_settings/employee_settings_view.dart';
 // @stacked-import
 
 @StackedApp(
@@ -123,6 +133,16 @@ import 'package:verzo/ui/views/record_sale_expense/record_sale_expense_view.dart
     MaterialRoute(page: MarkPurchaseItemAsReceivedView),
     MaterialRoute(page: MarkExpenseItemAsReceivedView),
     MaterialRoute(page: RecordSaleExpenseView),
+    MaterialRoute(page: ArchivedExpenseView),
+    MaterialRoute(page: ArchivedPurchaseView),
+    MaterialRoute(page: ArchivedSaleView),
+    MaterialRoute(page: ArchivedCustomerView),
+    MaterialRoute(page: ArchivedProductView),
+    MaterialRoute(page: ArchivedServiceView),
+    MaterialRoute(page: EmployeeLoginView),
+    MaterialRoute(page: EmployeeHomeView),
+    MaterialRoute(page: EmployeeInboxView),
+    MaterialRoute(page: EmployeeSettingsView),
 // @stacked-route
   ],
   dependencies: [

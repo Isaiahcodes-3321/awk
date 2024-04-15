@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
-import 'package:verzo/app/app.dialogs.dart';
+
 import 'package:verzo/app/app.locator.dart';
 import 'package:verzo/services/products_services_service.dart';
 import 'package:verzo/ui/common/typesense.dart';
@@ -14,8 +14,6 @@ class ServiceViewModel extends FutureViewModel<List<Services>> {
   final TextEditingController searchController = TextEditingController();
 
   List<Services> services = [];
-  List<Services> archivedServices = [];
-  List<Services> allServices = [];
   List<Services> searchResults = [];
 
   bool isSearchActive = false;
@@ -24,7 +22,7 @@ class ServiceViewModel extends FutureViewModel<List<Services>> {
     if (!isSearchActive) {
       // Clear the search controller and reload data if needed
       searchController.clear();
-      reload();
+      reloadServiceData();
     }
     rebuildUi();
   }
@@ -41,16 +39,7 @@ class ServiceViewModel extends FutureViewModel<List<Services>> {
 
     rebuildUi();
 
-    archivedServices = await _productservicesService
-        .getArchivedServiceByBusiness(businessId: businessIdValue);
-
-    rebuildUi();
-
-    allServices = [...services, ...archivedServices];
-
-    rebuildUi();
-
-    return allServices;
+    return services;
   }
 
   Future<void> searchService() async {
@@ -74,46 +63,10 @@ class ServiceViewModel extends FutureViewModel<List<Services>> {
     }
     // print(searchResults);
 
-    services = searchResults;
-    archivedServices = searchResults;
+    data = searchResults;
+
     rebuildUi();
     // return searchResults;
-  }
-
-  Future<bool> unArchiveService(String serviceId) async {
-    // Show a confirmation dialog
-    final DialogResponse? response = await dialogService.showCustomDialog(
-      variant: DialogType.archive,
-      title: 'Unarchive Service',
-      description:
-          "Are you sure you want to unarchive this service? You can’t undo this action",
-      barrierDismissible: true,
-      mainButtonTitle: 'Unarchive',
-    );
-
-    // Check if the user confirmed the action
-    if (response?.confirmed == true) {
-      // Proceed with archiving if confirmed
-      final bool isUnArchived =
-          await _productservicesService.unArchiveService(serviceId: serviceId);
-
-      if (isUnArchived) {
-        await dialogService.showCustomDialog(
-          variant: DialogType.archiveSuccess,
-          title: 'Unarchived!',
-          description: 'Your service has been successfully unarchived.',
-          barrierDismissible: true,
-          mainButtonTitle: 'Ok',
-        );
-      }
-
-      await reloadServiceData();
-
-      return isUnArchived;
-    } else {
-      // User canceled the action
-      return false;
-    }
   }
 
   Future<void> reloadServiceData() async {
@@ -124,9 +77,9 @@ class ServiceViewModel extends FutureViewModel<List<Services>> {
   }
 
   Future<List<Services>> reloadService() async {
-    allServices = await getServiceByBusiness();
+    services = await getServiceByBusiness();
     rebuildUi();
-    return allServices;
+    return services;
   }
 
   Future reload() async {

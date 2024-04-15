@@ -37,6 +37,7 @@ class ViewSalesView extends StackedView<ViewSalesViewModel> {
               GestureDetector(
                 onTap: viewModel.navigateBack,
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
@@ -61,13 +62,25 @@ class ViewSalesView extends StackedView<ViewSalesViewModel> {
                         ),
                       ],
                     ),
-                    IconButton(
-                      onPressed: () async {},
-                      icon: SvgPicture.asset(
-                        'assets/images/trash-01.svg',
-                        width: 20,
-                        height: 20,
-                      ),
+                    Row(
+                      children: [
+                        IconButton(
+                          onPressed: () async {},
+                          icon: SvgPicture.asset(
+                            'assets/images/archive-2.svg',
+                            width: 24,
+                            height: 24,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () async {},
+                          icon: SvgPicture.asset(
+                            'assets/images/trash-01.svg',
+                            width: 20,
+                            height: 20,
+                          ),
+                        ),
+                      ],
                     )
                   ],
                 ),
@@ -98,6 +111,7 @@ class ViewSalesView extends StackedView<ViewSalesViewModel> {
               GestureDetector(
                 onTap: viewModel.navigateBack,
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
@@ -122,15 +136,29 @@ class ViewSalesView extends StackedView<ViewSalesViewModel> {
                         ),
                       ],
                     ),
-                    IconButton(
-                      onPressed: () {
-                        viewModel.deleteSale();
-                      },
-                      icon: SvgPicture.asset(
-                        'assets/images/trash-01.svg',
-                        width: 20,
-                        height: 20,
-                      ),
+                    Row(
+                      children: [
+                        IconButton(
+                          onPressed: () async {
+                            viewModel.archiveSale(context);
+                          },
+                          icon: SvgPicture.asset(
+                            'assets/images/archive-2.svg',
+                            width: 24,
+                            height: 24,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            viewModel.deleteSale(context);
+                          },
+                          icon: SvgPicture.asset(
+                            'assets/images/trash-01.svg',
+                            width: 20,
+                            height: 20,
+                          ),
+                        ),
+                      ],
                     )
                   ],
                 ),
@@ -150,6 +178,8 @@ class ViewSalesView extends StackedView<ViewSalesViewModel> {
                               Routes.updateSalesView,
                               arguments: viewModel.saleId)
                           : null;
+
+                      viewModel.rebuildUi();
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -169,188 +199,278 @@ class ViewSalesView extends StackedView<ViewSalesViewModel> {
                   )
                 ],
               ),
-              verticalSpaceSmallMid,
-              Container(
-                clipBehavior: Clip.antiAlias,
-                padding: EdgeInsets.zero,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  // color: kcButtonTextColor,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(width: 1, color: kcBorderColor),
-                ),
-                child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 14, vertical: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            SvgPicture.asset(
-                              'assets/images/calendar-03.svg',
-                              width: 20,
-                              height: 20,
-                            ),
-                            horizontalSpaceTiny,
-                            Text(
-                              'Transaction date',
-                              style: ktsFormTitleText,
-                            ),
-                          ],
-                        ),
-                        Text(
-                          viewModel.sale!.transactionDate,
-                          style: ktsFormHintText,
-                        ),
-                      ],
-                    ),
+              verticalSpaceIntermitent,
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        viewModel.sale!.customerName,
+                        style: ktsTextAuthentication2,
+                      ),
+                      verticalSpaceTinyt1,
+                      Text(
+                        viewModel.sale!.customerEmail!,
+                        style: ktsFormHintText,
+                      ),
+                    ],
                   ),
-                  const Divider(
-                    color: kcBorderColor,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 14, vertical: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            SvgPicture.asset(
-                              'assets/images/calendar-03.svg',
-                              width: 20,
-                              height: 20,
-                            ),
-                            horizontalSpaceTiny,
-                            Text(
-                              'Due date',
-                              style: ktsFormTitleText,
-                            ),
-                          ],
-                        ),
-                        Text(
-                          viewModel.sale!.dueDate,
-                          style: ktsFormHintText,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Divider(
-                    color: kcBorderColor,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 14, vertical: 14),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            SvgPicture.asset(
-                              'assets/images/check-broken.svg',
-                              width: 20,
-                              height: 20,
-                            ),
-                            horizontalSpaceTiny,
-                            Text(
-                              'Status',
-                              style: ktsFormTitleText,
-                            ),
-                          ],
-                        ),
-                        if (viewModel.sale!.paid == true)
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 6),
-                            decoration: BoxDecoration(
-                              color: kcSuccessColor,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Text('Paid',
-                                style:
-                                    ktsSubtitleTileText2 // Set your text style
-                                ),
-                          )
-                        else
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 6),
-                            decoration: BoxDecoration(
-                              color: kcArchiveColor,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Text('Pending',
-                                style:
-                                    ktsSubtitleTileText // Set your text style
-                                ),
-                          )
-                      ],
-                    ),
-                  ),
-                  const Divider(
-                    color: kcBorderColor,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 14, vertical: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            SvgPicture.asset(
-                              'assets/images/user-profile-02.svg',
-                              width: 20,
-                              height: 20,
-                            ),
-                            horizontalSpaceTiny,
-                            Text(
-                              'Customer',
-                              style: ktsFormTitleText,
-                            ),
-                          ],
-                        ),
-                        Text(
-                          viewModel.sale!.customerName,
-                          style: ktsFormHintText,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Divider(
-                    color: kcBorderColor,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 14, vertical: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            SvgPicture.asset(
-                              'assets/images/email.svg',
-                              width: 20,
-                              height: 20,
-                            ),
-                            horizontalSpaceTiny,
-                            Text(
-                              'Email',
-                              style: ktsFormTitleText,
-                            ),
-                          ],
-                        ),
-                        Text(
-                          viewModel.sale!.customerEmail!,
-                          style: ktsFormHintText,
-                        ),
-                      ],
-                    ),
-                  ),
-                ]),
+                  if (viewModel.sale!.paid == true)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: kcSuccessColor,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text('Paid',
+                          style: ktsSubtitleTileText2 // Set your text style
+                          ),
+                    )
+                  else
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: kcArchiveColor,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text('Pending',
+                          style: ktsSubtitleTileText // Set your text style
+                          ),
+                    )
+                ],
               ),
+
+              verticalSpaceTiny,
+              Divider(
+                color: kcBorderColor,
+              ),
+              verticalSpaceTiny,
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Transaction Date',
+                        style: ktsFormHintText,
+                      ),
+                      verticalSpaceTinyt,
+                      Text(
+                        viewModel.sale!.transactionDate,
+                        style: ktsTextAuthentication3,
+                      ),
+                    ],
+                  ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        'Due Date',
+                        style: ktsFormHintText,
+                      ),
+                      verticalSpaceTinyt,
+                      Text(
+                        viewModel.sale!.dueDate,
+                        style: ktsTextAuthentication3,
+                      ),
+                    ],
+                  )
+                ],
+              ),
+              // Container(
+              //   clipBehavior: Clip.antiAlias,
+              //   padding: EdgeInsets.zero,
+              //   width: double.infinity,
+              //   decoration: BoxDecoration(
+              //     // color: kcButtonTextColor,
+              //     borderRadius: BorderRadius.circular(12),
+              //     border: Border.all(width: 1, color: kcBorderColor),
+              //   ),
+              //   child: Column(mainAxisSize: MainAxisSize.min, children: [
+              //     Padding(
+              //       padding: const EdgeInsets.symmetric(
+              //           horizontal: 14, vertical: 20),
+              //       child: Row(
+              //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //         children: [
+              //           Row(
+              //             children: [
+              //               SvgPicture.asset(
+              //                 'assets/images/calendar-03.svg',
+              //                 width: 20,
+              //                 height: 20,
+              //               ),
+              //               horizontalSpaceTiny,
+              //               Text(
+              //                 'Transaction date',
+              //                 style: ktsFormTitleText,
+              //               ),
+              //             ],
+              //           ),
+              //           Text(
+              //             viewModel.sale!.transactionDate,
+              //             style: ktsFormHintText,
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //     const Divider(
+              //       color: kcBorderColor,
+              //     ),
+              //     Padding(
+              //       padding: const EdgeInsets.symmetric(
+              //           horizontal: 14, vertical: 20),
+              //       child: Row(
+              //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //         children: [
+              //           Row(
+              //             children: [
+              //               SvgPicture.asset(
+              //                 'assets/images/calendar-03.svg',
+              //                 width: 20,
+              //                 height: 20,
+              //               ),
+              //               horizontalSpaceTiny,
+              //               Text(
+              //                 'Due date',
+              //                 style: ktsFormTitleText,
+              //               ),
+              //             ],
+              //           ),
+              //           Text(
+              //             viewModel.sale!.dueDate,
+              //             style: ktsFormHintText,
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //     const Divider(
+              //       color: kcBorderColor,
+              //     ),
+              //     Padding(
+              //       padding: const EdgeInsets.symmetric(
+              //           horizontal: 14, vertical: 14),
+              //       child: Row(
+              //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //         children: [
+              //           Row(
+              //             children: [
+              //               SvgPicture.asset(
+              //                 'assets/images/check-broken.svg',
+              //                 width: 20,
+              //                 height: 20,
+              //               ),
+              //               horizontalSpaceTiny,
+              //               Text(
+              //                 'Status',
+              //                 style: ktsFormTitleText,
+              //               ),
+              //             ],
+              //           ),
+              //           if (viewModel.sale!.paid == true)
+              //             Container(
+              //               padding: const EdgeInsets.symmetric(
+              //                   horizontal: 12, vertical: 6),
+              //               decoration: BoxDecoration(
+              //                 color: kcSuccessColor,
+              //                 borderRadius: BorderRadius.circular(20),
+              //               ),
+              //               child: Text('Paid',
+              //                   style:
+              //                       ktsSubtitleTileText2 // Set your text style
+              //                   ),
+              //             )
+              //           else
+              //             Container(
+              //               padding: const EdgeInsets.symmetric(
+              //                   horizontal: 12, vertical: 6),
+              //               decoration: BoxDecoration(
+              //                 color: kcArchiveColor,
+              //                 borderRadius: BorderRadius.circular(20),
+              //               ),
+              //               child: Text('Pending',
+              //                   style:
+              //                       ktsSubtitleTileText // Set your text style
+              //                   ),
+              //             )
+              //         ],
+              //       ),
+              //     ),
+              //     const Divider(
+              //       color: kcBorderColor,
+              //     ),
+              //     Padding(
+              //       padding: const EdgeInsets.symmetric(
+              //           horizontal: 14, vertical: 20),
+              //       child: Row(
+              //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //         children: [
+              //           Row(
+              //             children: [
+              //               SvgPicture.asset(
+              //                 'assets/images/user-profile-02.svg',
+              //                 width: 20,
+              //                 height: 20,
+              //               ),
+              //               horizontalSpaceTiny,
+              //               Text(
+              //                 'Customer',
+              //                 style: ktsFormTitleText,
+              //               ),
+              //             ],
+              //           ),
+              //           Text(
+              //             viewModel.sale!.customerName,
+              //             style: ktsFormHintText,
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //     const Divider(
+              //       color: kcBorderColor,
+              //     ),
+              //     Padding(
+              //       padding: const EdgeInsets.symmetric(
+              //           horizontal: 14, vertical: 20),
+              //       child: Row(
+              //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //         children: [
+              //           Row(
+              //             children: [
+              //               SvgPicture.asset(
+              //                 'assets/images/email.svg',
+              //                 width: 20,
+              //                 height: 20,
+              //               ),
+              //               horizontalSpaceTiny,
+              //               Text(
+              //                 'Email',
+              //                 style: ktsFormTitleText,
+              //               ),
+              //             ],
+              //           ),
+              //           Text(
+              //             viewModel.sale!.customerEmail!,
+              //             style: ktsFormHintText,
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //   ]),
+              // ),
               verticalSpaceIntermitent,
               Text(
                 'Invoice details',
@@ -369,7 +489,7 @@ class ViewSalesView extends StackedView<ViewSalesViewModel> {
                       style: ktsFormTitleText,
                     ),
                     title: Text(item.name),
-                    titleTextStyle: ktsFormTitleText,
+                    titleTextStyle: ktsFormTitleText3,
                     trailing: RichText(
                       text: TextSpan(
                         children: [
@@ -378,14 +498,14 @@ class ViewSalesView extends StackedView<ViewSalesViewModel> {
                                     locale: 'en_NGN', symbol: '₦')
                                 .currencySymbol, // The remaining digits without the symbol
                             style:
-                                ktsFormHintText.copyWith(fontFamily: 'Roboto'),
+                                ktsBorderText2.copyWith(fontFamily: 'Roboto'),
                           ),
                           TextSpan(
                             text: NumberFormat.currency(
                                     locale: 'en_NGN', symbol: '')
                                 .format(item
                                     .price), // The remaining digits without the symbol
-                            style: ktsFormHintText,
+                            style: ktsBorderText2,
                           ),
                         ],
                       ),
@@ -393,9 +513,9 @@ class ViewSalesView extends StackedView<ViewSalesViewModel> {
                   ),
                 ),
 
-              const Divider(
-                color: kcBorderColor,
-              ),
+              // const Divider(
+              //   color: kcBorderColor,
+              // ),
               Row(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -459,9 +579,7 @@ class ViewSalesView extends StackedView<ViewSalesViewModel> {
                   ),
                 ],
               ),
-              const Divider(
-                color: kcBorderColor,
-              ),
+
               verticalSpaceIntermitent,
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

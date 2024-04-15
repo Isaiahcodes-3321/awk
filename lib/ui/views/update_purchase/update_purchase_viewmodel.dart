@@ -4,7 +4,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.locator.dart';
-import 'package:verzo/app/app.router.dart';
 import 'package:verzo/services/merchant_service.dart';
 import 'package:verzo/services/products_services_service.dart';
 import 'package:verzo/services/purchase_service.dart';
@@ -361,16 +360,20 @@ class UpdatePurchaseViewModel extends FormViewModel {
 
   Future updatePurchaseData(BuildContext context) async {
     final db = await getPurchaseDatabase();
+    final db2 = await getPurchaseDatabaseList();
     final dbPurchaseWeek = await getPurchasesForWeekDatabase();
     final dbPurchaseMonth = await getPurchasesForMonthDatabase();
     final result = await runBusyFuture(runPurchaseUpdate());
 
     if (result.purchase != null) {
       await db.delete('purchases');
+      await db2.delete('purchases');
       await dbPurchaseWeek.delete('purchases_for_week');
       await dbPurchaseMonth.delete('purchases_for_month');
       // navigate to success route
-      navigationService.replaceWith(Routes.purchaseView);
+      navigationService.back(result: true);
+      navigationService.back(result: true);
+      rebuildUi();
     } else if (result.error != null) {
       setValidationMessage(result.error?.message);
 

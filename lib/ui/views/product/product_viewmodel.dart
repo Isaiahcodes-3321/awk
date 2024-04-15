@@ -2,7 +2,6 @@ import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
-import 'package:verzo/app/app.dialogs.dart';
 import 'package:verzo/app/app.locator.dart';
 import 'package:verzo/services/products_services_service.dart';
 import 'package:verzo/ui/common/typesense.dart';
@@ -14,8 +13,7 @@ class ProductViewModel extends FutureViewModel<List<Products>> {
   final TextEditingController searchController = TextEditingController();
 
   List<Products> products = [];
-  List<Products> archiveProducts = [];
-  List<Products> allProducts = [];
+
   List<Products> searchResults = [];
 
   bool isSearchActive = false;
@@ -24,7 +22,7 @@ class ProductViewModel extends FutureViewModel<List<Products>> {
     if (!isSearchActive) {
       // Clear the search controller and reload data if needed
       searchController.clear();
-      reload();
+      reloadProductsData();
     }
     rebuildUi();
   }
@@ -40,13 +38,6 @@ class ProductViewModel extends FutureViewModel<List<Products>> {
         businessId: businessIdValue);
 
     rebuildUi();
-
-    archiveProducts = await _productservicesService
-        .getArchivedProductsByBusiness(businessId: businessIdValue);
-
-    rebuildUi();
-
-    allProducts = [...products, ...archiveProducts];
 
     return products;
   }
@@ -72,45 +63,10 @@ class ProductViewModel extends FutureViewModel<List<Products>> {
     }
     // print(searchResults);
 
-    products = searchResults;
-    archiveProducts = searchResults;
+    data = searchResults;
+
     rebuildUi();
     // return searchResults;
-  }
-
-  Future<bool> unArchiveProduct(String productId) async {
-    // Show a confirmation dialog
-    final DialogResponse? response = await dialogService.showCustomDialog(
-      variant: DialogType.archive,
-      title: 'Unarchive Product',
-      description:
-          "Are you sure you want to unarchive this product? You can’t undo this action",
-      barrierDismissible: true,
-      mainButtonTitle: 'Unarchive',
-    );
-
-    // Check if the user confirmed the action
-    if (response?.confirmed == true) {
-      // Proceed with archiving if confirmed
-      final bool isUnArchived =
-          await _productservicesService.unArchiveProduct(productId: productId);
-
-      if (isUnArchived) {
-        await dialogService.showCustomDialog(
-            variant: DialogType.archiveSuccess,
-            title: 'Unarchived!',
-            description: 'Your product has been successfully unarchived.',
-            barrierDismissible: true,
-            mainButtonTitle: 'Ok');
-      }
-
-      await reloadProductsData();
-
-      return isUnArchived;
-    } else {
-      // User canceled the action
-      return false;
-    }
   }
 
   Future<void> reloadProductsData() async {
@@ -121,9 +77,9 @@ class ProductViewModel extends FutureViewModel<List<Products>> {
   }
 
   Future<List<Products>> reloadProducts() async {
-    allProducts = await getProductByBusiness();
+    products = await getProductByBusiness();
     rebuildUi();
-    return allProducts;
+    return products;
   }
 
   Future reload() async {

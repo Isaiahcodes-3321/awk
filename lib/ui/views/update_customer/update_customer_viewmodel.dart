@@ -116,7 +116,7 @@ class UpdateCustomerViewModel extends FormViewModel {
     updateCustomerNameController.text = customer.name;
     updateCustomerEmailController.text = customer.email;
     updateCustomerMobileController.text = customer.mobile;
-    updateCustomerAddressController.text = customer.address;
+    updateCustomerAddressController.text = customer.address!;
     rebuildUi();
   }
 

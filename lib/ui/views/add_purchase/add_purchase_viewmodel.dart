@@ -4,7 +4,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.locator.dart';
-import 'package:verzo/app/app.router.dart';
 import 'package:verzo/services/merchant_service.dart';
 import 'package:verzo/services/products_services_service.dart';
 import 'package:verzo/services/purchase_service.dart';
@@ -282,25 +281,6 @@ class AddPurchaseViewModel extends FormViewModel {
     final merchants = await _merchantService.getMerchantsByBusiness(
         businessId: businessIdValue);
 
-    // for (int i = 0; i < merchants.length; i++) {
-    //   merchantdropdownItems.add(
-    //     DropdownMenuItem<String>(
-
-    //       value: merchants[i].id.toString(),
-    //       child: Text(merchants[i].name),
-    //     ),
-    //   );
-    //   // Add a divider after each merchant except for the last one
-    //   if (i < merchants.length - 1) {
-    //     merchantdropdownItems.add(
-    //       const DropdownMenuItem<String>(
-    //         child: Divider(),
-    //         value: null, // Set value to null for dividers
-    //       ),
-    //     );
-    //   }
-    // }
-
     merchantdropdownItems = merchants.map((merchant) {
       return DropdownMenuItem<String>(
         value: merchant.id.toString(),
@@ -328,16 +308,20 @@ class AddPurchaseViewModel extends FormViewModel {
 
   Future savePurchaseData(BuildContext context) async {
     final db = await getPurchaseDatabase();
+    final db2 = await getPurchaseDatabaseList();
     final dbPurchaseWeek = await getPurchasesForWeekDatabase();
     final dbPurchaseMonth = await getPurchasesForMonthDatabase();
     final result = await runBusyFuture(runPurchaseCreation());
 
     if (result.purchase != null) {
       await db.delete('purchases');
+      await db2.delete('purchases');
       await dbPurchaseWeek.delete('purchases_for_week');
       await dbPurchaseMonth.delete('purchases_for_month');
       // navigate to success route
-      navigationService.replaceWith(Routes.purchaseView);
+      navigationService.back(result: true);
+      rebuildUi();
+      // navigationService.replaceWith(Routes.purchaseView);
     } else if (result.error != null) {
       setValidationMessage(result.error?.message);
 
@@ -368,7 +352,4 @@ class AddPurchaseViewModel extends FormViewModel {
   }
 
   void navigateBack() => navigationService.back();
-
-  @override
-  void setFormStatus() {}
 }

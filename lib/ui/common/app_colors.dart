@@ -19,6 +19,7 @@ const Color kcSuccessColor = Color(0xFF4BB543);
 
 const Color kcFormBorderColor = Color(0xFFC4C4C4);
 const Color kcPrimaryColor = Color(0xFF027DFF);
+const Color kcBackgroundColor = Color(0xFF0252A8);
 const Color kcErrorColor = Color(0xFFFF3737);
 const Color kcAccentColor = Color(0xFFBEA802);
 const Color kcButtonTextColor = Color(0xFFFFFFFF);
@@ -28,3 +29,4 @@ const Color kcBorderTextColor = Color(0xFF101828);
 const Color kcIconColor = Color(0xFF1E35CF);
 const Color kcTermsColor = Color(0xFFFFFCE9);
 const Color kcArchiveColor = Color(0xFFF4F4F4);
+const Color kcCardColor = Color(0xFFC0BCBE);

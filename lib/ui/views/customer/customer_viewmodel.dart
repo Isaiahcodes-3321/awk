@@ -2,13 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
-import 'package:verzo/app/app.dialogs.dart';
 import 'package:verzo/app/app.locator.dart';
 import 'package:verzo/services/sales_service.dart';
 
 import 'package:verzo/ui/common/typesense.dart';
-
-// enum CustomerTab { All, Archived }
 
 class CustomerViewModel extends FutureViewModel<List<Customers>> {
   final navigationService = locator<NavigationService>();
@@ -17,8 +14,6 @@ class CustomerViewModel extends FutureViewModel<List<Customers>> {
   final TextEditingController searchController = TextEditingController();
 
   List<Customers> customers = []; // Original list of expenses
-  List<Customers> archivedCustomers = []; // Original list of expenses
-  List<Customers> allCustomers = []; // Original list of expenses
   List<Customers> searchResults = [];
 
   bool isSearchActive = false;
@@ -27,7 +22,7 @@ class CustomerViewModel extends FutureViewModel<List<Customers>> {
     if (!isSearchActive) {
       // Clear the search controller and reload data if needed
       searchController.clear();
-      reload();
+      reloadCustomerData();
     }
     rebuildUi();
   }
@@ -44,16 +39,7 @@ class CustomerViewModel extends FutureViewModel<List<Customers>> {
 
     rebuildUi();
 
-    archivedCustomers = await _saleService.getArchivedCustomerByBusiness(
-        businessId: businessIdValue);
-
-    rebuildUi();
-
-    allCustomers = [...customers, ...archivedCustomers];
-
-    rebuildUi();
-
-    return allCustomers;
+    return customers;
   }
 
   Future<void> searchCustomer() async {
@@ -76,48 +62,10 @@ class CustomerViewModel extends FutureViewModel<List<Customers>> {
       //     expenses; // Reset to original list when the search query is empty
     }
 
-    customers = searchResults;
-    archivedCustomers = searchResults;
+    data = searchResults;
 
     rebuildUi();
     // return searchResults;
-  }
-
-  Future<bool> unArchiveCustomer(String customerId) async {
-    // final db = await getCustomerDatabase();
-
-    // Show a confirmation dialog
-    final DialogResponse? response = await dialogService.showCustomDialog(
-        variant: DialogType.archive,
-        title: 'Unarchive Customer',
-        description:
-            "Are you sure you want to unarchive this customer? You can’t undo this action",
-        barrierDismissible: true,
-        mainButtonTitle: 'Unarchive');
-
-    // Check if the user confirmed the action
-    if (response?.confirmed == true) {
-      // Proceed with archiving if confirmed
-      final bool isUnArchived =
-          await _saleService.unArchiveCustomer(customerId: customerId);
-
-      if (isUnArchived) {
-        await dialogService.showCustomDialog(
-            variant: DialogType.archiveSuccess,
-            title: 'Unarchived!',
-            description: 'Your customer has been successfully unarchived.',
-            barrierDismissible: true,
-            mainButtonTitle: 'Ok');
-        // await db.delete('customers');
-      }
-
-      await reloadCustomerData();
-
-      return isUnArchived;
-    } else {
-      // User canceled the action
-      return false;
-    }
   }
 
   Future<void> reloadCustomerData() async {
@@ -128,9 +76,9 @@ class CustomerViewModel extends FutureViewModel<List<Customers>> {
   }
 
   Future<List<Customers>> reloadCustomer() async {
-    allCustomers = await getCustomersByBusiness();
+    customers = await getCustomersByBusiness();
     rebuildUi();
-    return allCustomers;
+    return customers;
   }
 
   Future reload() async {

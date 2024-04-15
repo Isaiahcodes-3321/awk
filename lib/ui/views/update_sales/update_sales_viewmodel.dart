@@ -4,7 +4,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.locator.dart';
-import 'package:verzo/app/app.router.dart';
 import 'package:verzo/services/products_services_service.dart';
 import 'package:verzo/services/sales_service.dart';
 import 'package:verzo/ui/common/app_colors.dart';
@@ -301,16 +300,20 @@ class UpdateSalesViewModel extends FormViewModel {
 
   Future updateSalesData(BuildContext context) async {
     final db = await getSalesDatabase2();
+    final db2 = await getSalesDatabaseList();
     final dbWeeklyInvoices = await getWeeklyInvoicesDatabase();
     final dbMonthlyInvoices = await getMonthlyInvoicesDatabase();
     final result = await runBusyFuture(runSalesUpdate());
 
     if (result.sale != null) {
       await db.delete('sales');
+      await db2.delete('sales');
       await dbWeeklyInvoices.delete('weekly_invoices');
       await dbMonthlyInvoices.delete('monthly_invoices');
       // navigate to success route
-      navigationService.replaceWith(Routes.salesView);
+      navigationService.back(result: true);
+      navigationService.back(result: true);
+      rebuildUi();
     } else if (result.error != null) {
       setValidationMessage(result.error?.message);
 

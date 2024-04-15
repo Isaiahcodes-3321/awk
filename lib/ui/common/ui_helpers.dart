@@ -161,8 +161,11 @@ double screenWidthPercentage(BuildContext context, {double percentage = 1}) =>
 
 Future<void> logout() async {
   final dbExpense = await getExpenseDatabase();
+  final dbExpense2 = await getExpenseDatabaseList();
   final dbPurchase = await getPurchaseDatabase();
+  final dbPurchase2 = await getPurchaseDatabaseList();
   final dbSales = await getSalesDatabase2();
+  final dbSales2 = await getSalesDatabaseList();
   final dbCustomers = await getCustomerDatabase();
   final dbExpenseWeek = await getExpensesForWeekDatabase();
   final dbExpenseMonth = await getExpensesForMonthDatabase();
@@ -187,12 +190,15 @@ Future<void> logout() async {
     selectedindex = 0;
     // Delete data from the 'expenses' table
     await dbExpense.delete('expenses');
+    await dbExpense2.delete('expenses');
 
     // Delete data from the 'purchases' table
     await dbPurchase.delete('purchases');
+    await dbPurchase2.delete('purchases');
 
     // Delete data from the 'sales' table
     await dbSales.delete('sales');
+    await dbSales2.delete('sales');
 
     // Delete data from the 'customers' table
     await dbCustomers.delete('customers');

@@ -38,6 +38,7 @@ class ViewPurchaseView extends StackedView<ViewPurchaseViewModel> {
               GestureDetector(
                 onTap: viewModel.navigateBack,
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
@@ -62,13 +63,25 @@ class ViewPurchaseView extends StackedView<ViewPurchaseViewModel> {
                         ),
                       ],
                     ),
-                    IconButton(
-                      onPressed: () async {},
-                      icon: SvgPicture.asset(
-                        'assets/images/trash-01.svg',
-                        width: 20,
-                        height: 20,
-                      ),
+                    Row(
+                      children: [
+                        IconButton(
+                          onPressed: () async {},
+                          icon: SvgPicture.asset(
+                            'assets/images/archive-2.svg',
+                            width: 24,
+                            height: 24,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () async {},
+                          icon: SvgPicture.asset(
+                            'assets/images/trash-01.svg',
+                            width: 20,
+                            height: 20,
+                          ),
+                        ),
+                      ],
                     )
                   ],
                 ),
@@ -99,6 +112,7 @@ class ViewPurchaseView extends StackedView<ViewPurchaseViewModel> {
               GestureDetector(
                 onTap: viewModel.navigateBack,
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
@@ -123,15 +137,32 @@ class ViewPurchaseView extends StackedView<ViewPurchaseViewModel> {
                         ),
                       ],
                     ),
-                    IconButton(
-                      onPressed: () {
-                        viewModel.deletePurchase();
-                      },
-                      icon: SvgPicture.asset(
-                        'assets/images/trash-01.svg',
-                        width: 20,
-                        height: 20,
-                      ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            viewModel.archivePurchase(context);
+                          },
+                          icon: SvgPicture.asset(
+                            'assets/images/archive-2.svg',
+                            width: 24,
+                            height: 24,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            viewModel.deletePurchase(context);
+                          },
+                          icon: SvgPicture.asset(
+                            'assets/images/trash-01.svg',
+                            width: 20,
+                            height: 20,
+                          ),
+                        ),
+                      ],
                     )
                   ],
                 ),
@@ -151,6 +182,8 @@ class ViewPurchaseView extends StackedView<ViewPurchaseViewModel> {
                               Routes.updatePurchaseView,
                               arguments: viewModel.purchaseId)
                           : null;
+
+                      viewModel.rebuildUi();
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -170,157 +203,97 @@ class ViewPurchaseView extends StackedView<ViewPurchaseViewModel> {
                   )
                 ],
               ),
-              verticalSpaceSmallMid,
-              Container(
-                clipBehavior: Clip.antiAlias,
-                padding: EdgeInsets.zero,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  // color: kcButtonTextColor,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(width: 1, color: kcBorderColor),
-                ),
-                child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 14, vertical: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            SvgPicture.asset(
-                              'assets/images/calendar-03.svg',
-                              width: 20,
-                              height: 20,
-                            ),
-                            horizontalSpaceTiny,
-                            Text(
-                              'Transaction date',
-                              style: ktsFormTitleText,
-                            ),
-                          ],
-                        ),
-                        Text(
-                          viewModel.purchase!.transactionDate,
-                          style: ktsFormHintText,
-                        ),
-                      ],
-                    ),
+              verticalSpaceIntermitent,
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        viewModel.purchase!.merchantName,
+                        style: ktsTextAuthentication2,
+                      ),
+                      verticalSpaceTinyt1,
+                      Text(
+                        viewModel.purchase!.merchantEmail,
+                        style: ktsFormHintText,
+                      ),
+                    ],
                   ),
-                  const Divider(
-                    color: kcBorderColor,
+                  if (viewModel.purchase!.paid == true)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: kcSuccessColor,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text('Paid',
+                          style: ktsSubtitleTileText2 // Set your text style
+                          ),
+                    )
+                  else
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: kcArchiveColor,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text('Pending',
+                          style: ktsSubtitleTileText // Set your text style
+                          ),
+                    )
+                ],
+              ),
+              verticalSpaceTiny,
+              Divider(
+                color: kcBorderColor,
+              ),
+              verticalSpaceTiny,
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Description',
+                        style: ktsFormHintText,
+                      ),
+                      verticalSpaceTinyt,
+                      Text(
+                        viewModel.purchase!.description,
+                        style: ktsTextAuthentication3,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 14, vertical: 14),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            SvgPicture.asset(
-                              'assets/images/check-broken.svg',
-                              width: 20,
-                              height: 20,
-                            ),
-                            horizontalSpaceTiny,
-                            Text(
-                              'Status',
-                              style: ktsFormTitleText,
-                            ),
-                          ],
-                        ),
-                        if (viewModel.purchase!.paid == true)
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 6),
-                            decoration: BoxDecoration(
-                              color: kcSuccessColor,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Text('Paid',
-                                style:
-                                    ktsSubtitleTileText2 // Set your text style
-                                ),
-                          )
-                        else
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 6),
-                            decoration: BoxDecoration(
-                              color: kcArchiveColor,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Text('Pending',
-                                style:
-                                    ktsSubtitleTileText // Set your text style
-                                ),
-                          )
-                      ],
-                    ),
-                  ),
-                  const Divider(
-                    color: kcBorderColor,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 14, vertical: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            SvgPicture.asset(
-                              'assets/images/user-profile-02.svg',
-                              width: 20,
-                              height: 20,
-                            ),
-                            horizontalSpaceTiny,
-                            Text(
-                              'Merchant',
-                              style: ktsFormTitleText,
-                            ),
-                          ],
-                        ),
-                        Text(
-                          viewModel.purchase!.merchantName,
-                          style: ktsFormHintText,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Divider(
-                    color: kcBorderColor,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 14, vertical: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            SvgPicture.asset(
-                              'assets/images/email.svg',
-                              width: 20,
-                              height: 20,
-                            ),
-                            horizontalSpaceTiny,
-                            Text(
-                              'Email',
-                              style: ktsFormTitleText,
-                            ),
-                          ],
-                        ),
-                        Text(
-                          viewModel.purchase!.merchantEmail,
-                          style: ktsFormHintText,
-                        ),
-                      ],
-                    ),
-                  ),
-                ]),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        'Transaction Date',
+                        style: ktsFormHintText,
+                      ),
+                      verticalSpaceTinyt,
+                      Text(
+                        viewModel.purchase!.transactionDate,
+                        style: ktsTextAuthentication3,
+                      ),
+                    ],
+                  )
+                ],
               ),
               verticalSpaceIntermitent,
               Text(
@@ -341,7 +314,7 @@ class ViewPurchaseView extends StackedView<ViewPurchaseViewModel> {
                       style: ktsFormTitleText,
                     ),
                     title: Text(purchaseItem.itemDescription),
-                    titleTextStyle: ktsFormTitleText,
+                    titleTextStyle: ktsFormTitleText3,
                     trailing: RichText(
                       text: TextSpan(
                         children: [
@@ -350,14 +323,14 @@ class ViewPurchaseView extends StackedView<ViewPurchaseViewModel> {
                                     locale: 'en_NGN', symbol: '₦')
                                 .currencySymbol, // The remaining digits without the symbol
                             style:
-                                ktsFormHintText.copyWith(fontFamily: 'Roboto'),
+                                ktsBorderText2.copyWith(fontFamily: 'Roboto'),
                           ),
                           TextSpan(
                             text: NumberFormat.currency(
                                     locale: 'en_NGN', symbol: '')
                                 .format(purchaseItem
                                     .unitPrice), // The remaining digits without the symbol
-                            style: ktsFormHintText,
+                            style: ktsBorderText2,
                           ),
                         ],
                       ),
@@ -397,9 +370,9 @@ class ViewPurchaseView extends StackedView<ViewPurchaseViewModel> {
                   ),
                 ],
               ),
-              const Divider(
-                color: kcBorderColor,
-              ),
+              // const Divider(
+              //   color: kcBorderColor,
+              // ),
               verticalSpaceIntermitent,
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

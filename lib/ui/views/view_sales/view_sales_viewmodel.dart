@@ -1,8 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.dialogs.dart';
 import 'package:verzo/app/app.locator.dart';
-import 'package:verzo/app/app.router.dart';
 import 'package:verzo/services/sales_service.dart';
 import 'package:verzo/ui/common/database_helper.dart';
 
@@ -24,8 +24,9 @@ class ViewSalesViewModel extends FormViewModel {
     return sales;
   }
 
-  Future<bool> deleteSale() async {
+  Future<bool> deleteSale(BuildContext context) async {
     final db = await getSalesDatabase2();
+    final db2 = await getSalesDatabaseList();
     final dbWeeklyInvoices = await getWeeklyInvoicesDatabase();
     final dbMonthlyInvoices = await getMonthlyInvoicesDatabase();
 
@@ -51,13 +52,58 @@ class ViewSalesViewModel extends FormViewModel {
           mainButtonTitle: 'Ok',
         );
         await db.delete('sales');
+        await db2.delete('sales');
         await dbWeeklyInvoices.delete('weekly_invoices');
         await dbMonthlyInvoices.delete('monthly_invoices');
       }
 
-      navigationService.replaceWith(Routes.salesView);
+      navigationService.back(result: true);
+      rebuildUi();
 
       return isDeleted;
+    } else {
+      // User canceled the action
+      return false;
+    }
+  }
+
+  Future<bool> archiveSale(BuildContext context) async {
+    final db = await getSalesDatabase2();
+    final db2 = await getSalesDatabaseList();
+    final dbWeeklyInvoices = await getWeeklyInvoicesDatabase();
+    final dbMonthlyInvoices = await getMonthlyInvoicesDatabase();
+
+    final DialogResponse? response = await dialogService.showCustomDialog(
+        variant: DialogType.archive,
+        title: 'Archive invoice',
+        description:
+            "Are you sure you want to archive this invoice? You can’t undo this action",
+        barrierDismissible: true,
+        mainButtonTitle: 'Archive'
+        // cancelTitle: 'Cancel',
+        // confirmationTitle: 'Ok',
+        );
+
+    if (response?.confirmed == true) {
+      final bool isArchived = await _saleService.archiveSale(saleId: saleId);
+      if (isArchived) {
+        await dialogService.showCustomDialog(
+          variant: DialogType.archiveSuccess,
+          title: 'Archived!',
+          description: 'Your invoice has been successfully archived.',
+          barrierDismissible: true,
+          mainButtonTitle: 'Ok',
+        );
+        await db.delete('sales');
+        await db2.delete('sales');
+        await dbWeeklyInvoices.delete('weekly_invoices');
+        await dbMonthlyInvoices.delete('monthly_invoices');
+      }
+
+      navigationService.back(result: true);
+      rebuildUi();
+
+      return isArchived;
     } else {
       // User canceled the action
       return false;

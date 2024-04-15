@@ -269,16 +269,20 @@ class AddSalesViewModel extends FormViewModel {
 
   Future saveSalesData(BuildContext context) async {
     final db = await getSalesDatabase2();
+    final db2 = await getSalesDatabaseList();
     final dbWeeklyInvoices = await getWeeklyInvoicesDatabase();
     final dbMonthlyInvoices = await getMonthlyInvoicesDatabase();
     final result = await runBusyFuture(runSaleCreation());
 
     if (result.sale != null) {
       await db.delete('sales');
+      await db2.delete('sales');
       await dbWeeklyInvoices.delete('weekly_invoices');
       await dbMonthlyInvoices.delete('monthly_invoices');
       // navigate to success route
-      navigationService.replaceWith(Routes.salesView);
+      navigationService.back(result: true);
+      navigationService.back(result: true);
+      rebuildUi();
     } else if (result.error != null) {
       setValidationMessage(result.error?.message);
 

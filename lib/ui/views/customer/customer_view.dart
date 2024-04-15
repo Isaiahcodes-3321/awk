@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:stacked/stacked.dart';
 import 'package:verzo/app/app.router.dart';
 import 'package:verzo/services/sales_service.dart';
@@ -16,16 +17,8 @@ class CustomerView extends StatefulWidget {
   State<CustomerView> createState() => _CustomerViewState();
 }
 
-class _CustomerViewState extends State<CustomerView>
-    with SingleTickerProviderStateMixin {
-  late TabController tabController;
+class _CustomerViewState extends State<CustomerView> {
   GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
-
-  @override
-  void initState() {
-    super.initState();
-    tabController = TabController(length: 2, vsync: this);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +42,7 @@ class _CustomerViewState extends State<CustomerView>
                 focusElevation: 4.0, // Elevation when button is focused
                 hoverElevation: 4.0,
                 foregroundColor: kcButtonTextColor,
-                backgroundColor: kcPrimaryColor,
+                backgroundColor: kcPrimaryColor.withOpacity(0.7),
                 shape: const CircleBorder(
                   eccentricity: 1,
                   side: BorderSide.none,
@@ -166,328 +159,152 @@ class _CustomerViewState extends State<CustomerView>
                       ),
                     ),
                   ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          top: 24, bottom: 0, left: 28, right: 28),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Row(
-                            children: [
-                              SizedBox(
-                                width: 300,
-                              ),
-                            ],
-                          ),
-                          Text(
-                            'Customers',
-                            style: ktsHeaderText,
-                          ),
-                          verticalSpaceTinyt,
-                          Text(
-                            'Manage your customers',
-                            style: ktsSubtitleTextAuthentication,
-                          ),
-                          verticalSpaceSmallMid,
-                          Expanded(
-                            child: Container(
-                              padding: EdgeInsets.zero,
-                              // height: MediaQuery.of(context).size.height * 0.7,
-                              width: double.infinity,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  if (!viewModel.isSearchActive)
-                                    Container(
-                                      clipBehavior: Clip.antiAlias,
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 4, vertical: 6),
-                                      decoration: BoxDecoration(
-                                        color: kcArchiveColor,
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      height: 35,
-                                      child: TabBar(
-                                        indicatorPadding: EdgeInsets.zero,
-                                        indicatorSize: TabBarIndicatorSize
-                                            .tab, // Adjust the indicatorSize
-                                        indicator: BoxDecoration(
-                                          color:
-                                              kcButtonTextColor, // Use your desired color
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                        dividerColor: kcArchiveColor,
-                                        indicatorColor: kcTextSubTitleColor,
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 8),
-                                        labelColor: kcTextTitleColor,
-                                        labelStyle: const TextStyle(
-                                          fontSize: 11.44,
-                                          fontFamily: 'Satoshi',
-                                          fontWeight: FontWeight.w700,
-                                          height: 0,
-                                          letterSpacing: -0.25,
-                                        ),
-                                        // Use your desired label color
-                                        unselectedLabelColor:
-                                            kcTextSubTitleColor,
-                                        unselectedLabelStyle: const TextStyle(
-                                          fontSize: 11.44,
-                                          fontFamily: 'Satoshi',
-                                          fontWeight: FontWeight.w500,
-                                          height: 0,
-                                          letterSpacing: -0.25,
-                                        ), // Use your desired unselected label color
-                                        tabs: [
-                                          Tab(
-                                            child: Text(
-                                              'All (${viewModel.customers.length})', // Use your label text
-                                            ),
-                                          ),
-                                          Tab(
-                                            child: Text(
-                                              'Archived (${viewModel.archivedCustomers.length})', // Use your label text
-                                            ),
-                                          ),
-                                        ],
-                                        controller: tabController,
-                                      ),
-                                    ),
-                                  verticalSpaceSmallMid,
-                                  Expanded(
-                                    child: TabBarView(
-                                        controller: tabController,
-                                        children: [
-                                          Builder(builder: (context) {
-                                            if (viewModel.isBusy) {
-                                              return const SizedBox(
-                                                  height: 400,
-                                                  child: Center(
-                                                      child: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      CircularProgressIndicator(
-                                                        color: kcPrimaryColor,
-                                                      ),
-                                                    ],
-                                                  )));
-                                            }
-                                            if (viewModel.isSearchActive &&
-                                                viewModel.customers.isEmpty) {
-                                              return SizedBox(
-                                                  height: 400,
-                                                  child: Center(
-                                                      child: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      SvgPicture.asset(
-                                                        'assets/images/Group 1000007841.svg',
-                                                        width: 200,
-                                                        height: 150,
-                                                      ),
-                                                      verticalSpaceSmall,
-                                                      Text(
-                                                        'Customer not available',
-                                                        style:
-                                                            ktsSubtitleTextAuthentication,
-                                                      ),
-                                                    ],
-                                                  )));
-                                            }
-                                            if (viewModel.isSearchActive &&
-                                                viewModel
-                                                    .customers.isNotEmpty) {
-                                              return Container(
-                                                clipBehavior: Clip.antiAlias,
-                                                padding: EdgeInsets.zero,
-                                                width: double.infinity,
-                                                decoration: BoxDecoration(
-                                                  // color: kcButtonTextColor,
-                                                  borderRadius:
-                                                      BorderRadius.circular(12),
-                                                  border: Border.all(
-                                                      width: 1,
-                                                      color: kcBorderColor),
-                                                ),
-                                                child: ListView.separated(
-                                                  scrollDirection:
-                                                      Axis.vertical,
-                                                  padding: EdgeInsets.zero,
-                                                  primary: false,
-                                                  shrinkWrap: true,
-                                                  itemCount: viewModel
-                                                      .customers.length,
-                                                  itemBuilder:
-                                                      (context, index) {
-                                                    var customer = viewModel
-                                                        .customers[index];
-                                                    return CustomerCard(
-                                                      customer: customer,
-                                                      customerId: customer.id,
-                                                    );
-                                                  },
-                                                  separatorBuilder:
-                                                      (BuildContext context,
-                                                          int index) {
-                                                    return const Divider(
-                                                      thickness: 0.2,
-                                                    );
-                                                  },
-                                                ),
-                                              );
-                                            }
-                                            if (viewModel.customers.isEmpty) {
-                                              return SizedBox(
-                                                  height: 400,
-                                                  child: Center(
-                                                      child: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      SvgPicture.asset(
-                                                        'assets/images/Group_1000007828.svg',
-                                                        width: 200,
-                                                        height: 150,
-                                                      ),
-                                                      verticalSpaceSmall,
-                                                      Text(
-                                                        'No customers added',
-                                                        style:
-                                                            ktsSubtitleTextAuthentication,
-                                                      ),
-                                                    ],
-                                                  )));
-                                            }
-                                            return Container(
-                                              clipBehavior: Clip.antiAlias,
-                                              padding: EdgeInsets.zero,
-                                              width: double.infinity,
-                                              decoration: BoxDecoration(
-                                                // color: kcButtonTextColor,
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                                border: Border.all(
-                                                    width: 1,
-                                                    color: kcPrimaryColor),
-                                              ),
-                                              child: ListView.separated(
-                                                scrollDirection: Axis.vertical,
-                                                padding: EdgeInsets.zero,
-                                                primary: false,
-                                                shrinkWrap: true,
-                                                itemCount:
-                                                    viewModel.customers.length,
-                                                itemBuilder: (context, index) {
-                                                  var customer = viewModel
-                                                      .customers[index];
-                                                  return CustomerCard(
-                                                    customer: customer,
-                                                    customerId: customer.id,
-                                                  );
-                                                },
-                                                separatorBuilder:
-                                                    (BuildContext context,
-                                                        int index) {
-                                                  return const Divider(
-                                                    thickness: 0.2,
-                                                  );
-                                                },
-                                              ),
-                                            );
-                                          }),
-                                          Builder(builder: (context) {
-                                            if (viewModel.isBusy) {
-                                              return const SizedBox(
-                                                  height: 400,
-                                                  child: Center(
-                                                      child: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      CircularProgressIndicator(
-                                                        color: kcPrimaryColor,
-                                                      ),
-                                                    ],
-                                                  )));
-                                            }
-                                            if (viewModel
-                                                .archivedCustomers.isEmpty) {
-                                              return SizedBox(
-                                                  height: 400,
-                                                  child: Center(
-                                                      child: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      SvgPicture.asset(
-                                                        'assets/images/Group_1000007828.svg',
-                                                        width: 200,
-                                                        height: 150,
-                                                      ),
-                                                      verticalSpaceSmall,
-                                                      Text(
-                                                        'No customers added',
-                                                        style:
-                                                            ktsSubtitleTextAuthentication,
-                                                      ),
-                                                    ],
-                                                  )));
-                                            }
-                                            return Container(
-                                              clipBehavior: Clip.antiAlias,
-                                              padding: EdgeInsets.zero,
-                                              width: double.infinity,
-                                              decoration: BoxDecoration(
-                                                // color: kcButtonTextColor,
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                                border: Border.all(
-                                                    width: 1,
-                                                    color: kcBorderColor),
-                                              ),
-                                              child: ListView.separated(
-                                                padding: EdgeInsets.zero,
-                                                scrollDirection: Axis.vertical,
-                                                primary: false,
-                                                shrinkWrap: true,
-                                                itemCount: viewModel
-                                                    .archivedCustomers.length,
-                                                itemBuilder: (context, index) {
-                                                  var customer = viewModel
-                                                      .archivedCustomers[index];
-                                                  return ArchivedCustomerCard(
-                                                    customer: customer,
-                                                    customerId: customer.id,
-                                                  );
-                                                },
-                                                separatorBuilder:
-                                                    (BuildContext context,
-                                                        int index) {
-                                                  return const Divider(
-                                                    thickness: 0.2,
-                                                  );
-                                                },
-                                              ),
-                                            );
-                                          }),
-                                        ]),
-                                  )
-                                ],
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      verticalSpaceSmall,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 28),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              'Customers',
+                              style: ktsHeaderText,
+                            ),
+                            GestureDetector(
+                              onTap: () async {
+                                final result = await viewModel.navigationService
+                                    .navigateTo(Routes.archivedCustomerView);
+                                if (result == true) {
+                                  viewModel.reloadCustomerData();
+                                }
+                              },
+                              child: SvgPicture.asset(
+                                'assets/images/archive-2.svg',
+                                width: 24,
+                                height: 24,
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
+                      verticalSpaceTinyt,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 28),
+                        child: Text(
+                          'Manage your customers',
+                          style: ktsSubtitleTextAuthentication,
+                        ),
+                      ),
+                      verticalSpaceSmallMid,
+                      Builder(builder: (context) {
+                        if (viewModel.isBusy) {
+                          return const SizedBox(
+                              height: 400,
+                              child: Center(
+                                  child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  CircularProgressIndicator(
+                                    color: kcPrimaryColor,
+                                  ),
+                                ],
+                              )));
+                        }
+                        if (viewModel.isSearchActive &&
+                            viewModel.data!.isEmpty) {
+                          return SizedBox(
+                              height: 400,
+                              child: Center(
+                                  child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/images/Group 1000007841.svg',
+                                    width: 200,
+                                    height: 150,
+                                  ),
+                                  verticalSpaceSmall,
+                                  Text(
+                                    'Customer not available',
+                                    style: ktsSubtitleTextAuthentication,
+                                  ),
+                                ],
+                              )));
+                        }
+                        if (viewModel.isSearchActive &&
+                            viewModel.customers.isNotEmpty) {
+                          return SizedBox(
+                            height: 74.h,
+                            child: ListView.separated(
+                              scrollDirection: Axis.vertical,
+                              padding: EdgeInsets.zero,
+                              primary: false,
+                              shrinkWrap: true,
+                              itemCount: viewModel.data!.length,
+                              itemBuilder: (context, index) {
+                                var customer = viewModel.data![index];
+                                return CustomerCard(
+                                  customer: customer,
+                                  customerId: customer.id,
+                                );
+                              },
+                              separatorBuilder:
+                                  (BuildContext context, int index) {
+                                return const Divider(
+                                  thickness: 0.2,
+                                );
+                              },
+                            ),
+                          );
+                        }
+                        if (viewModel.data!.isEmpty) {
+                          return SizedBox(
+                              height: 400,
+                              child: Center(
+                                  child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/images/Group_1000007828.svg',
+                                    width: 200,
+                                    height: 150,
+                                  ),
+                                  verticalSpaceSmall,
+                                  Text(
+                                    'No customers added',
+                                    style: ktsSubtitleTextAuthentication,
+                                  ),
+                                ],
+                              )));
+                        }
+                        return SizedBox(
+                          height: 74.h,
+                          child: ListView.separated(
+                            scrollDirection: Axis.vertical,
+                            padding: EdgeInsets.zero,
+                            primary: false,
+                            shrinkWrap: true,
+                            itemCount: viewModel.data!.length,
+                            itemBuilder: (context, index) {
+                              var customer = viewModel.data![index];
+                              return CustomerCard(
+                                customer: customer,
+                                customerId: customer.id,
+                              );
+                            },
+                            separatorBuilder:
+                                (BuildContext context, int index) {
+                              return const Divider(
+                                thickness: 0.2,
+                              );
+                            },
+                          ),
+                        );
+                      }),
+                    ],
                   ),
                 ],
               )),
@@ -507,67 +324,50 @@ class CustomerCard extends ViewModelWidget<CustomerViewModel> {
 
   @override
   Widget build(BuildContext context, CustomerViewModel viewModel) {
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: 14,
-      ),
-      title: Text(customer.name),
-      titleTextStyle: ktsBorderText,
-      subtitle: Text(
-        customer.email,
-        // overflow: TextOverflow.values,
-      ),
-      subtitleTextStyle: ktsSubtitleTileText,
-      trailing: IconButton(
-        padding: EdgeInsets.zero,
-        icon: Icon(
-          Icons.arrow_forward,
-          size: 20,
-          color: kcTextSubTitleColor.withOpacity(0.62),
-        ),
-        onPressed: (() {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
           viewModel.navigationService
               .navigateTo(Routes.updateCustomerView, arguments: customerId);
-        }),
-      ),
-    );
-  }
-}
+        },
+        child: ListTile(
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 28, vertical: 0),
+          title: Text(
+            customer.name,
+            style: TextStyle(
+              fontFamily: 'Satoshi',
+              color: kcTextTitleColor.withOpacity(0.9),
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+            ),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+          ),
+          subtitle: Text(customer.email,
+              style: TextStyle(
+                fontFamily: 'Satoshi',
+                color: kcTextSubTitleColor,
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+              )
+              // overflow: TextOverflow.values,
+              ),
 
-class ArchivedCustomerCard extends ViewModelWidget<CustomerViewModel> {
-  const ArchivedCustomerCard(
-      {Key? key, required this.customer, required this.customerId})
-      : super(key: key);
-
-  final Customers customer;
-
-  final String customerId;
-
-  @override
-  Widget build(BuildContext context, CustomerViewModel viewModel) {
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: 14,
-      ),
-      title: Text(
-        customer.name,
-      ),
-      titleTextStyle: ktsBorderText,
-      subtitle: Text(
-        customer.email,
-        // overflow: TextOverflow.values,
-      ),
-      subtitleTextStyle: ktsSubtitleTileText,
-      trailing: IconButton(
-        padding: EdgeInsets.zero,
-        icon: SvgPicture.asset(
-          'assets/images/unarchive2.svg',
-          // width: 20,
-          // height: 20,
+          // trailing: IconButton(
+          //   padding: EdgeInsets.zero,
+          //   icon: Icon(
+          //     Icons.arrow_forward,
+          //     size: 20,
+          //     color: kcTextSubTitleColor.withOpacity(0.62),
+          //   ),
+          //   onPressed: (() {
+          //     viewModel.navigationService
+          //         .navigateTo(Routes.updateCustomerView, arguments: customerId);
+          //   }),
+          // ),
         ),
-        onPressed: (() {
-          viewModel.unArchiveCustomer(customerId);
-        }),
       ),
     );
   }

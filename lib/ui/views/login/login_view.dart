@@ -93,7 +93,7 @@ class LoginView extends StackedView<LoginViewModel> with $LoginView {
                             color: kcFormBorderColor,
                           ),
                         ),
-                        hintText: '8+ characters',
+                        hintText: 'Enter your password',
                         hintStyle: ktsFormHintText,
                         enabledBorder: defaultFormBorder,
                         focusedBorder: defaultFocusedFormBorder,

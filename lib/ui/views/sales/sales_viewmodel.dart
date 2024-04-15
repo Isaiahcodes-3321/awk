@@ -1,8 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
-import 'package:verzo/app/app.dialogs.dart';
 import 'package:verzo/app/app.locator.dart';
 import 'package:verzo/services/sales_service.dart';
 import 'package:verzo/ui/common/database_helper.dart';
@@ -15,7 +17,7 @@ class SalesViewModel extends FutureViewModel<List<Sales>> {
   TextEditingController searchController = TextEditingController();
 
   List<Sales> sales = [];
-  List<Sales> archivedSales = [];
+  // List<Sales> archivedSales = [];
   List<Sales> allSales = [];
 
   List<Sales> searchResults = [];
@@ -33,7 +35,77 @@ class SalesViewModel extends FutureViewModel<List<Sales>> {
   }
 
   @override
-  Future<List<Sales>> futureToRun() => getSaleByBusiness();
+  Future<List<Sales>> futureToRun() async {
+    final db = await getSalesDatabaseList();
+
+    // Retrieve existing sales data from the database
+    final List<Map<String, dynamic>> maps = await db.query('sales');
+    List<Sales> salesFromDatabase;
+
+    if (maps.isNotEmpty) {
+      salesFromDatabase = List.generate(maps.length, (i) {
+        return Sales(
+          id: maps[i]['id'],
+          description: maps[i]['description'],
+          reference: maps[i]['reference'],
+          customerName: maps[i]['customerName'],
+          subtotal: maps[i]['subtotal'],
+          totalAmount: maps[i]['totalAmount'],
+          discount: maps[i]['discount'],
+          VAT: maps[i]['VAT'],
+          dueDate: maps[i]['dueDate'],
+          transactionDate: maps[i]['transactionDate'],
+          customerId: maps[i]['customerId'],
+          overdue: maps[i]['overdue'] == 1, // Convert integer to boolean
+          paid: maps[i]['paid'] == 1 ? true : false,
+          invoiceDetails: List<ItemDetail>.from(
+            (jsonDecode(maps[i]['invoiceDetails']) as List)
+                .map((item) => ItemDetail.fromMap(item)),
+          ),
+          saleServiceExpenses: maps[i]['saleServiceExpenses'] != null
+              ? List<SaleServiceExpenseEntry>.from(
+                  (jsonDecode(maps[i]['saleServiceExpenses']) as List)
+                      .map((entry) => SaleServiceExpenseEntry.fromMap(entry)),
+                )
+              : null,
+          saleExpenses: maps[i]['saleExpenses'] != null
+              ? List<SaleExpenses>.from(
+                  (jsonDecode(maps[i]['saleExpenses']) as List)
+                      .map((expense) => SaleExpenses.fromMap(expense)),
+                )
+              : null,
+          invoiceId: maps[i]['invoiceId'],
+          saleStatusId: maps[i]['saleStatusId'],
+        );
+      });
+    } else {
+      salesFromDatabase = [];
+    }
+
+    if (salesFromDatabase != null && salesFromDatabase.isNotEmpty) {
+      // If there are sales data in the database, set them in your ViewModel.
+      sales = salesFromDatabase;
+    } else {
+      // If the database is empty, fetch data from your service.
+      final invoiceList = await getSaleByBusiness();
+
+      // Save sales data to the SQLite database.
+      for (final invoice in invoiceList) {
+        await db.insert(
+          'sales',
+          invoice.toMap(),
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+      }
+      rebuildUi();
+      // _invoices.value.addAll(invoiceList);
+    }
+
+    return sales;
+  }
+
+  // @override
+  // Future<List<Sales>> futureToRun() => getSaleByBusiness();
 
   Future<List<Sales>> getSaleByBusiness() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -43,15 +115,8 @@ class SalesViewModel extends FutureViewModel<List<Sales>> {
     sales = await _saleService.getSaleByBusiness(businessId: businessIdValue);
     rebuildUi();
 
-    // Retrieve existing expense categories
-    archivedSales = await _saleService.getArchivedSaleByBusiness(
-        businessId: businessIdValue);
     rebuildUi();
-
-    // Combine both lists and return
-    allSales = [...sales, ...archivedSales];
-    rebuildUi();
-    return allSales;
+    return sales;
   }
 
   // Future<List<Sales>> getArchivedSaleByBusiness() async {
@@ -88,138 +153,17 @@ class SalesViewModel extends FutureViewModel<List<Sales>> {
     }
     // print(searchResults);
 
-    sales = searchResults;
-    archivedSales = searchResults;
+    data = searchResults;
+    // archivedSales = searchResults;
     rebuildUi();
     // return searchResults;
   }
 
-  Future<bool> deleteSale(String saleId) async {
-    final db = await getSalesDatabase2();
-    final dbWeeklyInvoices = await getWeeklyInvoicesDatabase();
-    final dbMonthlyInvoices = await getMonthlyInvoicesDatabase();
-
-    final DialogResponse? response = await dialogService.showCustomDialog(
-        variant: DialogType.delete,
-        title: 'Delete invoice',
-        description:
-            "Are you sure you want to delete this invoice? You can’t undo this action",
-        barrierDismissible: true,
-        mainButtonTitle: 'Delete'
-        // cancelTitle: 'Cancel',
-        // confirmationTitle: 'Ok',
-        );
-
-    if (response?.confirmed == true) {
-      final bool isDeleted = await _saleService.deleteSale(saleId: saleId);
-      if (isDeleted) {
-        await dialogService.showCustomDialog(
-          variant: DialogType.deleteSuccess,
-          title: 'Deleted!',
-          description: 'Your invoice has been successfully deleted.',
-          barrierDismissible: true,
-          mainButtonTitle: 'Ok',
-        );
-        await db.delete('sales');
-        await dbWeeklyInvoices.delete('weekly_invoices');
-        await dbMonthlyInvoices.delete('monthly_invoices');
-      }
-
-      await reloadSaleData();
-
-      return isDeleted;
-    } else {
-      // User canceled the action
-      return false;
-    }
-  }
-
-  Future<bool> archiveSale(String saleId) async {
-    final db = await getSalesDatabase2();
-    final dbWeeklyInvoices = await getWeeklyInvoicesDatabase();
-    final dbMonthlyInvoices = await getMonthlyInvoicesDatabase();
-
-    final DialogResponse? response = await dialogService.showCustomDialog(
-        variant: DialogType.archive,
-        title: 'Archive invoice',
-        description:
-            "Are you sure you want to archive this invoice? You can’t undo this action",
-        barrierDismissible: true,
-        mainButtonTitle: 'Archive'
-        // cancelTitle: 'Cancel',
-        // confirmationTitle: 'Ok',
-        );
-
-    if (response?.confirmed == true) {
-      final bool isArchived = await _saleService.archiveSale(saleId: saleId);
-      if (isArchived) {
-        await dialogService.showCustomDialog(
-          variant: DialogType.archiveSuccess,
-          title: 'Archived!',
-          description: 'Your invoice has been successfully archived.',
-          barrierDismissible: true,
-          mainButtonTitle: 'Ok',
-        );
-        await db.delete('sales');
-        await dbWeeklyInvoices.delete('weekly_invoices');
-        await dbMonthlyInvoices.delete('monthly_invoices');
-      }
-
-      await reloadSaleData();
-
-      return isArchived;
-    } else {
-      // User canceled the action
-      return false;
-    }
-  }
-
-  Future<bool> unArchiveSale(String saleId) async {
-    final db = await getSalesDatabase2();
-    final dbWeeklyInvoices = await getWeeklyInvoicesDatabase();
-    final dbMonthlyInvoices = await getMonthlyInvoicesDatabase();
-
-    final DialogResponse? response = await dialogService.showCustomDialog(
-        variant: DialogType.archive,
-        title: 'Unarchive invoice',
-        description:
-            "Are you sure you want to unarchive this invoice? It will be visible",
-        barrierDismissible: true,
-        mainButtonTitle: 'Unarchive'
-        // cancelTitle: 'Cancel',
-        // confirmationTitle: 'Ok',
-        );
-
-    if (response?.confirmed == true) {
-      final bool isUnArchived =
-          await _saleService.unarchiveSale(saleId: saleId);
-      if (isUnArchived) {
-        await dialogService.showCustomDialog(
-          variant: DialogType.archiveSuccess,
-          title: 'Unarchived!',
-          description: 'Your invoice has been successfully unarchived.',
-          barrierDismissible: true,
-          mainButtonTitle: 'Ok',
-        );
-        await db.delete('sales');
-        await dbWeeklyInvoices.delete('weekly_invoices');
-        await dbMonthlyInvoices.delete('monthly_invoices');
-      }
-
-      await reloadSaleData();
-
-      return isUnArchived;
-    } else {
-      // User canceled the action
-      return false;
-    }
-  }
-
-  Future<void> reloadSaleData() async {
-    final allSales = await getSaleByBusiness();
+  void reloadSaleData() async {
+    final sales = await getSaleByBusiness();
 
     // Update the data with the new list of sales
-    data = allSales;
+    data = sales;
     rebuildUi();
   }
 

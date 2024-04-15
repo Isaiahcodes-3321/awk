@@ -16,7 +16,7 @@ Future<Database> getExpenseDatabase() async {
 
 Future<Database> getExpenseDatabaseList() async {
   final database = openDatabase(
-    join(await getDatabasesPath(), 'expense_database_list.db'),
+    join(await getDatabasesPath(), 'expense_list_database.db'),
     onCreate: (db, version) {
       db.execute(
           'CREATE TABLE expenses(id TEXT PRIMARY KEY, description TEXT, reference TEXT, amount REAL, expenseDate TEXT, expenseCategoryId TEXT, expenseCategoryName TEXT, merchantId TEXT, merchantName TEXT, recurring INTEGER, expenseItems TEXT, expenseStatusId REAL)');
@@ -43,7 +43,7 @@ Future<Database> getPurchaseDatabase() async {
 
 Future<Database> getPurchaseDatabaseList() async {
   final database = openDatabase(
-    join(await getDatabasesPath(), 'purchase_database_list.db'),
+    join(await getDatabasesPath(), 'purchase_list_database.db'),
     onCreate: (db, version) {
       db.execute(
         'CREATE TABLE purchases(id TEXT PRIMARY KEY, transactionDate TEXT, description TEXT, reference TEXT, merchantId TEXT, merchantName TEXT, merchantEmail TEXT, paid INTEGER, total REAL, purchaseItems TEXT, purchaseStatusId REAL)',
@@ -90,7 +90,7 @@ Future<Database> getSalesDatabase2() async {
 
 Future<Database> getSalesDatabaseList() async {
   final database = openDatabase(
-    join(await getDatabasesPath(), 'sales_database_list.db'),
+    join(await getDatabasesPath(), 'sales_list_database.db'),
     onCreate: (db, version) {
       db.execute(
         'CREATE TABLE sales(id TEXT PRIMARY KEY, description TEXT, reference TEXT,  paid INTEGER, customerName TEXT, subtotal REAL, totalAmount REAL, discount REAL, VAT REAL, dueDate TEXT, transactionDate TEXT, customerId TEXT, overdue INTEGER, invoiceDetails TEXT, saleServiceExpenses TEXT, saleExpenses TEXT, invoiceId TEXT, saleStatusId REAL)',

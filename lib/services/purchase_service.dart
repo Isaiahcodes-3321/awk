@@ -130,6 +130,10 @@ class PurchaseService {
               total
               transactionDate
               description
+              paid
+              merchant{
+              name
+              }
             }
           }
           }
@@ -145,6 +149,10 @@ class PurchaseService {
               total
               transactionDate
               description
+              paid
+              merchant{
+              name
+              }
             }
           }
           }
@@ -762,18 +770,19 @@ class PurchaseService {
         [];
 
     final List<Purchases> purchases = purchaseData.map((data) {
+      final merchantData = data['merchant']; // Access merchant data
       return Purchases(
           id: data['id'],
           description: data['description'],
           transactionDate: data['transactionDate'],
           reference: data['reference'],
           merchantId: '',
-          merchantName: '',
+          merchantName: merchantData['name'],
           merchantEmail: '',
           purchaseItems: [],
           total: data['total'],
           purchaseStatusId: 0,
-          paid: false);
+          paid: data['paid'] ?? false);
     }).toList();
 
     return purchases;
@@ -819,18 +828,19 @@ class PurchaseService {
             [];
 
     final List<Purchases> purchases = purchaseData.map((data) {
+      final merchantData = data['merchant']; // Access merchant data
       return Purchases(
           id: data['id'],
           description: data['description'],
           transactionDate: data['transactionDate'],
           reference: data['reference'],
           merchantId: '',
-          merchantName: '',
+          merchantName: merchantData['name'],
           merchantEmail: '',
           purchaseItems: [],
           total: data['total'],
           purchaseStatusId: 0,
-          paid: false);
+          paid: data['paid'] ?? false);
     }).toList();
 
     return purchases;

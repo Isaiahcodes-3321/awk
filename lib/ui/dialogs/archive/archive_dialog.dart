@@ -82,7 +82,7 @@ class ArchiveDialog extends StackedView<ArchiveDialogModel> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(width: 1, color: kcFormBorderColor)),
-                    child: Text('Cancel', style: ktsFormTitleText),
+                    child: Text('Cancel', style: ktsFormTitleText2),
                   ),
                 ),
                 GestureDetector(

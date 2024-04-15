@@ -130,7 +130,7 @@ class AuthenticationLayout extends StatelessWidget {
             children: [
               Text(
                 'Forgot Password? ',
-                style: ktsTextAuthentication,
+                style: ktsForgotPassword,
               ),
               GestureDetector(
                 onTap: () async {
@@ -145,9 +145,9 @@ class AuthenticationLayout extends StatelessWidget {
                 child: const Text('Reset here',
                     style: TextStyle(
                       fontFamily: 'Satoshi',
-                      letterSpacing: -0.3,
+                      letterSpacing: 0,
                       height: 0,
-                      fontSize: 16,
+                      fontSize: 14,
                       fontWeight: FontWeight.w500,
                       decoration: TextDecoration.underline,
                       decorationColor: kcPrimaryColor,

@@ -133,7 +133,14 @@ class SalesService {
             description
             reference
             saleAmount
+            paid
             transactionDate
+            customer{
+              name
+            }
+            invoice{
+              overdue
+            }
             }
             cursorId
             }
@@ -149,7 +156,11 @@ class SalesService {
             description
             reference
             saleAmount
+            paid
             transactionDate
+            customer{
+              name
+            }
             }
             cursorId
             }
@@ -666,6 +677,8 @@ class SalesService {
     //     saleByBusinessResult.data?['getSaleByBusinessMobile']['cursorId'] ?? '';
 
     final List<Sales> sales = salesData.map((data) {
+      final customerData = data['customer']; // Access customer data
+      final invoiceData = data['invoice']; // Access invoice data
       return Sales(
           id: data['id'],
           invoiceId: '',
@@ -677,13 +690,14 @@ class SalesService {
           transactionDate: data['transactionDate'],
           reference: data['reference'],
           customerId: '',
-          customerName: '',
+          customerName: customerData['name'],
           totalAmount: data['saleAmount'],
           VAT: 0,
           subtotal: 0,
           discount: 0,
           saleStatusId: 0,
-          paid: false);
+          paid: data['paid'] ?? false,
+          overdue: invoiceData['overdue'] ?? false);
     }).toList();
 
     return sales;
@@ -731,11 +745,12 @@ class SalesService {
     //     saleByBusinessResult.data?['getSaleByBusinessMobile']['cursorId'] ?? '';
 
     final List<Sales> sales = salesData.map((data) {
+      final customerData = data['customer']; // Access merchant data
       return Sales(
           id: data['id'],
           invoiceId: '',
           description: data['description'],
-          paid: false,
+          paid: data['paid'] ?? false,
           invoiceDetails: [],
           saleServiceExpenses: [],
           saleExpenses: [],
@@ -743,7 +758,7 @@ class SalesService {
           transactionDate: data['transactionDate'],
           reference: data['reference'],
           customerId: '',
-          customerName: '',
+          customerName: customerData['name'],
           totalAmount: data['saleAmount'],
           VAT: 0,
           subtotal: 0,
@@ -1531,7 +1546,7 @@ class Customers {
   final String name;
   final String email;
   final String mobile;
-  final String address;
+  final String? address;
   num? invoiceTotalAmount;
   String? invoiceCreatedAt;
 
@@ -1540,7 +1555,7 @@ class Customers {
       required this.name,
       required this.email,
       required this.mobile,
-      required this.address,
+      this.address,
       this.invoiceCreatedAt,
       this.invoiceTotalAmount});
 

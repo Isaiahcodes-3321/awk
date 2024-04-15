@@ -59,11 +59,19 @@ TextStyle ktsHeroTextWhiteDashboard = GoogleFonts.dmSans(
   fontWeight: FontWeight.bold,
 );
 
-TextStyle ktsHeroTextWhiteDashboard1 = GoogleFonts.dmSans(
+TextStyle ktsHeroTextWhiteDashboard1 = const TextStyle(
+  fontFamily: 'Satoshi',
   color: kcButtonTextColor,
   fontSize: 20,
-  fontWeight: FontWeight.bold,
+  fontWeight: FontWeight.w600,
 );
+TextStyle ktsHeroTextWhiteDashboardHeader = const TextStyle(
+    fontFamily: 'Satoshi',
+    letterSpacing: 0.2,
+    height: 0,
+    color: kcButtonTextColor,
+    fontSize: 32,
+    fontWeight: FontWeight.w600);
 
 TextStyle ktsHeroTextWhiteDashboard2 = GoogleFonts.dmSans(
   color: kcButtonTextColor,
@@ -73,15 +81,15 @@ TextStyle ktsHeroTextWhiteDashboard2 = GoogleFonts.dmSans(
 
 TextStyle ktsTitleTextAuthentication = const TextStyle(
     fontFamily: 'Satoshi',
-    letterSpacing: -0.3,
+    letterSpacing: 0,
     height: 0,
     color: kcTextTitleColor,
-    fontSize: 24,
-    fontWeight: FontWeight.w500);
+    fontSize: 26,
+    fontWeight: FontWeight.w700);
 
 TextStyle ktsCardMetricsAmount = const TextStyle(
     fontFamily: 'Satoshi',
-    letterSpacing: -0.3,
+    letterSpacing: 0,
     height: 0,
     color: kcTextTitleColor,
     fontSize: 20,
@@ -89,24 +97,23 @@ TextStyle ktsCardMetricsAmount = const TextStyle(
 
 TextStyle ktsCardMetricsAmount2 = const TextStyle(
     fontFamily: 'Satoshi',
-    letterSpacing: -0.3,
+    letterSpacing: 0,
     height: 0,
     color: kcButtonTextColor,
     fontSize: 20,
     fontWeight: FontWeight.w700);
 
 TextStyle ktsCardMetricsStats = const TextStyle(
-  color: kcButtonTextColor,
-  fontSize: 14,
-  fontFamily: 'Satoshi',
-  fontWeight: FontWeight.w500,
-  height: 0,
-  letterSpacing: -0.30,
-);
+    color: kcButtonTextColor,
+    fontSize: 14,
+    fontFamily: 'Satoshi',
+    fontWeight: FontWeight.w500,
+    height: 0,
+    letterSpacing: 0);
 
 TextStyle ktsSubtitleTextAuthentication = const TextStyle(
     fontFamily: 'Satoshi',
-    letterSpacing: -0.3,
+    letterSpacing: 0,
     height: 0,
     color: kcTextSubTitleColor,
     fontSize: 16,
@@ -114,15 +121,15 @@ TextStyle ktsSubtitleTextAuthentication = const TextStyle(
 
 TextStyle ktsSubtitleTextAuthentication1 = const TextStyle(
     fontFamily: 'Satoshi',
-    letterSpacing: -0.3,
+    letterSpacing: 0,
     height: 0,
     color: kcButtonTextColor,
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: FontWeight.w500);
 
 TextStyle ktsSubtitleTextAuthentication2 = const TextStyle(
     fontFamily: 'Satoshi',
-    letterSpacing: -0.3,
+    letterSpacing: 0,
     height: 0,
     color: kcTextSubTitleColor,
     fontSize: 16,
@@ -130,27 +137,61 @@ TextStyle ktsSubtitleTextAuthentication2 = const TextStyle(
 
 TextStyle ktsTextAuthentication = const TextStyle(
     fontFamily: 'Satoshi',
-    letterSpacing: -0.3,
+    letterSpacing: 0,
     height: 0,
     color: kcTextTitleColor,
     fontSize: 16,
     fontWeight: FontWeight.w500);
 
+TextStyle ktsForgotPassword = const TextStyle(
+    fontFamily: 'Satoshi',
+    letterSpacing: 0,
+    height: 0,
+    color: kcTextTitleColor,
+    fontSize: 14,
+    fontWeight: FontWeight.w500);
+
 TextStyle ktsTextAuthentication2 = const TextStyle(
     fontFamily: 'Satoshi',
-    letterSpacing: -0.3,
+    letterSpacing: 0,
     height: 0,
     color: kcTextTitleColor,
     fontSize: 16,
     fontWeight: FontWeight.w700);
 
+TextStyle ktsTextAuthentication3 = TextStyle(
+    fontFamily: 'Satoshi',
+    letterSpacing: 0,
+    height: 0,
+    color: kcTextTitleColor.withOpacity(0.7),
+    fontSize: 16,
+    fontWeight: FontWeight.w700);
+
 TextStyle ktsFormTitleText = const TextStyle(
   color: kcTextTitleColor,
-  fontSize: 14,
+  fontSize: 15,
   fontFamily: 'Satoshi',
   fontWeight: FontWeight.w500,
   height: 0,
-  letterSpacing: -0.30,
+  letterSpacing: 0,
+);
+
+TextStyle ktsFormTitleText2 = const TextStyle(
+  color: kcTextTitleColor,
+  fontSize: 18,
+  fontFamily: 'Satoshi',
+  fontWeight: FontWeight.w500,
+  height: 0,
+  letterSpacing: 0,
+);
+
+TextStyle ktsFormTitleText3 = const TextStyle(
+  color: kcTextTitleColor,
+  fontSize: 15,
+  fontFamily: 'Satoshi',
+  fontWeight: FontWeight.w600,
+  height: 0,
+  letterSpacing: 0,
 );
 
 TextStyle ktsAddNewText = const TextStyle(
@@ -159,7 +200,7 @@ TextStyle ktsAddNewText = const TextStyle(
   fontFamily: 'Satoshi',
   fontWeight: FontWeight.w500,
   height: 0,
-  letterSpacing: -0.30,
+  letterSpacing: 0,
 );
 
 TextStyle ktsAddNewText2 = const TextStyle(
@@ -168,7 +209,7 @@ TextStyle ktsAddNewText2 = const TextStyle(
   fontFamily: 'Satoshi',
   fontWeight: FontWeight.w500,
   height: 0,
-  letterSpacing: -0.30,
+  letterSpacing: 0,
 );
 
 TextStyle ktsFormHintText = const TextStyle(
@@ -177,16 +218,34 @@ TextStyle ktsFormHintText = const TextStyle(
   fontFamily: 'Satoshi',
   fontWeight: FontWeight.w500,
   height: 0,
-  letterSpacing: -0.30,
+  letterSpacing: 0,
 );
 
-TextStyle ktsButtonText = const TextStyle(
-  color: kcButtonTextColor,
+TextStyle ktsFormHintText3 = const TextStyle(
+  color: kcTextSubTitleColor,
+  fontSize: 14,
+  fontFamily: 'Satoshi',
+  fontWeight: FontWeight.w500,
+  height: 0,
+  letterSpacing: 0.7,
+);
+
+TextStyle ktsFormHintText1 = const TextStyle(
+  color: kcTextSubTitleColor,
   fontSize: 16,
   fontFamily: 'Satoshi',
   fontWeight: FontWeight.w500,
   height: 0,
-  letterSpacing: -0.30,
+  letterSpacing: 0,
+);
+
+TextStyle ktsButtonText = const TextStyle(
+  color: kcButtonTextColor,
+  fontSize: 18,
+  fontFamily: 'Satoshi',
+  fontWeight: FontWeight.w700,
+  height: 0,
+  letterSpacing: 0,
 );
 
 TextStyle ktsButtonText2 = const TextStyle(
@@ -195,105 +254,94 @@ TextStyle ktsButtonText2 = const TextStyle(
   fontFamily: 'Satoshi',
   fontWeight: FontWeight.w700,
   height: 0,
-  letterSpacing: -0.30,
+  letterSpacing: 0,
 );
 
 TextStyle ktsBottomSheetHeaderText = const TextStyle(
-  color: kcTextTitleColor,
-  fontSize: 18,
-  fontFamily: 'Satoshi',
-  fontWeight: FontWeight.w500,
-  height: 0,
-  letterSpacing: -0.30,
-);
+    color: kcTextTitleColor,
+    fontSize: 18,
+    fontFamily: 'Satoshi',
+    fontWeight: FontWeight.w500,
+    height: 0,
+    letterSpacing: 0);
 
 TextStyle ktsHeaderText = const TextStyle(
-  color: kcTextTitleColor,
-  fontSize: 20,
-  fontFamily: 'Satoshi',
-  fontWeight: FontWeight.w700,
-  height: 0,
-  letterSpacing: -0.30,
-);
+    color: kcTextTitleColor,
+    fontSize: 24,
+    fontFamily: 'Satoshi',
+    fontWeight: FontWeight.w700,
+    height: 0,
+    letterSpacing: 0);
 
 TextStyle ktsHeaderText1 = const TextStyle(
-  color: kcButtonTextColor,
-  fontSize: 20,
-  fontFamily: 'Satoshi',
-  fontWeight: FontWeight.w700,
-  height: 0,
-  letterSpacing: -0.30,
-);
+    color: kcButtonTextColor,
+    fontSize: 28,
+    fontFamily: 'Satoshi',
+    fontWeight: FontWeight.w700,
+    height: 0,
+    letterSpacing: 0.5);
 TextStyle ktsQuantityText = const TextStyle(
-  color: kcTextTitleColor,
-  fontSize: 14,
-  fontFamily: 'Satoshi',
-  fontWeight: FontWeight.w700,
-  height: 0,
-  letterSpacing: -0.30,
-);
+    color: kcTextTitleColor,
+    fontSize: 14,
+    fontFamily: 'Satoshi',
+    fontWeight: FontWeight.w700,
+    height: 0,
+    letterSpacing: 0);
 
 TextStyle ktsBorderText = const TextStyle(
-  color: kcBorderTextColor,
-  fontSize: 14,
-  fontFamily: 'Satoshi',
-  fontWeight: FontWeight.w500,
-  height: 0,
-  letterSpacing: -0.30,
-);
+    color: kcBorderTextColor,
+    fontSize: 14,
+    fontFamily: 'Satoshi',
+    fontWeight: FontWeight.w500,
+    height: 0,
+    letterSpacing: 0);
 
 TextStyle ktsBorderText2 = const TextStyle(
-  color: kcBorderTextColor,
-  fontSize: 14,
-  fontFamily: 'Satoshi',
-  fontWeight: FontWeight.w700,
-  height: 0,
-  letterSpacing: -0.30,
-);
+    color: kcBorderTextColor,
+    fontSize: 14,
+    fontFamily: 'Satoshi',
+    fontWeight: FontWeight.w700,
+    height: 0,
+    letterSpacing: 0.7);
 
 TextStyle ktsBorderText3 = const TextStyle(
-  color: Colors.green,
-  fontSize: 14,
-  fontFamily: 'Satoshi',
-  fontWeight: FontWeight.w700,
-  height: 0,
-  letterSpacing: -0.30,
-);
+    color: Colors.green,
+    fontSize: 14,
+    fontFamily: 'Satoshi',
+    fontWeight: FontWeight.w700,
+    height: 0,
+    letterSpacing: 0);
 TextStyle ktsSubtitleTileText = const TextStyle(
-  color: kcTextSubTitleColor,
-  fontSize: 12,
-  fontFamily: 'Satoshi',
-  fontWeight: FontWeight.w500,
-  height: 0,
-  letterSpacing: -0.30,
-);
+    color: kcTextSubTitleColor,
+    fontSize: 12,
+    fontFamily: 'Satoshi',
+    fontWeight: FontWeight.w500,
+    height: 0,
+    letterSpacing: 0);
 
 TextStyle ktsSubtitleTileText2 = const TextStyle(
-  color: kcButtonTextColor,
-  fontSize: 12,
-  fontFamily: 'Satoshi',
-  fontWeight: FontWeight.w500,
-  height: 0,
-  letterSpacing: -0.30,
-);
+    color: kcButtonTextColor,
+    fontSize: 12,
+    fontFamily: 'Satoshi',
+    fontWeight: FontWeight.w500,
+    height: 0,
+    letterSpacing: 0);
 
 TextStyle ktsSubtitleTileText3 = const TextStyle(
-  color: kcTextTitleColor,
-  fontSize: 12,
-  fontFamily: 'Satoshi',
-  fontWeight: FontWeight.w500,
-  height: 0,
-  letterSpacing: -0.30,
-);
+    color: kcTextTitleColor,
+    fontSize: 12,
+    fontFamily: 'Satoshi',
+    fontWeight: FontWeight.w500,
+    height: 0,
+    letterSpacing: 0);
 
 TextStyle ktsErrorText = TextStyle(
-  color: kcErrorColor.withOpacity(0.9),
-  fontSize: 12,
-  fontFamily: 'Satoshi',
-  fontWeight: FontWeight.w500,
-  height: 0,
-  letterSpacing: -0.30,
-);
+    color: kcErrorColor.withOpacity(0.9),
+    fontSize: 12,
+    fontFamily: 'Satoshi',
+    fontWeight: FontWeight.w500,
+    height: 0,
+    letterSpacing: 0);
 TextStyle ktsHeaderTextWhite = const TextStyle(
     // color: kcButtonTextColor,
     // fontSize: 16,
@@ -330,14 +378,14 @@ TextStyle ktsButtonTextSmall = GoogleFonts.dmSans(
   fontWeight: FontWeight.normal,
 );
 
-TextStyle ktsBodyText = GoogleFonts.dmSans(
+TextStyle ktsBodyText = GoogleFonts.roboto(
   color: kcTextColor,
-  fontSize: 12,
+  fontSize: 14,
   fontWeight: FontWeight.normal,
 );
 TextStyle ktsBodyTextWhite = GoogleFonts.dmSans(
   color: kcButtonTextColor,
-  fontSize: 12,
+  fontSize: 16,
   fontWeight: FontWeight.normal,
 );
 TextStyle ktsBodyTextx = GoogleFonts.dmSans(
