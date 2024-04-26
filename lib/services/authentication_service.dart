@@ -78,7 +78,7 @@ class AuthenticationService {
 
     var accessToken = result.data?['signIn']['token']['access_token'];
     var refreshToken = result.data?['signIn']['token']['refresh_token'];
-    var verified = result.data?['signIn']['verified'];
+    var verified = result.data?['signIn']['verified'] ?? false;
 
     if (verified == null) {
       navigationService.replaceWith(Routes.verificationView);
@@ -98,7 +98,7 @@ class AuthenticationService {
     var tokens = AuthenticationSuccessResult(
         accessToken: accessToken,
         refreshToken: refreshToken,
-        verified: verified);
+        verified: verified ?? false);
 
     return AuthenticationResult(tokens: tokens);
   }

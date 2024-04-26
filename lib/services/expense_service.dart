@@ -646,13 +646,17 @@ class ExpenseService {
     );
 
     final QueryResult result = await newClient.mutate(options);
+    bool isArchived = result.data?['archiveExpense'] ?? false;
 
     if (result.hasException) {
       // Handle any errors that may have occurred during the log out process
-      throw Exception(result.exception);
+      // throw Exception(result.exception);
+      isArchived = false;
     }
 
-    bool isArchived = result.data?['archiveExpense'] ?? false;
+    //  bool isArchived = result.data?['archiveExpense'] ?? false;
+
+    // bool isArchived = result.data?['archiveExpense'] ?? false;
 
     return isArchived;
   }
@@ -686,13 +690,13 @@ class ExpenseService {
     );
 
     final QueryResult result = await newClient.mutate(options);
+    bool isDeleted = result.data?['deleteExpense'] ?? false;
 
     if (result.hasException) {
       // Handle any errors that may have occurred during the log out process
-      throw Exception(result.exception);
+      // throw Exception(result.exception);
+      isDeleted = false;
     }
-
-    bool isDeleted = result.data?['deleteExpense'] ?? false;
 
     return isDeleted;
   }

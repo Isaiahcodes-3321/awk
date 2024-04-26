@@ -23,16 +23,16 @@ class SettingsViewModel extends BaseViewModel {
     rebuildUi();
   }
 
-  Future<void> getUserAndBusinessData() async {
-    final result = await dashboardService.getUserAndBusinessData();
-    // if (result.user != null) {
-    //   user = result.user;
-    // }
-    // if (result.businesses != null) {
-    //   businesses = result.businesses;
-    // }
-    rebuildUi();
-  }
+  // Future<void> getUserAndBusinessData() async {
+  //   final result = await dashboardService.getUserAndBusinessData();
+  //   // if (result.user != null) {
+  //   //   user = result.user;
+  //   // }
+  //   // if (result.businesses != null) {
+  //   //   businesses = result.businesses;
+  //   // }
+  //   rebuildUi();
+  // }
 
   void togglePasswordVisibility() {
     isPasswordVisible = !isPasswordVisible;

@@ -6,6 +6,7 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.locator.dart';
 import 'package:verzo/app/app.router.dart';
+import 'package:verzo/services/dashboard_service.dart';
 import 'package:verzo/services/expense_service.dart';
 import 'package:verzo/services/purchase_service.dart';
 import 'package:verzo/services/sales_service.dart';
@@ -51,6 +52,7 @@ class _HomeViewState extends State<HomeView>
         viewModelBuilder: () => HomeViewModel(),
         onViewModelReady: (viewModel) async {
           viewModel.setUserDetails();
+          await viewModel.viewBusinessCards();
           await viewModel.getUserAndBusinessData();
           await viewModel.totalWeeklyInvoicesAmount();
           await viewModel.getInvoiceByBusiness();
@@ -164,6 +166,7 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
         viewModelBuilder: () => HomeViewModel(),
         onViewModelReady: (viewModel) async {
           viewModel.setUserDetails();
+          await viewModel.viewBusinessCards();
           await viewModel.getUserAndBusinessData();
           await viewModel.totalWeeklyInvoicesAmount();
           await viewModel.getInvoiceByBusiness();
@@ -202,208 +205,179 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
                         width: MediaQuery.of(context).size.width * 0.9,
                         child: Text(
                           'Dashboard',
-                          // style: GoogleFonts.openSans(
-                          //   color: kcButtonTextColor,
-                          //   fontSize: 28,
-                          //   fontWeight: FontWeight.w600,
-                          // )
                           style: ktsHeroTextWhiteDashboardHeader,
                         ),
                       ),
                       verticalSpaceTiny1,
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 12),
-                        height: 200,
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        decoration: BoxDecoration(
-                          color: kcCardColor.withOpacity(0.3),
-                          // color: Color(0xE58C01E8),
-                          // color: Colors.grey,
-                          // color: kcTextTitleColor,
-                          borderRadius: BorderRadius.circular(20),
-                          // border: Border.all(width: 1, color: kcBorderColor),
-                          // boxShadow: const [
-                          //   BoxShadow(
-                          //       spreadRadius: 3,
-                          //       blurRadius: 2,
-                          //       offset: Offset(0, 7))
-                          // ],
-                          // gradient: LinearGradient(
-                          //   // begin: Alignment(0.95, -0.30),
-                          //   // end: Alignment(-0.95, 0.3),
-                          //   // stops: [0.4, 0.6], // Adjust the stops as needed
-                          //   colors: [
-                          //     kcTextTitleColor,
-                          //     const Color(0xE5027DFF).withOpacity(0.5),
-                          //     // Color(0xE58C01E8),
-                          //     // Color(0xFF6275E9),
-
-                          //     kcTextTitleColor
-                          //   ],
-                          // ),
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text("John Doe",
-                                    style: ktsHeroTextWhiteDashboard1),
-                                SvgPicture.asset(
-                                  'assets/images/eye.svg',
-                                  width: 22,
-                                  height: 22,
-                                  color: Colors.white,
+                      Builder(builder: (context) {
+                        if (viewModel.isBusy) {
+                          return const CircularProgressIndicator(
+                            color: kcPrimaryColor,
+                          );
+                        }
+                        if (viewModel.businessCard.isEmpty) {
+                          return Column(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 12),
+                                height: 200,
+                                width: MediaQuery.of(context).size.width * 0.9,
+                                decoration: BoxDecoration(
+                                  color: kcCardColor.withOpacity(0.3),
+                                  borderRadius: BorderRadius.circular(20),
                                 ),
-                              ],
-                            ),
-                            Column(
-                              // mainAxisAlignment: MainAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Card number',
-                                  style: ktsButtonText2,
-                                ),
-                                verticalSpaceTinyt1,
-                                Text(
-                                  '5425 2334 3010 9903',
-                                  style: ktsHeroTextWhiteDashboard1,
-                                )
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
+                                child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(viewModel.userName,
+                                              style:
+                                                  ktsHeroTextWhiteDashboard1),
+                                          // SvgPicture.asset(
+                                          //   'assets/images/eye.svg',
+                                          //   width: 22,
+                                          //   height: 22,
+                                          //   color: Colors.white,
+                                          // ),
+                                        ],
+                                      ),
+                                      Column(
+                                        // mainAxisAlignment: MainAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Card number',
+                                            style: ktsButtonText2,
+                                          ),
+                                          verticalSpaceTinyt1,
+                                          Text(
+                                            'XXXX XXXX XXXX XXXX',
+                                            style: ktsHeroTextWhiteDashboard1,
+                                          )
+                                        ],
+                                      ),
+                                      Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      'Expiry date',
+                                                      style: ktsButtonText2,
+                                                    ),
+                                                    verticalSpaceTinyt1,
+                                                    Text(
+                                                      'XX/XX',
+                                                      style:
+                                                          ktsHeroTextWhiteDashboard2,
+                                                    )
+                                                  ],
+                                                ),
+                                                horizontalSpaceRegular,
+                                                Column(
+                                                  children: [
+                                                    Text(
+                                                      'CVV',
+                                                      style: ktsButtonText2,
+                                                    ),
+                                                    verticalSpaceTinyt1,
+                                                    Text(
+                                                      'XXX',
+                                                      style:
+                                                          ktsHeroTextWhiteDashboard2,
+                                                    )
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                            SvgPicture.asset(
+                                              'assets/images/MasterCard.svg',
+                                              // width: 20,
+                                              // height: 20,
+                                            ),
+                                          ]),
+                                    ]),
+                              ),
+                              verticalSpaceSmallMid,
+                              Container(
+                                padding: EdgeInsets.zero,
+                                width: MediaQuery.of(context).size.width * 0.9,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Expiry date',
-                                          style: ktsButtonText2,
-                                        ),
-                                        verticalSpaceTinyt1,
-                                        Text(
-                                          '01/28',
-                                          style: ktsHeroTextWhiteDashboard2,
-                                        )
-                                      ],
+                                    GestureDetector(
+                                      onTap: () {
+                                        viewModel.navigationService
+                                            .navigateTo(Routes.addCardView);
+                                        // viewModel.createSudoCard();
+                                      },
+                                      child: Column(
+                                        children: [
+                                          CircleAvatar(
+                                            radius: 20,
+                                            backgroundColor:
+                                                kcPrimaryColor.withOpacity(0.6),
+                                            child: const Icon(
+                                              Icons.add,
+                                              color: kcButtonTextColor,
+                                              size: 24,
+                                            ),
+                                          ),
+                                          verticalSpaceTiny,
+                                          Text(
+                                            'New card',
+                                            style: GoogleFonts.dmSans(
+                                              color: kcButtonTextColor,
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w300,
+                                            ),
+                                          )
+                                        ],
+                                      ),
                                     ),
-                                    horizontalSpaceRegular,
-                                    Column(
-                                      children: [
-                                        Text(
-                                          'CVV',
-                                          style: ktsButtonText2,
-                                        ),
-                                        verticalSpaceTinyt1,
-                                        Text(
-                                          '987',
-                                          style: ktsHeroTextWhiteDashboard2,
-                                        )
-                                      ],
-                                    )
                                   ],
                                 ),
-                                SvgPicture.asset(
-                                  'assets/images/MasterCard.svg',
-                                  // width: 20,
-                                  // height: 20,
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                      verticalSpaceIntermitent,
-                      Container(
-                        padding: EdgeInsets.zero,
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text('Billing address',
-                                style: GoogleFonts.dmSans(
-                                  color: kcButtonTextColor.withOpacity(0.7),
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w300,
-                                )),
-                            verticalSpaceTiny,
-                            Text('1, street name, Ikeja 100200, Lagos',
-                                style: GoogleFonts.openSans(
-                                  color: kcButtonTextColor,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500,
-                                ))
-                          ],
-                        ),
-                      ),
-                      verticalSpaceIntermitent,
-                      Container(
-                        padding: EdgeInsets.zero,
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Column(
-                              children: [
-                                CircleAvatar(
-                                  radius: 20,
-                                  backgroundColor:
-                                      kcPrimaryColor.withOpacity(0.1),
-                                  child: const Icon(
-                                    Icons.add,
-                                    color: kcButtonTextColor,
-                                    size: 24,
-                                  ),
-                                ),
-                                verticalSpaceTiny,
-                                Text(
-                                  'New card',
-                                  style: GoogleFonts.dmSans(
-                                    color: kcButtonTextColor,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w300,
-                                  ),
-                                )
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                CircleAvatar(
-                                  radius: 20,
-                                  backgroundColor:
-                                      kcPrimaryColor.withOpacity(0.1),
-                                  child: Icon(
-                                    Icons.lock_outline,
-                                    color: kcButtonTextColor.withOpacity(0.85),
-                                    size: 24,
-                                  ),
-                                ),
-                                verticalSpaceTiny,
-                                Text(
-                                  'Lock card',
-                                  style: GoogleFonts.dmSans(
-                                    color: kcButtonTextColor,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w300,
-                                  ),
-                                )
-                              ],
-                            ),
-                          ],
-                        ),
-                      )
+                              )
+                            ],
+                          );
+                        }
+                        return Material(
+                          color: Colors.transparent,
+                          child: ListView.separated(
+                            padding: const EdgeInsets.symmetric(vertical: 6),
+                            physics: const NeverScrollableScrollPhysics(),
+                            primary: false,
+                            shrinkWrap: true,
+                            itemCount: viewModel.businessCard.length,
+                            itemBuilder: (context, index) {
+                              var businessCard = viewModel.businessCard[index];
+                              return Cards(
+                                businessCard: businessCard,
+                              );
+                            },
+                            separatorBuilder:
+                                (BuildContext context, int index) {
+                              return verticalSpaceTiny;
+                            },
+                          ),
+                        );
+                      }),
                     ]),
               ),
               DraggableScrollableSheet(
@@ -1024,7 +998,8 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
                                         // indicatorPadding:
                                         //     const EdgeInsets.symmetric(
                                         //         horizontal: 12),
-                                        indicatorColor: Color(0xFF6275E9),
+                                        // indicatorColor: Color(0xFF6275E9),
+                                        indicatorColor: kcPrimaryColor,
                                         indicatorWeight: 1,
                                         indicatorSize: TabBarIndicatorSize.tab,
                                         // indicator: BoxDecoration(
@@ -1045,7 +1020,8 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
                                             fontWeight: FontWeight.w600,
                                             height: 0,
                                             letterSpacing: 0),
-                                        labelColor: Color(0xFF6275E9),
+                                        // labelColor: Color(0xFF6275E9),
+                                        labelColor: kcPrimaryColor,
                                         labelStyle: const TextStyle(
                                           fontSize: 15,
                                           fontFamily: 'Satoshi',
@@ -1118,6 +1094,174 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
             ]),
           );
         });
+  }
+}
+
+class Cards extends ViewModelWidget<HomeViewModel> {
+  const Cards({
+    Key? key,
+    required this.businessCard,
+  }) : super(key: key);
+
+  final BusinessCard businessCard;
+
+  // final String expenseId;
+
+  @override
+  Widget build(BuildContext context, HomeViewModel viewModel) {
+    return Column(
+      // mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          height: 200,
+          width: MediaQuery.of(context).size.width * 0.9,
+          decoration: BoxDecoration(
+            color: kcCardColor.withOpacity(0.3),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(viewModel.userName, style: ktsHeroTextWhiteDashboard1),
+                    SvgPicture.asset(
+                      'assets/images/eye.svg',
+                      width: 22,
+                      height: 22,
+                      color: Colors.white,
+                    ),
+                  ],
+                ),
+                Column(
+                  // mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Card number',
+                      style: ktsButtonText2,
+                    ),
+                    verticalSpaceTinyt1,
+                    Text(
+                      businessCard.maskedPan,
+                      style: ktsHeroTextWhiteDashboard1,
+                    )
+                  ],
+                ),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Expiry date',
+                                style: ktsButtonText2,
+                              ),
+                              verticalSpaceTinyt1,
+                              Text(
+                                '${businessCard.expiryMonth}/${businessCard.expiryYear}',
+                                style: ktsHeroTextWhiteDashboard2,
+                              )
+                            ],
+                          ),
+                          horizontalSpaceRegular,
+                          Column(
+                            children: [
+                              Text(
+                                'CVV',
+                                style: ktsButtonText2,
+                              ),
+                              verticalSpaceTinyt1,
+                              Text(
+                                'XXX',
+                                style: ktsHeroTextWhiteDashboard2,
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                      SvgPicture.asset(
+                        'assets/images/MasterCard.svg',
+                        // width: 20,
+                        // height: 20,
+                      ),
+                    ]),
+              ]),
+        ),
+        verticalSpaceSmall,
+        Container(
+          padding: EdgeInsets.zero,
+          width: MediaQuery.of(context).size.width * 0.9,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Billing address',
+                  style: GoogleFonts.dmSans(
+                    color: kcButtonTextColor.withOpacity(0.7),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w300,
+                  )),
+              verticalSpaceTiny,
+              Text(
+                  '${businessCard.line1},${businessCard.city},${businessCard.country},${businessCard.postalCode}',
+                  style: GoogleFonts.openSans(
+                    color: kcButtonTextColor,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                  ))
+            ],
+          ),
+        ),
+        verticalSpaceSmallMid,
+        Container(
+          padding: EdgeInsets.zero,
+          width: MediaQuery.of(context).size.width * 0.9,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  viewModel.navigationService.navigateTo(Routes.addCardView);
+                  // viewModel.createSudoCard();
+                },
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      radius: 20,
+                      backgroundColor: kcPrimaryColor.withOpacity(0.6),
+                      child: const Icon(
+                        Icons.add,
+                        color: kcButtonTextColor,
+                        size: 24,
+                      ),
+                    ),
+                    verticalSpaceTiny,
+                    Text(
+                      'New card',
+                      style: GoogleFonts.dmSans(
+                        color: kcButtonTextColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w300,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
+        )
+      ],
+    );
   }
 }
 

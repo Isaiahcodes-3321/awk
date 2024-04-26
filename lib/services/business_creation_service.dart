@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:stacked_services/stacked_services.dart';
+import 'package:verzo/app/app.locator.dart';
+import 'package:verzo/app/app.router.dart';
 
 class BusinessCreationService {
+  final navigationService = locator<NavigationService>();
   ValueNotifier<GraphQLClient> client;
 
   final MutationOptions _createBusinessMutation;
+  final MutationOptions _setUpBusinessAccountMutation;
   final MutationOptions _updateBusinessMutation;
 
   final QueryOptions _getBusinessCategoriesQuery;
+  final QueryOptions _getBusinessTasksQuery;
+  final QueryOptions _viewBusinessAccountQuery;
 
   BusinessCreationService()
       : client = ValueNotifier(GraphQLClient(
@@ -24,6 +31,13 @@ class BusinessCreationService {
             businessEmail
             businessMobile
           }
+        }
+      '''),
+        ),
+        _setUpBusinessAccountMutation = MutationOptions(
+          document: gql('''
+        mutation SetUpBusinessAccount(\$input: CreateSudoAccount!) {
+          setUpBusinessAccount(input: \$input) 
         }
       '''),
         ),
@@ -45,7 +59,93 @@ class BusinessCreationService {
             }
             }
             '''),
+        ),
+        _getBusinessTasksQuery = QueryOptions(
+          document: gql('''
+        query GetBusinessTasksMobile(\$input: GetTaskMobileInput!){
+          getBusinessTasksMobile(input: \$input)  {
+            tasks{
+              taskType{
+                taskType
+              }
+              user{
+                id
+                email
+                fullname
+              }
+            }
+            }
+            }
+            '''),
+        ),
+        _viewBusinessAccountQuery = QueryOptions(
+          document: gql('''
+        query ViewBusinessAccount(\$businessId: String!){
+          viewBusinessAccount(businessId: \$businessId) {
+            message
+            data{
+              bvn
+              accountName
+              accountType
+              accountNumber
+            }
+            }
+            }
+            '''),
         );
+
+  Future<BusinessAccount> viewBusinessAccount({required businessId}) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('access_token');
+
+    if (token == null) {
+      throw GraphQLBusinessError(
+        message: "Access token not found",
+      );
+    }
+// Use the token to create an authlink
+    final authLink = AuthLink(
+      getToken: () => 'Bearer $token',
+    );
+
+    // Create a new GraphQLClient with the authlink
+    final newClient = GraphQLClient(
+      cache: GraphQLCache(),
+      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+    );
+
+    final QueryOptions options = QueryOptions(
+      document: _viewBusinessAccountQuery.document,
+      variables: {'businessId': businessId},
+    );
+
+    final QueryResult businessAccountResult = await newClient.query(options);
+
+    if (businessAccountResult.hasException) {
+      //  navigationService.replaceWith(Routes.businessAccountView);
+      throw GraphQLBusinessError(
+        message: businessAccountResult.exception?.graphqlErrors.first.message
+            .toString(),
+      );
+    }
+
+    final businessAccountData =
+        businessAccountResult.data?['viewBusinessAccount'];
+    final dataAccountData = businessAccountData['data'];
+
+    if (businessAccountData == null) {
+      navigationService.replaceWith(Routes.businessAccountView);
+    }
+
+    final BusinessAccount businessAccount = BusinessAccount(
+        accountName: dataAccountData['accountName'],
+        accountNumber: dataAccountData['accountNumber'],
+        accountType: dataAccountData['accountType'],
+        bvn: dataAccountData['bvn'],
+        message: businessAccountData['message']);
+
+    return businessAccount;
+  }
 
   Future<BusinessCreationResult> createBusinessProfile(
       {required String businessName,
@@ -107,6 +207,60 @@ class BusinessCreationService {
         result_businessEmail: resultBusinessEmail,
         result_businessMobile: resultBusinessMobile);
     return BusinessCreationResult(business: business);
+  }
+
+  Future<bool> createBusinessAccount({
+    required String bvn,
+    required String addressLine1,
+    required String city,
+    required String dob,
+    required String postalCode,
+    required String state,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('access_token');
+
+    if (token == null) {
+      GraphQLBusinessError(
+        message: "Access token not found",
+      );
+    }
+
+    // Use the token to create an authlink
+    final authLink = AuthLink(
+      getToken: () => 'Bearer $token',
+    );
+
+    // Create a new GraphQLClient with the authlink
+    final newClient = GraphQLClient(
+      cache: GraphQLCache(),
+      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+    );
+
+    final MutationOptions options = MutationOptions(
+      document: _setUpBusinessAccountMutation.document,
+      variables: {
+        'input': {
+          'dob': dob,
+          'bvn': bvn,
+          'addressLine1': addressLine1,
+          'city': city,
+          'state': state,
+          'postalCode': postalCode
+        },
+      },
+    );
+
+    final QueryResult result = await newClient.mutate(options);
+
+    bool isSetUp = result.data?['setUpBusinessAccount'] ?? false;
+
+    if (result.hasException) {
+      // throw Exception(result.exception);
+      isSetUp = false;
+    }
+
+    return isSetUp;
   }
 
   Future<BusinessUpdateResult> updateBusiness(
@@ -207,6 +361,57 @@ class BusinessCreationService {
 
     return businessCategories;
   }
+
+  Future<List<BusinessTask>> getBusinessTasks(
+      {required String businessId}) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('access_token');
+
+    if (token == null) {
+      throw GraphQLBusinessError(
+        message: "Access token not found",
+      );
+    }
+// Use the token to create an authlink
+    final authLink = AuthLink(
+      getToken: () => 'Bearer $token',
+    );
+
+    final newClient = GraphQLClient(
+      cache: GraphQLCache(),
+      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+    );
+    final QueryOptions options = QueryOptions(
+      document: _getBusinessTasksQuery.document,
+      variables: {
+        'input': {'businessId': businessId}
+      },
+    );
+
+    final QueryResult businessTasksResult = await newClient.query(options);
+
+    // if (businessTasksResult.hasException) {
+    //   GraphQLBusinessError(
+    //     message: businessTasksResult.exception?.graphqlErrors.first.message
+    //         .toString(),
+    //   );
+    // }
+
+    final List businessTasksData =
+        businessTasksResult.data?['getBusinessTasksMobile']['tasks'] ?? [];
+
+    final List<BusinessTask> businessTasks = businessTasksData.map((data) {
+      final taskTypeData = data['taskType'];
+      final userData = data['user'];
+      return BusinessTask(
+          taskType: taskTypeData['taskType'],
+          userId: userData['id'],
+          userEmail: userData['email'],
+          userFullname: userData['fullname']);
+    }).toList();
+
+    return businessTasks;
+  }
 }
 
 class BusinessCategory {
@@ -215,6 +420,47 @@ class BusinessCategory {
 
   BusinessCategory({required this.id, required this.categoryName});
 }
+
+class BusinessTask {
+  final String taskType;
+  final String userEmail;
+  final String userFullname;
+  final String userId;
+
+  BusinessTask(
+      {required this.taskType,
+      required this.userEmail,
+      required this.userId,
+      required this.userFullname});
+}
+
+// class BusinessAccountResult {
+//   late final BusinessCreationSuccessResult? account;
+//   late final GraphQLBusinessError? error;
+
+//   BusinessAccountResult({this.account}) : error = null;
+//   BusinessAccountResult.error({this.error}) : account = null;
+
+//   bool get hasError => error != null;
+// }
+
+// class BusinessAccountSuccessResult {
+//   final String message;
+//   final SafeHeavenAccount data;
+
+//   BusinessAccountSuccessResult({required this.message, required this.data});
+// }
+
+// class SafeHeavenAccount {
+//   final String bvn;
+//   final String accountName;
+//   final String accountNumber;
+
+//   SafeHeavenAccount(
+//       {required this.bvn,
+//       required this.accountName,
+//       required this.accountNumber});
+// }
 
 class BusinessCreationResult {
   late final BusinessCreationSuccessResult? business;
@@ -262,4 +508,19 @@ class GraphQLBusinessError {
   final String? message;
 
   GraphQLBusinessError({required this.message});
+}
+
+class BusinessAccount {
+  late final String accountName;
+  late final String message;
+  late final String accountNumber;
+  late final String accountType;
+  late final String bvn;
+
+  BusinessAccount(
+      {required this.accountName,
+      required this.accountNumber,
+      required this.accountType,
+      required this.message,
+      required this.bvn});
 }

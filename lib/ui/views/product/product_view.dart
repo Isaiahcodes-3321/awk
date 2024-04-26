@@ -243,9 +243,9 @@ class _ProductViewState extends State<ProductView> {
                               scrollDirection: Axis.vertical,
                               primary: false,
                               shrinkWrap: true,
-                              itemCount: viewModel.products.length,
+                              itemCount: viewModel.data!.length,
                               itemBuilder: (context, index) {
-                                var product = viewModel.products[index];
+                                var product = viewModel.data![index];
                                 return ProductCard(
                                   product: product,
                                   productId: product.id,

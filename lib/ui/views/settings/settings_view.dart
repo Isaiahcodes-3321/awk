@@ -197,27 +197,31 @@ class _SettingsViewState extends State<SettingsView> {
                             //     iconSize: 20,
                             //   ),
                             // ),
-                            // ListTile(
-                            //   contentPadding: EdgeInsetsDirectional.zero,
-                            //   leading: SvgPicture.asset(
-                            //     'assets/images/Frame_43540-3.svg',
-                            //     width: 36,
-                            //     height: 36,
-                            //   ),
-                            //   title: Text(
-                            //     'Notifications',
-                            //     style: ktsTextAuthentication,
-                            //   ),
-                            //   subtitle: Text(
-                            //     'Choose preference',
-                            //     style: ktsFormHintText,
-                            //   ),
-                            //   trailing: IconButton(
-                            //     onPressed: () {},
-                            //     icon: Icon(Icons.arrow_forward_ios),
-                            //     iconSize: 20,
-                            //   ),
-                            // ),
+                            ListTile(
+                              contentPadding: EdgeInsetsDirectional.zero,
+                              leading: SvgPicture.asset(
+                                'assets/images/Frame_43540-3.svg',
+                                width: 36,
+                                height: 36,
+                              ),
+                              title: Text(
+                                'Notifications',
+                                style: ktsTextAuthentication,
+                              ),
+                              subtitle: Text(
+                                'See your business tasks',
+                                style: ktsFormHintText,
+                              ),
+                              trailing: IconButton(
+                                onPressed: () {
+                                  viewModel.navigationService
+                                      .navigateTo(Routes.businessTasksView);
+                                },
+                                icon: const Icon(Icons.arrow_forward),
+                                iconSize: 20,
+                                color: kcTextSubTitleColor,
+                              ),
+                            ),
                             verticalSpaceIntermitent,
                             Text(
                               'Business Profile',
@@ -248,6 +252,31 @@ class _SettingsViewState extends State<SettingsView> {
                                 color: kcTextSubTitleColor,
                               ),
                             ),
+                            // ListTile(
+                            //   contentPadding: EdgeInsetsDirectional.zero,
+                            //   leading: SvgPicture.asset(
+                            //     'assets/images/Frame_43540-5.svg',
+                            //     width: 36,
+                            //     height: 36,
+                            //   ),
+                            //   title: Text(
+                            //     'Business account',
+                            //     style: ktsTextAuthentication,
+                            //   ),
+                            //   subtitle: Text(
+                            //     'View your business account',
+                            //     style: ktsFormHintText,
+                            //   ),
+                            //   trailing: IconButton(
+                            //     onPressed: () {
+                            //       viewModel.navigationService
+                            //           .navigateTo(Routes.businessAccountView);
+                            //     },
+                            //     icon: const Icon(Icons.arrow_forward),
+                            //     iconSize: 20,
+                            //     color: kcTextSubTitleColor,
+                            //   ),
+                            // ),
                             ListTile(
                               contentPadding: EdgeInsetsDirectional.zero,
                               leading: SvgPicture.asset(
@@ -273,28 +302,28 @@ class _SettingsViewState extends State<SettingsView> {
                                 color: kcTextSubTitleColor,
                               ),
                             ),
-                            ListTile(
-                              contentPadding: EdgeInsetsDirectional.zero,
-                              leading: SvgPicture.asset(
-                                'assets/images/Frame_43540-6.svg',
-                                width: 36,
-                                height: 36,
-                              ),
-                              title: Text(
-                                'Report',
-                                style: ktsTextAuthentication,
-                              ),
-                              subtitle: Text(
-                                'Download your business activity',
-                                style: ktsFormHintText,
-                              ),
-                              trailing: IconButton(
-                                onPressed: () {},
-                                icon: const Icon(Icons.arrow_forward),
-                                iconSize: 20,
-                                color: kcTextSubTitleColor,
-                              ),
-                            ),
+                            // ListTile(
+                            //   contentPadding: EdgeInsetsDirectional.zero,
+                            //   leading: SvgPicture.asset(
+                            //     'assets/images/Frame_43540-6.svg',
+                            //     width: 36,
+                            //     height: 36,
+                            //   ),
+                            //   title: Text(
+                            //     'Report',
+                            //     style: ktsTextAuthentication,
+                            //   ),
+                            //   subtitle: Text(
+                            //     'Download your business activity',
+                            //     style: ktsFormHintText,
+                            //   ),
+                            //   trailing: IconButton(
+                            //     onPressed: () {},
+                            //     icon: const Icon(Icons.arrow_forward),
+                            //     iconSize: 20,
+                            //     color: kcTextSubTitleColor,
+                            //   ),
+                            // ),
                             verticalSpaceRegular,
                             Center(
                               child: GestureDetector(

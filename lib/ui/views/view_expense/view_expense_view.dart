@@ -221,30 +221,17 @@ class ViewExpenseView extends StackedView<ViewExpenseViewModel> {
                       ),
                     ],
                   ),
-                  // if (viewModel.expense!.paid == true)
-                  //   Container(
-                  //     padding: const EdgeInsets.symmetric(
-                  //         horizontal: 12, vertical: 6),
-                  //     decoration: BoxDecoration(
-                  //       color: kcSuccessColor,
-                  //       borderRadius: BorderRadius.circular(20),
-                  //     ),
-                  //     child: Text('Paid',
-                  //         style: ktsSubtitleTileText2 // Set your text style
-                  //         ),
-                  //   )
-                  // else
-                  //   Container(
-                  //     padding: const EdgeInsets.symmetric(
-                  //         horizontal: 12, vertical: 6),
-                  //     decoration: BoxDecoration(
-                  //       color: kcArchiveColor,
-                  //       borderRadius: BorderRadius.circular(20),
-                  //     ),
-                  //     child: Text('Pending',
-                  //         style: ktsSubtitleTileText // Set your text style
-                  //         ),
-                  //   )
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: kcSuccessColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(viewModel.expense!.expenseCategoryName,
+                        style: ktsSubtitleTileText2 // Set your text style
+                        ),
+                  )
                 ],
               ),
               verticalSpaceTiny,

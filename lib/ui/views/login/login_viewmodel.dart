@@ -17,6 +17,19 @@ class LoginViewModel extends FormViewModel {
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
+  Future<void> getUserAndRoleData() async {
+    final result = await _dashboardService.getUserAndRoleData();
+
+    if (result.roleName != 'Admin') {
+      await getUserAndBusinessData();
+      navigationService.replaceWith(Routes.employeeHomeView);
+    } else {
+      await getUserAndBusinessData();
+      // navigate to success route
+      navigationService.replaceWith(Routes.homeView);
+    }
+  }
+
   Future<void> getUserAndBusinessData() async {
     final result = await _dashboardService.getUserAndBusinessData();
     // if (result.user != null) {
@@ -38,12 +51,11 @@ class LoginViewModel extends FormViewModel {
     final result = await runBusyFuture(runAuthentication());
 
     if (result.tokens != null) {
-      // if (result.tokens!.verified != true) {
-      //   await navigationService.replaceWith(Routes.verificationView);
-      // }
-      await getUserAndBusinessData();
-      // navigate to success route
-      navigationService.replaceWith(Routes.homeView);
+      if (result.tokens!.verified != true) {
+        await navigationService.replaceWith(Routes.verificationView);
+      }
+      await getUserAndRoleData();
+      // await getUserAndBusinessData();
     } else if (result.error != null) {
       setValidationMessage(result.error?.message);
 

@@ -9,8 +9,14 @@ class DashboardService {
 
   final MutationOptions _updateUserMutation;
   final MutationOptions _resetPasswordMutation;
+  final MutationOptions _createSudoCardMutation;
+  final MutationOptions _userRequestCardMutation;
 
+  final QueryOptions _viewBusinessCardsQuery;
+  final QueryOptions _getUserCardsByBusinessQuery;
   final QueryOptions _getBusinessesByUserIdQuery;
+  final QueryOptions _getUserByIdQuery;
+  final QueryOptions _getUsersByBusinessQuery;
   final QueryOptions _getExpensesForWeekQuery;
   final QueryOptions _getPurchasesForWeekQuery;
   final QueryOptions _getExpensesForMonthQuery;
@@ -43,6 +49,29 @@ class DashboardService {
             }
             '''),
         ),
+        _getUserByIdQuery = QueryOptions(
+          document: gql('''
+        query GetUserById{
+          getUserById {
+            id
+            role{
+              roleName
+            }
+            }
+            }
+            '''),
+        ),
+        _getUsersByBusinessQuery = QueryOptions(
+          document: gql('''
+        query GetUsersByBusiness(\$businessId: String!){
+          getUsersByBusiness(businessId: \$businessId) {
+            id
+            fullname
+            email
+            }
+            }
+            '''),
+        ),
         _updateUserMutation = MutationOptions(
           document: gql('''
         mutation UpdateUser(\$input: UpdateUser){
@@ -56,6 +85,57 @@ class DashboardService {
           document: gql('''
         mutation ResetPassword(\$input: ResetPassword!){
           resetPassword (input: \$input)
+            }
+            '''),
+        ),
+        _createSudoCardMutation = MutationOptions(
+          document: gql('''
+        mutation CreateSudoCard(\$input: CreateSudoCard!){
+          createSudoCard (input: \$input)
+            }
+            '''),
+        ),
+        _userRequestCardMutation = MutationOptions(
+          document: gql('''
+        mutation UserRequestCard(\$businessId: String!){
+          userRequestCard (businessId: \$businessId)
+            }
+            '''),
+        ),
+        _viewBusinessCardsQuery = QueryOptions(
+          document: gql('''
+        query ViewBusinessCards (\$businessId: String!){
+          viewBusinessCards (businessId: \$businessId){
+            data{
+              expiryMonth
+              expiryYear
+              currency
+              maskedPan
+              customer{
+                billingAddress{
+                  line1
+                  city
+                  state
+                  country
+                  postalCode
+                }
+              }
+            }
+            }
+            }
+            '''),
+        ),
+        _getUserCardsByBusinessQuery = QueryOptions(
+          document: gql('''
+        query GetUserCardsByBusiness (\$businessId: String!){
+          getUserCardsByBusiness (businessId: \$businessId){
+           maskedPan
+           business{
+            cards{
+              expiry
+            }
+           }
+            }
             }
             '''),
         ),
@@ -130,6 +210,114 @@ class DashboardService {
             '''),
         );
 
+  Future<List<User>> getUsersByBusiness() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('access_token');
+    final businessId = prefs.getString('businessId');
+
+    if (token == null) {
+      throw GraphQLAuthError(
+        message: "Access token not found",
+      );
+    }
+    final authLink = AuthLink(
+      getToken: () => 'Bearer $token',
+    );
+
+    // Create a new GraphQLClient with the authlink
+    final newClient = GraphQLClient(
+      cache: GraphQLCache(),
+      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+    );
+
+    final QueryOptions options = QueryOptions(
+      document: _getUsersByBusinessQuery.document,
+      variables: {
+        'businessId': businessId,
+      },
+    );
+
+    final QueryResult usersResult = await newClient.query(options);
+
+    if (usersResult.hasException) {
+      GraphQLAuthError(
+        message: usersResult.exception?.graphqlErrors.first.message.toString(),
+      );
+    }
+
+    final List usersData = usersResult.data?['getUsersByBusiness'] ?? [];
+
+    final List<User> users = usersData.map((data) {
+      return User(
+        id: data['id'],
+        email: data['email'],
+        fullname: data['fullname'],
+      );
+    }).toList();
+
+    return users;
+  }
+
+  Future<List<BusinessCard>> viewBusinessCardsData({
+    required String businessId,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('access_token');
+
+    if (token == null) {
+      throw GraphQLAuthError(
+        message: "Access token not found",
+      );
+    }
+    final authLink = AuthLink(
+      getToken: () => 'Bearer $token',
+    );
+
+    // Create a new GraphQLClient with the authlink
+    final newClient = GraphQLClient(
+      cache: GraphQLCache(),
+      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+    );
+
+    final QueryOptions options = QueryOptions(
+      document: _viewBusinessCardsQuery.document,
+      variables: {
+        'businessId': businessId,
+      },
+    );
+
+    final QueryResult businessCardsResult = await newClient.query(options);
+
+    // if (userAndBusinessResult.hasException) {
+    //   return UserAndBusinessResult.error(
+    //     error: GraphQLAuthError(
+    //       message: userAndBusinessResult.exception?.graphqlErrors.first.message
+    //           .toString(),
+    //     ),
+    //   );
+    // }
+
+    final List businessCardsData =
+        businessCardsResult.data?['viewBusinessCards']['data'] ?? [];
+
+    // Process the retrieved business card data
+    final List<BusinessCard> businessCards = businessCardsData.map((data) {
+      final customerData = data['customer'];
+      final billindAddressData = customerData['billingAddress'];
+      return BusinessCard(
+          expiryMonth: data['expiryMonth'],
+          expiryYear: data['expiryYear'],
+          maskedPan: data['maskedPan'],
+          currency: data['currency'],
+          postalCode: billindAddressData['postalCode'],
+          city: billindAddressData['city'],
+          country: billindAddressData['country'],
+          line1: billindAddressData['line1']);
+    }).toList();
+
+    return businessCards;
+  }
+
   Future<UserAndBusinessResult> getUserAndBusinessData() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('access_token');
@@ -193,6 +381,7 @@ class DashboardService {
 
     prefs.setString('userId', user.id);
     prefs.setString('userName', user.fullname);
+    prefs.setString('userEmail', user.email);
 
     if (businesses.isNotEmpty) {
       prefs.setString('businessId', businesses[0].id);
@@ -207,6 +396,47 @@ class DashboardService {
     // }
 
     return UserAndBusinessResult(user: user, businesses: businesses);
+  }
+
+  Future<UserAndRoleResult> getUserAndRoleData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('access_token');
+
+    if (token == null) {
+      return UserAndRoleResult.error(
+        error: GraphQLAuthError(
+          message: "Access token not found",
+        ),
+      );
+    }
+    final authLink = AuthLink(
+      getToken: () => 'Bearer $token',
+    );
+
+    // Create a new GraphQLClient with the authlink
+    final newClient = GraphQLClient(
+      cache: GraphQLCache(),
+      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+    );
+
+    final QueryResult userAndRoleResult =
+        await newClient.query(_getUserByIdQuery);
+
+    if (userAndRoleResult.hasException) {
+      return UserAndRoleResult.error(
+        error: GraphQLAuthError(
+          message: userAndRoleResult.exception?.graphqlErrors.first.message
+              .toString(),
+        ),
+      );
+    }
+
+    final String id = userAndRoleResult.data?['getUserById']['id'] ?? '';
+    final roleData = userAndRoleResult.data?['getUserById']['role'] ?? [];
+
+    final String roleName = roleData['roleName'] ?? '';
+
+    return UserAndRoleResult(id: id, roleName: roleName);
   }
 
   Future<UserUpdateResult> updateUser({
@@ -330,6 +560,99 @@ class DashboardService {
 
     // Password update was successful
     return isReset;
+  }
+
+  Future<bool> createSudoCard({
+    required String businessId,
+    String? assignedUserId,
+    List<SudoCardSpendingLimits>? spendingLimits,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('access_token');
+    final businessId = prefs.getString('businessId');
+
+    if (token == null) {
+      GraphQLAuthError(
+        message: "Access token not found",
+      );
+    }
+
+    // Use the token to create an authlink
+    final authLink = AuthLink(
+      getToken: () => 'Bearer $token',
+    );
+
+    // Create a new GraphQLClient with the authlink
+    final newClient = GraphQLClient(
+      cache: GraphQLCache(),
+      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+    );
+
+    final MutationOptions options = MutationOptions(
+      document: _createSudoCardMutation.document,
+      variables: {
+        'input': {
+          'businessId': businessId,
+          'assignedUserId': assignedUserId,
+          'spendingLimits': spendingLimits
+              ?.map((limit) =>
+                  {'amount': limit.amount, 'interval': limit.interval})
+              .toList()
+        },
+      },
+    );
+
+    final QueryResult result = await newClient.mutate(options);
+
+    bool isCreated = result.data?['createSudoCard'] ?? false;
+
+    if (result.hasException) {
+      // throw Exception(result.exception);
+      isCreated = false;
+    }
+
+    return isCreated;
+  }
+
+  Future<bool> userRequestCard({required String businessId}) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('access_token');
+    final businessId = prefs.getString('businessId');
+
+    if (token == null) {
+      GraphQLAuthError(
+        message: "Access token not found",
+      );
+    }
+
+    // Use the token to create an authlink
+    final authLink = AuthLink(
+      getToken: () => 'Bearer $token',
+    );
+
+    // Create a new GraphQLClient with the authlink
+    final newClient = GraphQLClient(
+      cache: GraphQLCache(),
+      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+    );
+
+    final MutationOptions options = MutationOptions(
+      document: _userRequestCardMutation.document,
+      variables: {
+        'businessId': businessId,
+      },
+    );
+
+    final QueryResult result = await newClient.mutate(options);
+
+    bool isRequested = result.data?['userRequestCard'] ?? false;
+
+    if (result.hasException) {
+      // throw Exception(result.exception);
+      isRequested = false;
+    }
+
+    return isRequested;
   }
 
   Future<ExpensesForWeek> getExpensesForWeek(
@@ -897,10 +1220,60 @@ class Business {
       required this.businessCategoryId});
 }
 
+class BusinessCard {
+  late final String expiryYear;
+  late final String expiryMonth;
+  late final String maskedPan;
+  late final String currency;
+  late final String postalCode;
+  late final String city;
+  late final String country;
+  late final String line1;
+
+  BusinessCard(
+      {required this.expiryMonth,
+      required this.expiryYear,
+      required this.maskedPan,
+      required this.currency,
+      required this.postalCode,
+      required this.city,
+      required this.country,
+      required this.line1});
+}
+
+class SudoCardSpendingLimits {
+  late final num amount;
+  final SudoCardSpendingInterval interval;
+
+  SudoCardSpendingLimits({
+    required this.amount,
+    required this.interval,
+  });
+}
+
+enum SudoCardSpendingInterval { daily, weekly, monthly, yearly }
+
 class GraphQLAuthError {
   final String? message;
 
   GraphQLAuthError({required this.message});
+}
+
+class UserAndRoleResult {
+  late final String id;
+  late final String roleName;
+  late final GraphQLAuthError? error;
+
+  UserAndRoleResult({
+    required this.id,
+    required this.roleName,
+  }) : error = null;
+
+  UserAndRoleResult.error({this.error})
+      : id = '',
+        roleName = '';
+
+  bool get hasError => error != null;
 }
 
 class UserUpdateResult {

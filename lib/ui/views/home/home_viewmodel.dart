@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:verzo/app/app.dialogs.dart';
 import 'package:verzo/app/app.locator.dart';
 import 'package:verzo/app/app.router.dart';
 import 'package:verzo/services/dashboard_service.dart';
@@ -29,8 +31,10 @@ class HomeViewModel extends ReactiveViewModel with ListenableServiceMixin {
   final _purchaseService = locator<PurchaseService>();
   final _saleService = locator<SalesService>();
   final DialogService dialogService = locator<DialogService>();
-  // List<Expenses> expenseList = [];
+
   bool isChecked = true;
+
+  List<BusinessCard> businessCard = [];
 
   final _expenses = ReactiveValue<List<Expenses>>([]);
   List<Expenses> get expenses => _expenses.value;
@@ -82,6 +86,50 @@ class HomeViewModel extends ReactiveViewModel with ListenableServiceMixin {
     ]);
   }
 
+  Future<bool> createSudoCard() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String businessIdValue = prefs.getString('businessId') ?? '';
+    final DialogResponse? response = await dialogService.showCustomDialog(
+        variant: DialogType.card,
+        title: 'Create Card',
+        description:
+            "Are you sure you want to create card? You can’t undo this action",
+        barrierDismissible: true,
+        mainButtonTitle: 'Create'
+        // cancelTitle: 'Cancel',
+        // confirmationTitle: 'Ok',
+        );
+    if (response?.confirmed == true) {
+      final bool isCreated =
+          await _dashboardService.createSudoCard(businessId: businessIdValue);
+
+      if (isCreated == true) {
+        await dialogService.showCustomDialog(
+          variant: DialogType.cardSuccess,
+          title: 'Created!',
+          description: 'Your card has been successfully created.',
+          barrierDismissible: true,
+          mainButtonTitle: 'Ok',
+        );
+
+        await viewBusinessCards();
+      } else {
+        await dialogService.showCustomDialog(
+            variant: DialogType.cardSuccess,
+            title: 'Oops!',
+            description: "Your card wasn't created.",
+            barrierDismissible: true,
+            mainButtonTitle: 'Ok');
+      }
+
+      rebuildUi();
+      return isCreated;
+    } else {
+      // User canceled the action
+      return false;
+    }
+  }
+
   DrawerItem _selectedItem = DrawerItem.home;
 
   DrawerItem get selectedItem => _selectedItem;
@@ -118,6 +166,16 @@ class HomeViewModel extends ReactiveViewModel with ListenableServiceMixin {
       navigationService.replaceWith(Routes.businessCreationView);
     }
     rebuildUi();
+  }
+
+  Future<List<BusinessCard>> viewBusinessCards() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String businessIdValue = prefs.getString('businessId') ?? '';
+    final result = await _dashboardService.viewBusinessCardsData(
+        businessId: businessIdValue);
+    businessCard = result;
+    rebuildUi();
+    return result;
   }
 
   Future<List<Expenses>> getExpenseByBusiness() async {

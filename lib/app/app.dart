@@ -79,6 +79,12 @@ import 'package:verzo/ui/views/employee_login/employee_login_view.dart';
 import 'package:verzo/ui/views/employee_home/employee_home_view.dart';
 import 'package:verzo/ui/views/employee_inbox/employee_inbox_view.dart';
 import 'package:verzo/ui/views/employee_settings/employee_settings_view.dart';
+import 'package:verzo/ui/views/business_account/business_account_view.dart';
+import 'package:verzo/ui/dialogs/card/card_dialog.dart';
+import 'package:verzo/ui/dialogs/card_success/card_success_dialog.dart';
+import 'package:verzo/ui/views/business_tasks/business_tasks_view.dart';
+
+import 'package:verzo/ui/views/add_card/add_card_view.dart';
 // @stacked-import
 
 @StackedApp(
@@ -143,6 +149,10 @@ import 'package:verzo/ui/views/employee_settings/employee_settings_view.dart';
     MaterialRoute(page: EmployeeHomeView),
     MaterialRoute(page: EmployeeInboxView),
     MaterialRoute(page: EmployeeSettingsView),
+    MaterialRoute(page: BusinessAccountView),
+    MaterialRoute(page: BusinessTasksView),
+
+    MaterialRoute(page: AddCardView),
 // @stacked-route
   ],
   dependencies: [
@@ -174,6 +184,8 @@ import 'package:verzo/ui/views/employee_settings/employee_settings_view.dart';
     StackedDialog(classType: SendSuccessDialog),
     StackedDialog(classType: InfoDialog),
     StackedDialog(classType: LogoutDialog),
+    StackedDialog(classType: CardDialog),
+    StackedDialog(classType: CardSuccessDialog),
 // @stacked-dialog
   ],
 )

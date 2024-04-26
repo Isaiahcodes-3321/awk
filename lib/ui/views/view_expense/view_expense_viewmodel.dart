@@ -44,7 +44,7 @@ class ViewExpenseViewModel extends BaseViewModel {
       final bool isDeleted =
           await _expenseService.deleteExpense(expenseId: expenseId);
 
-      if (isDeleted) {
+      if (isDeleted == true) {
         // await futureToRun();
         await dialogService.showCustomDialog(
           variant: DialogType.deleteSuccess,
@@ -57,8 +57,16 @@ class ViewExpenseViewModel extends BaseViewModel {
         await db2.delete('expenses');
         await dbExpenseWeek.delete('expenses_for_week');
         await dbExpenseMonth.delete('expenses_for_month');
+        navigationService.back(result: true);
+      } else {
+        await dialogService.showCustomDialog(
+            variant: DialogType.deleteSuccess,
+            title: 'Unauthorized!',
+            description: "Your expense can't be deleted.",
+            barrierDismissible: true,
+            mainButtonTitle: 'Ok');
       }
-      navigationService.back(result: true);
+
       rebuildUi();
       return isDeleted;
     } else {
@@ -88,7 +96,7 @@ class ViewExpenseViewModel extends BaseViewModel {
       final bool isArchived =
           await _expenseService.archiveExpense(expenseId: expenseId);
 
-      if (isArchived) {
+      if (isArchived == true) {
         await dialogService.showCustomDialog(
             variant: DialogType.archiveSuccess,
             title: 'Archived!',
@@ -100,8 +108,15 @@ class ViewExpenseViewModel extends BaseViewModel {
         await db2.delete('expenses');
         await dbExpenseWeek.delete('expenses_for_week');
         await dbExpenseMonth.delete('expenses_for_month');
+        navigationService.back(result: true);
+      } else {
+        await dialogService.showCustomDialog(
+            variant: DialogType.archiveSuccess,
+            title: 'Unauthorized!',
+            description: "Your expense can't be archived.",
+            barrierDismissible: true,
+            mainButtonTitle: 'Ok');
       }
-      navigationService.back(result: true);
 
       rebuildUi();
       return isArchived;

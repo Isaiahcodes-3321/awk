@@ -69,6 +69,7 @@ flutter:
         - assets/images/Group 1000007841.svg
         - assets/images/Group 1000007942.svg
         - assets/images/Group 1000007944.svg
+        - assets/images/Group 1000007949.svg
         - assets/images/Frame_1000007862.svg
         - assets/images/Frame 1000007915.svg
         - assets/images/trending_up.svg
@@ -111,6 +112,12 @@ flutter:
         - assets/images/save-01.svg
         - assets/images/trash-01.svg
         - assets/images/trash-04.svg
+        - assets/images/wallet-03-2.svg
+        - assets/images/wallet-03.svg
+        - assets/images/notification-02.svg
+        - assets/images/notification-02-2.svg
+        - assets/images/employee_settings-2.svg
+        - assets/images/employee_settings.svg
         - assets/images/save-02.svg
         - assets/images/MasterCard.svg
         - assets/images/card.svg
