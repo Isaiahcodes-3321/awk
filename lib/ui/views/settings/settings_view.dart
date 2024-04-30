@@ -239,7 +239,7 @@ class _SettingsViewState extends State<SettingsView> {
                                 style: ktsTextAuthentication,
                               ),
                               subtitle: Text(
-                                'Logo, name, email address, catego...',
+                                'Name, email address, catego...',
                                 style: ktsFormHintText,
                               ),
                               trailing: IconButton(
@@ -277,53 +277,53 @@ class _SettingsViewState extends State<SettingsView> {
                             //     color: kcTextSubTitleColor,
                             //   ),
                             // ),
-                            ListTile(
-                              contentPadding: EdgeInsetsDirectional.zero,
-                              leading: SvgPicture.asset(
-                                'assets/images/Frame_43540-5.svg',
-                                width: 36,
-                                height: 36,
-                              ),
-                              title: Text(
-                                'Expense categories',
-                                style: ktsTextAuthentication,
-                              ),
-                              subtitle: Text(
-                                'View categories',
-                                style: ktsFormHintText,
-                              ),
-                              trailing: IconButton(
-                                onPressed: () {
-                                  // viewModel.navigationService
-                                  //     .navigateTo(Routes.expenseCategoriesView);
-                                },
-                                icon: const Icon(Icons.arrow_forward),
-                                iconSize: 20,
-                                color: kcTextSubTitleColor,
-                              ),
-                            ),
                             // ListTile(
                             //   contentPadding: EdgeInsetsDirectional.zero,
                             //   leading: SvgPicture.asset(
-                            //     'assets/images/Frame_43540-6.svg',
+                            //     'assets/images/Frame_43540-5.svg',
                             //     width: 36,
                             //     height: 36,
                             //   ),
                             //   title: Text(
-                            //     'Report',
+                            //     'Expense categories',
                             //     style: ktsTextAuthentication,
                             //   ),
                             //   subtitle: Text(
-                            //     'Download your business activity',
+                            //     'View categories',
                             //     style: ktsFormHintText,
                             //   ),
                             //   trailing: IconButton(
-                            //     onPressed: () {},
+                            //     onPressed: () {
+                            //       // viewModel.navigationService
+                            //       //     .navigateTo(Routes.expenseCategoriesView);
+                            //     },
                             //     icon: const Icon(Icons.arrow_forward),
                             //     iconSize: 20,
                             //     color: kcTextSubTitleColor,
                             //   ),
                             // ),
+                            ListTile(
+                              contentPadding: EdgeInsetsDirectional.zero,
+                              leading: SvgPicture.asset(
+                                'assets/images/Frame_43540-6.svg',
+                                width: 36,
+                                height: 36,
+                              ),
+                              title: Text(
+                                'Report',
+                                style: ktsTextAuthentication,
+                              ),
+                              subtitle: Text(
+                                'Coming soon...',
+                                style: ktsFormHintText,
+                              ),
+                              trailing: IconButton(
+                                onPressed: () {},
+                                icon: const Icon(Icons.arrow_forward),
+                                iconSize: 20,
+                                color: kcTextSubTitleColor,
+                              ),
+                            ),
                             verticalSpaceRegular,
                             Center(
                               child: GestureDetector(

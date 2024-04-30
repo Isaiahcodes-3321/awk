@@ -8,6 +8,8 @@ import 'package:verzo/app/app.locator.dart';
 import 'package:verzo/app/app.router.dart';
 import 'package:verzo/services/business_creation_service.dart';
 import 'package:verzo/services/dashboard_service.dart';
+import 'package:verzo/ui/common/app_colors.dart';
+import 'package:verzo/ui/common/app_styles.dart';
 import 'package:verzo/ui/views/add_card/add_card_view.form.dart';
 
 class AddCardViewModel extends FormViewModel {
@@ -27,6 +29,20 @@ class AddCardViewModel extends FormViewModel {
     SudoCardSpendingInterval.yearly,
   ];
 
+  // Method to set the spending limit
+  void setSpendingLimit(num amount, SudoCardSpendingInterval interval) {
+    // Create a new SudoCardSpendingLimits object with the provided amount and interval
+    final spendingLimitItem = SudoCardSpendingLimits(
+      amount: amount,
+      // amount: num.parse(amountValue ?? ''),
+      interval: interval,
+    );
+    // Clear previous spending limits if any
+    spendingLimit.clear();
+    // Add the new spending limit item
+    spendingLimit.add(spendingLimitItem);
+  }
+
   void setSelectedInterval(SudoCardSpendingInterval interval) {
     selectedInterval = interval;
     rebuildUi(); // Notify listeners when the value changes
@@ -43,7 +59,7 @@ class AddCardViewModel extends FormViewModel {
     return users;
   }
 
-  Future<bool> createSudoCard() async {
+  Future<SudoCardCreationResult?> runSudoCard() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String businessIdValue = prefs.getString('businessId') ?? '';
     final DialogResponse? response = await dialogService.showCustomDialog(
@@ -57,45 +73,68 @@ class AddCardViewModel extends FormViewModel {
         // confirmationTitle: 'Ok',
         );
     if (response?.confirmed == true) {
-      await businessService.viewBusinessAccount(businessId: businessIdValue);
-      final bool isCreated = await dashboardService.createSudoCard(
+      final result = await businessService.viewBusinessAccount(
+          businessId: businessIdValue);
+      if (result == null) {
+        await navigationService.replaceWith(Routes.businessAccountView);
+      } else {
+        return dashboardService.createSudoCard(
           businessId: businessIdValue,
           assignedUserId: userIdValue,
-          spendingLimits: spendingLimit);
-
-      if (isCreated == true) {
-        await dialogService.showCustomDialog(
-          variant: DialogType.cardSuccess,
-          title: 'Created!',
-          description: 'Your card has been successfully created.',
-          barrierDismissible: true,
-          mainButtonTitle: 'Ok',
+          spendingLimits: spendingLimit.isNotEmpty ? spendingLimit : null,
         );
-
-        navigationService.replaceWith(Routes.homeView);
-      } else {
-        await dialogService.showCustomDialog(
-            variant: DialogType.cardSuccess,
-            title: 'Oops!',
-            description: "Your card wasn't created.",
-            barrierDismissible: true,
-            mainButtonTitle: 'Ok');
       }
-
-      rebuildUi();
-      return isCreated;
-    } else {
-      // User canceled the action
-      return false;
     }
+
+    // Return null if the user cancels the action
+    return null;
   }
 
-  // Future saveSudoCardData(BuildContext context) async {
-  //   final result = await runBusyFuture(saveSudoCardData(context));
-  //   // if (result == true) {
-  //   //   navigationService.replaceWith(Routes.homeView);
-  //   // }
-  // }
+  Future createSudoCard(BuildContext context) async {
+    final result = await runBusyFuture(runSudoCard());
+
+    if (result?.sudoCard != null) {
+      await dialogService.showCustomDialog(
+        variant: DialogType.cardSuccess,
+        title: 'Created!',
+        description: 'Your card has been successfully created.',
+        barrierDismissible: true,
+        mainButtonTitle: 'Ok',
+      );
+      await navigationService.replaceWith(Routes.homeView);
+    } else if (result?.error != null) {
+      setValidationMessage(result?.error?.message);
+      await dialogService.showCustomDialog(
+          variant: DialogType.cardSuccess,
+          title: 'Oops!',
+          description: "Your already have a card.",
+          barrierDismissible: true,
+          mainButtonTitle: 'Ok');
+    }
+
+    // ScaffoldMessenger.of(context).showSnackBar(
+    //   SnackBar(
+    //     content: Text(
+    //       validationMessage ?? 'An error occurred, Try again.',
+    //       textAlign: TextAlign.start,
+    //       style: ktsSubtitleTileText2,
+    //     ),
+    //     elevation: 2,
+    //     duration: const Duration(seconds: 3), // Adjust as needed
+    //     backgroundColor: kcErrorColor,
+    //     dismissDirection: DismissDirection.up,
+    //     behavior: SnackBarBehavior.fixed,
+    //     shape: const RoundedRectangleBorder(
+    //         borderRadius: BorderRadius.only(
+    //             bottomLeft: Radius.circular(4),
+    //             bottomRight: Radius.circular(4))),
+    //     padding: const EdgeInsets.all(12),
+    //     // margin:
+    //     //     EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.9),
+    //   ),
+    // );
+  }
 
   void navigateBack() => navigationService.back();
+  // void navigateBack() => navigationService.replaceWith(Routes.homeView);
 }

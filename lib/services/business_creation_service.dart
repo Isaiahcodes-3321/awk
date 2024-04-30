@@ -3,7 +3,6 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.locator.dart';
-import 'package:verzo/app/app.router.dart';
 
 class BusinessCreationService {
   final navigationService = locator<NavigationService>();
@@ -16,6 +15,7 @@ class BusinessCreationService {
   final QueryOptions _getBusinessCategoriesQuery;
   final QueryOptions _getBusinessTasksQuery;
   final QueryOptions _viewBusinessAccountQuery;
+  final QueryOptions _viewBusinessAccountStatementQuery;
 
   BusinessCreationService()
       : client = ValueNotifier(GraphQLClient(
@@ -82,19 +82,28 @@ class BusinessCreationService {
           document: gql('''
         query ViewBusinessAccount(\$businessId: String!){
           viewBusinessAccount(businessId: \$businessId) {
-            message
-            data{
-              bvn
-              accountName
-              accountType
-              accountNumber
+            id
+            bvn
+            accountName
+            accountType
+            accountNumber
             }
+            }
+            '''),
+        ),
+        _viewBusinessAccountStatementQuery = QueryOptions(
+          document: gql('''
+        query ViewBusinessAccountStatement(\$input: ViewAccountStatement!){
+          viewBusinessAccountStatement(input: \$input){
+            id
+            narration
+            amount
             }
             }
             '''),
         );
 
-  Future<BusinessAccount> viewBusinessAccount({required businessId}) async {
+  Future<BusinessAccount?>? viewBusinessAccount({required businessId}) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('access_token');
 
@@ -122,29 +131,22 @@ class BusinessCreationService {
     final QueryResult businessAccountResult = await newClient.query(options);
 
     if (businessAccountResult.hasException) {
-      //  navigationService.replaceWith(Routes.businessAccountView);
-      throw GraphQLBusinessError(
-        message: businessAccountResult.exception?.graphqlErrors.first.message
-            .toString(),
+      return null;
+    }
+    {
+      final businessAccountData =
+          businessAccountResult.data?['viewBusinessAccount'];
+
+      final BusinessAccount businessAccount = BusinessAccount(
+        id: businessAccountData['id'],
+        accountName: businessAccountData['accountName'],
+        accountNumber: businessAccountData['accountNumber'],
+        accountType: businessAccountData['accountType'],
+        bvn: businessAccountData['bvn'],
       );
+
+      return businessAccount;
     }
-
-    final businessAccountData =
-        businessAccountResult.data?['viewBusinessAccount'];
-    final dataAccountData = businessAccountData['data'];
-
-    if (businessAccountData == null) {
-      navigationService.replaceWith(Routes.businessAccountView);
-    }
-
-    final BusinessAccount businessAccount = BusinessAccount(
-        accountName: dataAccountData['accountName'],
-        accountNumber: dataAccountData['accountNumber'],
-        accountType: dataAccountData['accountType'],
-        bvn: dataAccountData['bvn'],
-        message: businessAccountData['message']);
-
-    return businessAccount;
   }
 
   Future<BusinessCreationResult> createBusinessProfile(
@@ -511,16 +513,17 @@ class GraphQLBusinessError {
 }
 
 class BusinessAccount {
+  late final String id;
   late final String accountName;
-  late final String message;
+
   late final String accountNumber;
   late final String accountType;
   late final String bvn;
 
   BusinessAccount(
       {required this.accountName,
+      required this.id,
       required this.accountNumber,
       required this.accountType,
-      required this.message,
       required this.bvn});
 }

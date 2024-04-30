@@ -262,8 +262,10 @@ class MarkExpenseItemAsReceivedView
                                         controller:
                                             expenseItem.quantityRecieved ==
                                                     expenseItem.quantity
-                                                ? quantityReceivedController
-                                                : null,
+                                                ? TextEditingController(
+                                                    text: expenseItem.quantity
+                                                        .toString())
+                                                : quantityReceivedController,
                                         cursorColor: kcPrimaryColor,
                                         decoration: InputDecoration(
                                             filled:

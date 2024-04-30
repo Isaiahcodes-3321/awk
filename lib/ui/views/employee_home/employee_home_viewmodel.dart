@@ -85,7 +85,7 @@ class EmployeeHomeViewModel extends FutureViewModel<List<Expenses>> {
   Future<List<BusinessCard>> getUserCardsByBusiness() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String businessIdValue = prefs.getString('businessId') ?? '';
-    final result = await _dashboardService.viewBusinessCardsData(
+    final result = await _dashboardService.getUserCardsByBusiness(
         businessId: businessIdValue);
     businessCard = result;
     rebuildUi();

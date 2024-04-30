@@ -80,7 +80,7 @@ class AuthenticationService {
     var refreshToken = result.data?['signIn']['token']['refresh_token'];
     var verified = result.data?['signIn']['verified'] ?? false;
 
-    if (verified == null) {
+    if (verified == false) {
       navigationService.replaceWith(Routes.verificationView);
       return AuthenticationResult.error(
         error: GraphQLAuthError(

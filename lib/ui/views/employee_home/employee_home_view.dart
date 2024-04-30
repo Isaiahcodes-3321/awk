@@ -8,7 +8,7 @@ import 'package:verzo/app/app.locator.dart';
 import 'package:verzo/app/app.router.dart';
 import 'package:verzo/services/dashboard_service.dart';
 import 'package:verzo/services/expense_service.dart';
-import 'package:verzo/services/purchase_service.dart';
+
 import 'package:verzo/ui/common/app_colors.dart';
 import 'package:verzo/ui/common/app_styles.dart';
 import 'package:verzo/ui/common/ui_helpers.dart';
@@ -42,8 +42,9 @@ class _EmployeeHomeViewState extends State<EmployeeHomeView> {
         onViewModelReady: (viewModel) async {
           // viewModel.setUserDetails();
           // await viewModel.getUserAndBusinessData();
-          // await viewModel.viewBusinessCards();
+          await viewModel.getUserCardsByBusiness();
           await viewModel.getExpenseByBusiness();
+
           viewModel.setUserDetails();
         },
         builder: (
@@ -132,7 +133,7 @@ class _NewViewState extends State<EmployeeNewView>
         onViewModelReady: (viewModel) async {
           viewModel.setUserDetails();
 
-          // await viewModel.viewBusinessCards();
+          await viewModel.getUserCardsByBusiness();
           await viewModel.getExpenseByBusiness();
         },
         builder: (
@@ -523,12 +524,12 @@ class Cards extends ViewModelWidget<EmployeeHomeViewModel> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(viewModel.userName, style: ktsHeroTextWhiteDashboard1),
-                    SvgPicture.asset(
-                      'assets/images/eye.svg',
-                      width: 22,
-                      height: 22,
-                      color: Colors.white,
-                    ),
+                    // SvgPicture.asset(
+                    //   'assets/images/eye.svg',
+                    //   width: 22,
+                    //   height: 22,
+                    //   color: Colors.white,
+                    // ),
                   ],
                 ),
                 Column(
@@ -561,7 +562,7 @@ class Cards extends ViewModelWidget<EmployeeHomeViewModel> {
                               ),
                               verticalSpaceTinyt1,
                               Text(
-                                '${businessCard.expiryMonth}/${businessCard.expiryYear}',
+                                businessCard.expiryDate,
                                 style: ktsHeroTextWhiteDashboard2,
                               )
                             ],
@@ -590,32 +591,32 @@ class Cards extends ViewModelWidget<EmployeeHomeViewModel> {
                     ]),
               ]),
         ),
-        verticalSpaceSmall,
-        Container(
-          padding: EdgeInsets.zero,
-          width: MediaQuery.of(context).size.width * 0.9,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Billing address',
-                  style: GoogleFonts.dmSans(
-                    color: kcButtonTextColor.withOpacity(0.7),
-                    fontSize: 16,
-                    fontWeight: FontWeight.w300,
-                  )),
-              verticalSpaceTiny,
-              Text(
-                  '${businessCard.line1},${businessCard.city},${businessCard.country},${businessCard.postalCode}',
-                  style: GoogleFonts.openSans(
-                    color: kcButtonTextColor,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                  ))
-            ],
-          ),
-        ),
+        // verticalSpaceSmall,
+        // Container(
+        //   padding: EdgeInsets.zero,
+        //   width: MediaQuery.of(context).size.width * 0.9,
+        //   child: Column(
+        //     crossAxisAlignment: CrossAxisAlignment.start,
+        //     mainAxisAlignment: MainAxisAlignment.start,
+        //     mainAxisSize: MainAxisSize.min,
+        //     children: [
+        //       Text('Billing address',
+        //           style: GoogleFonts.dmSans(
+        //             color: kcButtonTextColor.withOpacity(0.7),
+        //             fontSize: 16,
+        //             fontWeight: FontWeight.w300,
+        //           )),
+        //       verticalSpaceTiny,
+        //       Text('No',
+        //           // '${businessCard.line1},${businessCard.city},${businessCard.state},${businessCard.postalCode}',
+        //           style: GoogleFonts.openSans(
+        //             color: kcButtonTextColor,
+        //             fontSize: 18,
+        //             fontWeight: FontWeight.w500,
+        //           ))
+        //     ],
+        //   ),
+        // ),
         verticalSpaceSmallMid,
         Container(
           padding: EdgeInsets.zero,

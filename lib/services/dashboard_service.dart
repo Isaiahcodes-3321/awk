@@ -12,8 +12,9 @@ class DashboardService {
   final MutationOptions _createSudoCardMutation;
   final MutationOptions _userRequestCardMutation;
 
-  final QueryOptions _viewBusinessCardsQuery;
+  final QueryOptions _getCardsByBusinessQuery;
   final QueryOptions _getUserCardsByBusinessQuery;
+  final QueryOptions _viewCardTransactionsQuery;
   final QueryOptions _getBusinessesByUserIdQuery;
   final QueryOptions _getUserByIdQuery;
   final QueryOptions _getUsersByBusinessQuery;
@@ -91,9 +92,11 @@ class DashboardService {
         _createSudoCardMutation = MutationOptions(
           document: gql('''
         mutation CreateSudoCard(\$input: CreateSudoCard!){
-          createSudoCard (input: \$input)
-            }
-            '''),
+          createSudoCard(input: \$input){
+            id
+          }
+        }
+     '''),
         ),
         _userRequestCardMutation = MutationOptions(
           document: gql('''
@@ -102,25 +105,15 @@ class DashboardService {
             }
             '''),
         ),
-        _viewBusinessCardsQuery = QueryOptions(
+        _getCardsByBusinessQuery = QueryOptions(
           document: gql('''
-        query ViewBusinessCards (\$businessId: String!){
-          viewBusinessCards (businessId: \$businessId){
-            data{
-              expiryMonth
-              expiryYear
-              currency
-              maskedPan
-              customer{
-                billingAddress{
-                  line1
-                  city
-                  state
-                  country
-                  postalCode
-                }
-              }
-            }
+        query GetCardsByBusiness (\$businessId: String!){
+          getCardsByBusiness (businessId: \$businessId){
+            id
+            expiryDate
+            currency
+            maskedPan
+           
             }
             }
             '''),
@@ -129,12 +122,22 @@ class DashboardService {
           document: gql('''
         query GetUserCardsByBusiness (\$businessId: String!){
           getUserCardsByBusiness (businessId: \$businessId){
-           maskedPan
-           business{
-            cards{
-              expiry
+            id
+            expiryDate
+            currency
+            maskedPan 
             }
-           }
+            }
+            '''),
+        ),
+        _viewCardTransactionsQuery = QueryOptions(
+          document: gql('''
+        query ViewCardTransactions(\$input:ViewCardAuthorizations!){
+          viewCardTransactions(input:\$input){
+            id
+            amount
+            currency
+            type 
             }
             }
             '''),
@@ -258,7 +261,7 @@ class DashboardService {
     return users;
   }
 
-  Future<List<BusinessCard>> viewBusinessCardsData({
+  Future<List<BusinessCard>> getCardsByBusiness({
     required String businessId,
   }) async {
     final prefs = await SharedPreferences.getInstance();
@@ -280,7 +283,7 @@ class DashboardService {
     );
 
     final QueryOptions options = QueryOptions(
-      document: _viewBusinessCardsQuery.document,
+      document: _getCardsByBusinessQuery.document,
       variables: {
         'businessId': businessId,
       },
@@ -298,24 +301,144 @@ class DashboardService {
     // }
 
     final List businessCardsData =
-        businessCardsResult.data?['viewBusinessCards']['data'] ?? [];
+        businessCardsResult.data?['getCardsByBusiness'] ?? [];
 
     // Process the retrieved business card data
     final List<BusinessCard> businessCards = businessCardsData.map((data) {
-      final customerData = data['customer'];
-      final billindAddressData = customerData['billingAddress'];
+      // final accountData = data['account'];
+      // final customerData = accountData['customer'];
       return BusinessCard(
-          expiryMonth: data['expiryMonth'],
-          expiryYear: data['expiryYear'],
-          maskedPan: data['maskedPan'],
-          currency: data['currency'],
-          postalCode: billindAddressData['postalCode'],
-          city: billindAddressData['city'],
-          country: billindAddressData['country'],
-          line1: billindAddressData['line1']);
+        id: data['id'],
+        expiryDate: data['expiryDate'],
+        maskedPan: data['maskedPan'],
+        currency: data['currency'],
+        // postalCode: customerData['billingAddressPostalCode'],
+        // city: customerData['billingAddressCity'],
+        // state: customerData['billingAddressState'],
+        // line1: customerData['billingAddressLine1']
+      );
     }).toList();
 
     return businessCards;
+  }
+
+  Future<List<BusinessCard>> getUserCardsByBusiness({
+    required String businessId,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('access_token');
+
+    if (token == null) {
+      throw GraphQLAuthError(
+        message: "Access token not found",
+      );
+    }
+    final authLink = AuthLink(
+      getToken: () => 'Bearer $token',
+    );
+
+    // Create a new GraphQLClient with the authlink
+    final newClient = GraphQLClient(
+      cache: GraphQLCache(),
+      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+    );
+
+    final QueryOptions options = QueryOptions(
+      document: _getUserCardsByBusinessQuery.document,
+      variables: {
+        'businessId': businessId,
+      },
+    );
+
+    final QueryResult businessCardsResult = await newClient.query(options);
+
+    // if (userAndBusinessResult.hasException) {
+    //   return UserAndBusinessResult.error(
+    //     error: GraphQLAuthError(
+    //       message: userAndBusinessResult.exception?.graphqlErrors.first.message
+    //           .toString(),
+    //     ),
+    //   );
+    // }
+
+    final List businessCardsData =
+        businessCardsResult.data?['getUserCardsByBusiness'] ?? [];
+
+    // Process the retrieved business card data
+    final List<BusinessCard> businessCards = businessCardsData.map((data) {
+      // final accountData = data['account'];
+      // final customerData = accountData['customer'];
+      return BusinessCard(
+        id: data['id'],
+        expiryDate: data['expiryDate'],
+        maskedPan: data['maskedPan'],
+        currency: data['currency'],
+        // postalCode: customerData['billingAddressPostalCode'],
+        // city: customerData['billingAddressCity'],
+        // state: customerData['billingAddressState'],
+        // line1: customerData['billingAddressLine1']
+      );
+    }).toList();
+
+    return businessCards;
+  }
+
+  Future<List<CardTransactions>> viewCardTransactions({
+    required String cardId,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('access_token');
+
+    if (token == null) {
+      throw GraphQLAuthError(
+        message: "Access token not found",
+      );
+    }
+    final authLink = AuthLink(
+      getToken: () => 'Bearer $token',
+    );
+
+    // Create a new GraphQLClient with the authlink
+    final newClient = GraphQLClient(
+      cache: GraphQLCache(),
+      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+    );
+
+    final QueryOptions options = QueryOptions(
+      document: _viewCardTransactionsQuery.document,
+      variables: {
+        'input': {
+          'cardId': cardId,
+        }
+      },
+    );
+
+    final QueryResult cardTransactionResult = await newClient.query(options);
+
+    // if (userAndBusinessResult.hasException) {
+    //   return UserAndBusinessResult.error(
+    //     error: GraphQLAuthError(
+    //       message: userAndBusinessResult.exception?.graphqlErrors.first.message
+    //           .toString(),
+    //     ),
+    //   );
+    // }
+
+    final List cardTransactionData =
+        cardTransactionResult.data?['viewCardTransactions'] ?? [];
+
+    // Process the retrieved business card data
+    final List<CardTransactions> cardTransactions =
+        cardTransactionData.map((data) {
+      return CardTransactions(
+        id: data['id'],
+        amount: data['amount'],
+        type: data['type'],
+        currency: data['currency'],
+      );
+    }).toList();
+
+    return cardTransactions;
   }
 
   Future<UserAndBusinessResult> getUserAndBusinessData() async {
@@ -562,7 +685,7 @@ class DashboardService {
     return isReset;
   }
 
-  Future<bool> createSudoCard({
+  Future<SudoCardCreationResult> createSudoCard({
     required String businessId,
     String? assignedUserId,
     List<SudoCardSpendingLimits>? spendingLimits,
@@ -572,8 +695,10 @@ class DashboardService {
     final businessId = prefs.getString('businessId');
 
     if (token == null) {
-      GraphQLAuthError(
-        message: "Access token not found",
+      return SudoCardCreationResult.error(
+        error: GraphQLCardError(
+          message: "Access token not found",
+        ),
       );
     }
 
@@ -595,8 +720,13 @@ class DashboardService {
           'businessId': businessId,
           'assignedUserId': assignedUserId,
           'spendingLimits': spendingLimits
-              ?.map((limit) =>
-                  {'amount': limit.amount, 'interval': limit.interval})
+              ?.map((limit) => {
+                    'amount': limit.amount,
+                    'interval': limit.interval
+                        .toString()
+                        .split('.')
+                        .last // Convert enum to string
+                  })
               .toList()
         },
       },
@@ -604,14 +734,29 @@ class DashboardService {
 
     final QueryResult result = await newClient.mutate(options);
 
-    bool isCreated = result.data?['createSudoCard'] ?? false;
-
     if (result.hasException) {
-      // throw Exception(result.exception);
-      isCreated = false;
+      return SudoCardCreationResult.error(
+        error: GraphQLCardError(
+          message: result.exception?.graphqlErrors.first.message.toString(),
+        ),
+      );
     }
 
-    return isCreated;
+    if (result.data == null || result.data!['createSudoCard'] == null) {
+      return SudoCardCreationResult.error(
+        error: GraphQLCardError(
+          message: "Error parsing response data",
+        ),
+      );
+    }
+
+    var result_Id = result.data?['createSudoCard']['id'];
+
+    var sudoCard = SudoCardCreationSuccessResult(
+      result_id: result_Id,
+    );
+
+    return SudoCardCreationResult(sudoCard: sudoCard);
   }
 
   Future<bool> userRequestCard({required String businessId}) async {
@@ -1221,24 +1366,39 @@ class Business {
 }
 
 class BusinessCard {
-  late final String expiryYear;
-  late final String expiryMonth;
+  late final String expiryDate;
+  late final String id;
   late final String maskedPan;
   late final String currency;
-  late final String postalCode;
-  late final String city;
-  late final String country;
-  late final String line1;
+  // late final String postalCode;
+  // late final String city;
+  // late final String state;
+  // late final String line1;
 
-  BusinessCard(
-      {required this.expiryMonth,
-      required this.expiryYear,
-      required this.maskedPan,
-      required this.currency,
-      required this.postalCode,
-      required this.city,
-      required this.country,
-      required this.line1});
+  BusinessCard({
+    required this.expiryDate,
+    required this.id,
+    required this.maskedPan,
+    required this.currency,
+    // required this.postalCode,
+    // required this.city,
+    // required this.state,
+    // required this.line1
+  });
+}
+
+class CardTransactions {
+  late final num amount;
+  late final String id;
+  late final String type;
+  late final String currency;
+
+  CardTransactions({
+    required this.amount,
+    required this.id,
+    required this.type,
+    required this.currency,
+  });
 }
 
 class SudoCardSpendingLimits {
@@ -1257,6 +1417,12 @@ class GraphQLAuthError {
   final String? message;
 
   GraphQLAuthError({required this.message});
+}
+
+class GraphQLCardError {
+  final String? message;
+
+  GraphQLCardError({required this.message});
 }
 
 class UserAndRoleResult {
@@ -1292,4 +1458,22 @@ class UserUpdateSuccessResult {
   });
 
   late final String resultUser_id;
+}
+
+class SudoCardCreationResult {
+  late final SudoCardCreationSuccessResult? sudoCard;
+  late final GraphQLCardError? error;
+
+  SudoCardCreationResult({this.sudoCard}) : error = null;
+  SudoCardCreationResult.error({this.error}) : sudoCard = null;
+
+  bool get hasError => error != null;
+}
+
+class SudoCardCreationSuccessResult {
+  SudoCardCreationSuccessResult({
+    required this.result_id,
+  });
+
+  late final String result_id;
 }

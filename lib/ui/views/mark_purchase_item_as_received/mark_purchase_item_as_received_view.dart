@@ -265,8 +265,10 @@ class MarkPurchaseItemAsReceivedView
                                         controller:
                                             purchaseItem.quantityRecieved ==
                                                     purchaseItem.quantity
-                                                ? quantityReceivedController
-                                                : null,
+                                                ? TextEditingController(
+                                                    text: purchaseItem.quantity
+                                                        .toString())
+                                                : quantityReceivedController,
                                         cursorColor: kcPrimaryColor,
                                         decoration: InputDecoration(
                                             filled:

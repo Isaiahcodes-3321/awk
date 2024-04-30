@@ -20,7 +20,7 @@ class LoginViewModel extends FormViewModel {
   Future<void> getUserAndRoleData() async {
     final result = await _dashboardService.getUserAndRoleData();
 
-    if (result.roleName != 'Admin') {
+    if (result.roleName != 'Owner') {
       await getUserAndBusinessData();
       navigationService.replaceWith(Routes.employeeHomeView);
     } else {

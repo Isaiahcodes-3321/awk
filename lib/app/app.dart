@@ -85,6 +85,7 @@ import 'package:verzo/ui/dialogs/card_success/card_success_dialog.dart';
 import 'package:verzo/ui/views/business_tasks/business_tasks_view.dart';
 
 import 'package:verzo/ui/views/add_card/add_card_view.dart';
+import 'package:verzo/ui/views/card_transactions/card_transactions_view.dart';
 // @stacked-import
 
 @StackedApp(
@@ -153,6 +154,7 @@ import 'package:verzo/ui/views/add_card/add_card_view.dart';
     MaterialRoute(page: BusinessTasksView),
 
     MaterialRoute(page: AddCardView),
+    MaterialRoute(page: CardTransactionsView),
 // @stacked-route
   ],
   dependencies: [

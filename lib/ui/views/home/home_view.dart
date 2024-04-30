@@ -52,7 +52,7 @@ class _HomeViewState extends State<HomeView>
         viewModelBuilder: () => HomeViewModel(),
         onViewModelReady: (viewModel) async {
           viewModel.setUserDetails();
-          await viewModel.viewBusinessCards();
+          await viewModel.getCardsByBusiness();
           await viewModel.getUserAndBusinessData();
           await viewModel.totalWeeklyInvoicesAmount();
           await viewModel.getInvoiceByBusiness();
@@ -166,7 +166,7 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
         viewModelBuilder: () => HomeViewModel(),
         onViewModelReady: (viewModel) async {
           viewModel.setUserDetails();
-          await viewModel.viewBusinessCards();
+          await viewModel.getCardsByBusiness();
           await viewModel.getUserAndBusinessData();
           await viewModel.totalWeeklyInvoicesAmount();
           await viewModel.getInvoiceByBusiness();
@@ -368,6 +368,7 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
                             itemBuilder: (context, index) {
                               var businessCard = viewModel.businessCard[index];
                               return Cards(
+                                cardId: businessCard.id,
                                 businessCard: businessCard,
                               );
                             },
@@ -1098,14 +1099,12 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
 }
 
 class Cards extends ViewModelWidget<HomeViewModel> {
-  const Cards({
-    Key? key,
-    required this.businessCard,
-  }) : super(key: key);
+  const Cards({Key? key, required this.businessCard, required this.cardId})
+      : super(key: key);
 
   final BusinessCard businessCard;
 
-  // final String expenseId;
+  final String cardId;
 
   @override
   Widget build(BuildContext context, HomeViewModel viewModel) {
@@ -1129,12 +1128,12 @@ class Cards extends ViewModelWidget<HomeViewModel> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(viewModel.userName, style: ktsHeroTextWhiteDashboard1),
-                    SvgPicture.asset(
-                      'assets/images/eye.svg',
-                      width: 22,
-                      height: 22,
-                      color: Colors.white,
-                    ),
+                    // SvgPicture.asset(
+                    //   'assets/images/eye.svg',
+                    //   width: 22,
+                    //   height: 22,
+                    //   color: Colors.white,
+                    // ),
                   ],
                 ),
                 Column(
@@ -1167,7 +1166,7 @@ class Cards extends ViewModelWidget<HomeViewModel> {
                               ),
                               verticalSpaceTinyt1,
                               Text(
-                                '${businessCard.expiryMonth}/${businessCard.expiryYear}',
+                                businessCard.expiryDate,
                                 style: ktsHeroTextWhiteDashboard2,
                               )
                             ],
@@ -1196,32 +1195,32 @@ class Cards extends ViewModelWidget<HomeViewModel> {
                     ]),
               ]),
         ),
-        verticalSpaceSmall,
-        Container(
-          padding: EdgeInsets.zero,
-          width: MediaQuery.of(context).size.width * 0.9,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Billing address',
-                  style: GoogleFonts.dmSans(
-                    color: kcButtonTextColor.withOpacity(0.7),
-                    fontSize: 16,
-                    fontWeight: FontWeight.w300,
-                  )),
-              verticalSpaceTiny,
-              Text(
-                  '${businessCard.line1},${businessCard.city},${businessCard.country},${businessCard.postalCode}',
-                  style: GoogleFonts.openSans(
-                    color: kcButtonTextColor,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                  ))
-            ],
-          ),
-        ),
+        // verticalSpaceSmall,
+        // Container(
+        //   padding: EdgeInsets.zero,
+        //   width: MediaQuery.of(context).size.width * 0.9,
+        //   child: Column(
+        //     crossAxisAlignment: CrossAxisAlignment.start,
+        //     mainAxisAlignment: MainAxisAlignment.start,
+        //     mainAxisSize: MainAxisSize.min,
+        //     children: [
+        //       Text('Billing address',
+        //           style: GoogleFonts.dmSans(
+        //             color: kcButtonTextColor.withOpacity(0.7),
+        //             fontSize: 16,
+        //             fontWeight: FontWeight.w300,
+        //           )),
+        //       verticalSpaceTiny,
+        //       Text('No',
+        //           // '${businessCard.line1},${businessCard.city},${businessCard.state},${businessCard.postalCode}',
+        //           style: GoogleFonts.openSans(
+        //             color: kcButtonTextColor,
+        //             fontSize: 18,
+        //             fontWeight: FontWeight.w500,
+        //           ))
+        //     ],
+        //   ),
+        // ),
         verticalSpaceSmallMid,
         Container(
           padding: EdgeInsets.zero,
@@ -1248,6 +1247,35 @@ class Cards extends ViewModelWidget<HomeViewModel> {
                     verticalSpaceTiny,
                     Text(
                       'New card',
+                      style: GoogleFonts.dmSans(
+                        color: kcButtonTextColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w300,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  viewModel.navigationService.navigateTo(
+                      Routes.cardTransactionsView,
+                      arguments: cardId);
+                },
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      radius: 20,
+                      backgroundColor: kcPrimaryColor.withOpacity(0.6),
+                      child: const Icon(
+                        Icons.receipt_outlined,
+                        color: kcButtonTextColor,
+                        size: 24,
+                      ),
+                    ),
+                    verticalSpaceTiny,
+                    Text(
+                      'Transactions',
                       style: GoogleFonts.dmSans(
                         color: kcButtonTextColor,
                         fontSize: 18,

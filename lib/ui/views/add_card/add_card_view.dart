@@ -29,7 +29,12 @@ class AddCardView extends StackedView<AddCardViewModel> with $AddCardView {
           busy: viewModel.isBusy,
           onMainButtonTapped: () {
             if (viewModel.formKey.currentState!.validate()) {
-              viewModel.createSudoCard();
+              // SudoCardSpendingInterval selectedInterval =
+              //     viewModel.selectedInterval!;
+              // Set the spending limit in the ViewModel
+              num amount = num.parse(amountController.text);
+              viewModel.setSpendingLimit(amount, viewModel.selectedInterval!);
+              viewModel.createSudoCard(context);
             }
           },
           title: 'Add card',
