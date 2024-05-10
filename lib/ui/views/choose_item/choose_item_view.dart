@@ -100,50 +100,50 @@ class _ChooseItemViewState extends State<ChooseItemView> {
                   style: ktsFormHintText,
                 ),
                 verticalSpaceIntermitent,
-                Container(
-                  clipBehavior: Clip.antiAlias,
-                  padding: const EdgeInsets.only(top: 10),
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    // color: kcButtonTextColor,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(width: 1, color: kcBorderColor),
-                  ),
-                  child: Builder(builder: (context) {
-                    if (model.isBusy) {
-                      return const SizedBox(
-                          height: 500,
-                          child: Center(
-                              child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              CircularProgressIndicator(
-                                color: kcPrimaryColor,
-                              ),
-                            ],
-                          )));
-                    }
-                    if (model.data!.isEmpty) {
-                      return SizedBox(
-                          height: 500,
-                          child: Center(
-                              child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                'assets/images/Group_1000007828.svg',
-                                width: 200,
-                                height: 150,
-                              ),
-                              verticalSpaceSmall,
-                              Text(
-                                'No items added',
-                                style: ktsSubtitleTextAuthentication,
-                              ),
-                            ],
-                          )));
-                    }
-                    return ListView.separated(
+                Builder(builder: (context) {
+                  if (model.isBusy) {
+                    return const SizedBox(
+                        height: 500,
+                        child: Center(
+                            child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CircularProgressIndicator(
+                              color: kcPrimaryColor,
+                            ),
+                          ],
+                        )));
+                  }
+                  if (model.data!.isEmpty) {
+                    return SizedBox(
+                        height: 500,
+                        child: Center(
+                            child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(
+                              'assets/images/Group_1000007828.svg',
+                              width: 200,
+                              height: 150,
+                            ),
+                            verticalSpaceSmall,
+                            Text(
+                              'No items added',
+                              style: ktsSubtitleTextAuthentication,
+                            ),
+                          ],
+                        )));
+                  }
+                  return Container(
+                    clipBehavior: Clip.antiAlias,
+                    padding: const EdgeInsets.only(top: 10),
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      // color: kcButtonTextColor,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(width: 1, color: kcBorderColor),
+                    ),
+                    child: ListView.separated(
                       padding: EdgeInsets.zero,
                       physics: const NeverScrollableScrollPhysics(),
                       primary: true,
@@ -170,9 +170,9 @@ class _ChooseItemViewState extends State<ChooseItemView> {
                           thickness: 0.4,
                         );
                       },
-                    );
-                  }),
-                ),
+                    ),
+                  );
+                }),
               ],
             ),
           ),

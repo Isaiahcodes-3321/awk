@@ -1,9 +1,11 @@
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.locator.dart';
 import 'package:verzo/services/products_services_service.dart';
+import 'package:verzo/ui/common/database_helper.dart';
 import 'package:verzo/ui/common/typesense.dart';
 
 class ProductViewModel extends FutureViewModel<List<Products>> {
@@ -28,7 +30,47 @@ class ProductViewModel extends FutureViewModel<List<Products>> {
   }
 
   @override
-  Future<List<Products>> futureToRun() => getProductByBusiness();
+  Future<List<Products>> futureToRun() async {
+    final db = await getProductDatabase();
+
+    //retrieveExpensesfromDatabase
+    final List<Map<String, dynamic>> maps = await db.query('products');
+    List<Products> productsFromDatabase;
+    if (maps.isNotEmpty) {
+      productsFromDatabase = List.generate(maps.length, (i) {
+        return Products(
+          id: maps[i]['id'],
+          productName: maps[i]['productName'],
+          price: maps[i]['price'],
+          quantity: 1,
+        );
+      });
+    } else {
+      productsFromDatabase = [];
+    }
+
+    if (productsFromDatabase != null && productsFromDatabase.isNotEmpty) {
+      // If there are expenses in the database, set them in your ViewModel.
+      products = productsFromDatabase;
+    } else {
+      // If the database is empty, fetch data from your service.
+      final productList = await getProductByBusiness();
+
+      // Save expenses to the SQLite database.
+      for (final product in productList) {
+        await db.insert(
+          'products',
+          product.toMap(),
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+      }
+      // expenses.addAll(expenseList);
+      rebuildUi();
+    }
+
+    return products;
+  }
+
   Future<List<Products>> getProductByBusiness() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String businessIdValue = prefs.getString('businessId') ?? '';

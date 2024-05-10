@@ -43,7 +43,7 @@ class _ProductViewState extends State<ProductView> {
                 focusElevation: 4.0, // Elevation when button is focused
                 hoverElevation: 4.0,
                 foregroundColor: kcButtonTextColor,
-                backgroundColor: kcPrimaryColor.withOpacity(0.7),
+                backgroundColor: Color(0XFF2A5DC8).withOpacity(0.7),
                 shape: const CircleBorder(
                   eccentricity: 1,
                   side: BorderSide.none,
@@ -62,7 +62,7 @@ class _ProductViewState extends State<ProductView> {
                 children: [
                   Container(
                     height: 120,
-                    color: kcPrimaryColor,
+                    color: Color(0XFF2A5DC8),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 28),
                       child: Column(
@@ -96,7 +96,7 @@ class _ProductViewState extends State<ProductView> {
                                   child: const Icon(
                                     Icons.search,
                                     size: 20,
-                                    color: kcButtonTextColor,
+                                    color: Color(0XFF2A5DC8),
                                   ),
                                 ),
                               ],
@@ -342,7 +342,7 @@ class ProductCard extends ViewModelWidget<ProductViewModel> {
             style: TextStyle(
               fontFamily: 'Satoshi',
               color: kcTextTitleColor.withOpacity(0.9),
-              fontSize: 18,
+              fontSize: 16,
               fontWeight: FontWeight.w600,
             ),
             overflow: TextOverflow.ellipsis,

@@ -208,6 +208,7 @@ class ArchivedSaleCard extends ViewModelWidget<ArchivedSaleViewModel> {
               'assets/images/unarchive2.svg',
               // width: 20,
               // height: 20,
+              color: kcPrimaryColor,
             ),
           ),
           IconButton(
@@ -216,6 +217,7 @@ class ArchivedSaleCard extends ViewModelWidget<ArchivedSaleViewModel> {
               'assets/images/trash-04.svg',
               width: 18,
               height: 18,
+              color: kcErrorColor,
             ),
             onPressed: (() {
               viewModel.deleteSale(saleId);

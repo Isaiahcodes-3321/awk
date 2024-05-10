@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.locator.dart';
 import 'package:verzo/services/sales_service.dart';
+import 'package:verzo/ui/common/database_helper.dart';
 
 import 'package:verzo/ui/common/typesense.dart';
 
@@ -28,7 +30,47 @@ class CustomerViewModel extends FutureViewModel<List<Customers>> {
   }
 
   @override
-  Future<List<Customers>> futureToRun() => getCustomersByBusiness();
+  Future<List<Customers>> futureToRun() async {
+    final db = await getCustomerDatabase();
+
+    //retrieveExpensesfromDatabase
+    final List<Map<String, dynamic>> maps = await db.query('customers');
+    List<Customers> customersFromDatabase;
+    if (maps.isNotEmpty) {
+      customersFromDatabase = List.generate(maps.length, (i) {
+        return Customers(
+          id: maps[i]['id'],
+          name: maps[i]['name'],
+          email: maps[i]['email'],
+          mobile: maps[i]['mobile'],
+        );
+      });
+    } else {
+      customersFromDatabase = [];
+    }
+
+    if (customersFromDatabase != null && customersFromDatabase.isNotEmpty) {
+      // If there are expenses in the database, set them in your ViewModel.
+      customers = customersFromDatabase;
+    } else {
+      // If the database is empty, fetch data from your service.
+      final customerList = await getCustomersByBusiness();
+
+      // Save expenses to the SQLite database.
+      for (final customer in customerList) {
+        await db.insert(
+          'customers',
+          customer.toMap(),
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+      }
+      // expenses.addAll(expenseList);
+      rebuildUi();
+    }
+
+    return customers;
+  }
+
   Future<List<Customers>> getCustomersByBusiness() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String businessIdValue = prefs.getString('businessId') ?? '';

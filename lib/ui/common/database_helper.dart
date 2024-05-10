@@ -115,6 +115,32 @@ Future<Database> getCustomerDatabase() async {
   return database;
 }
 
+Future<Database> getProductDatabase() async {
+  final database = openDatabase(
+    join(await getDatabasesPath(), 'product_database.db'),
+    onCreate: (db, version) {
+      db.execute(
+          'CREATE TABLE products(id TEXT PRIMARY KEY, productName TEXT, productUnitId TEXT, price REAL, quantity REAL)');
+    },
+    version: 1,
+  );
+
+  return database;
+}
+
+Future<Database> getServiceDatabase() async {
+  final database = openDatabase(
+    join(await getDatabasesPath(), 'service_database.db'),
+    onCreate: (db, version) {
+      db.execute(
+          'CREATE TABLE services(id TEXT PRIMARY KEY, name TEXT, serviceUnitId TEXT, price REAL)');
+    },
+    version: 1,
+  );
+
+  return database;
+}
+
 Future<Database> getExpensesForWeekDatabase() async {
   final database = openDatabase(
     join(await getDatabasesPath(), 'expenses_for_week_database.db'),

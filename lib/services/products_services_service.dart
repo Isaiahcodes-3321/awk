@@ -447,7 +447,7 @@ class ProductsServicesService {
     final token = prefs.getString('access_token');
 
     if (token == null) {
-      throw GraphQLProductError(
+      GraphQLProductError(
         message: "Access token not found",
       );
     }
@@ -471,13 +471,11 @@ class ProductsServicesService {
     );
 
     final QueryResult result = await newClient.mutate(options);
-
+    bool isArchived = result.data?['archiveProductByBusiness'] ?? false;
     if (result.hasException) {
       // Handle any errors that may have occurred during the log out process
-      throw Exception(result.exception);
+      isArchived = false;
     }
-
-    bool isArchived = result.data?['archiveProductByBusiness'] ?? false;
 
     return isArchived;
   }
@@ -487,7 +485,7 @@ class ProductsServicesService {
     final token = prefs.getString('access_token');
 
     if (token == null) {
-      throw GraphQLProductError(
+      GraphQLProductError(
         message: "Access token not found",
       );
     }
@@ -511,13 +509,11 @@ class ProductsServicesService {
     );
 
     final QueryResult result = await newClient.mutate(options);
-
+    bool isUnArchived = result.data?['unarchiveProductByBusiness'] ?? false;
     if (result.hasException) {
       // Handle any errors that may have occurred during the log out process
-      throw Exception(result.exception);
+      isUnArchived = false;
     }
-
-    bool isUnArchived = result.data?['unarchiveProductByBusiness'] ?? false;
 
     return isUnArchived;
   }
@@ -527,7 +523,7 @@ class ProductsServicesService {
     final token = prefs.getString('access_token');
 
     if (token == null) {
-      throw GraphQLProductError(
+      GraphQLProductError(
         message: "Access token not found",
       );
     }
@@ -551,13 +547,11 @@ class ProductsServicesService {
     );
 
     final QueryResult result = await newClient.mutate(options);
-
+    bool isDeleted = result.data?['deleteProduct'] ?? false;
     if (result.hasException) {
       // Handle any errors that may have occurred during the log out process
-      throw Exception(result.exception);
+      isDeleted = false;
     }
-
-    bool isDeleted = result.data?['deleteProduct'] ?? false;
 
     return isDeleted;
   }
@@ -771,7 +765,7 @@ class ProductsServicesService {
     final token = prefs.getString('access_token');
 
     if (token == null) {
-      throw GraphQLServiceError(
+      GraphQLServiceError(
         message: "Access token not found",
       );
     }
@@ -795,13 +789,11 @@ class ProductsServicesService {
     );
 
     final QueryResult result = await newClient.mutate(options);
-
+    bool isArchived = result.data?['archiveServiceByBusiness'] ?? false;
     if (result.hasException) {
       // Handle any errors that may have occurred during the log out process
-      throw Exception(result.exception);
+      isArchived = false;
     }
-
-    bool isArchived = result.data?['archiveServiceByBusiness'] ?? false;
 
     return isArchived;
   }
@@ -811,7 +803,7 @@ class ProductsServicesService {
     final token = prefs.getString('access_token');
 
     if (token == null) {
-      throw GraphQLServiceError(
+      GraphQLServiceError(
         message: "Access token not found",
       );
     }
@@ -835,13 +827,11 @@ class ProductsServicesService {
     );
 
     final QueryResult result = await newClient.mutate(options);
-
+    bool isUnArchived = result.data?['unarchiveServiceByBusiness'] ?? false;
     if (result.hasException) {
       // Handle any errors that may have occurred during the log out process
-      throw Exception(result.exception);
+      isUnArchived = false;
     }
-
-    bool isUnArchived = result.data?['unarchiveServiceByBusiness'] ?? false;
 
     return isUnArchived;
   }
@@ -851,7 +841,7 @@ class ProductsServicesService {
     final token = prefs.getString('access_token');
 
     if (token == null) {
-      throw GraphQLServiceError(
+      GraphQLServiceError(
         message: "Access token not found",
       );
     }
@@ -875,13 +865,11 @@ class ProductsServicesService {
     );
 
     final QueryResult result = await newClient.mutate(options);
-
+    bool isDeleted = result.data?['deleteService'] ?? false;
     if (result.hasException) {
       // Handle any errors that may have occurred during the log out process
-      throw Exception(result.exception);
+      isDeleted = false;
     }
-
-    bool isDeleted = result.data?['deleteService'] ?? false;
 
     return isDeleted;
   }
@@ -1221,6 +1209,16 @@ class Products {
       required this.price,
       required this.quantity,
       this.productUnitId});
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'productName': productName,
+      'price': price,
+      'productUnitId': productUnitId,
+      'quantity': quantity
+    };
+  }
 }
 
 class Services {
@@ -1234,6 +1232,15 @@ class Services {
       required this.name,
       required this.price,
       this.serviceUnitId});
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'price': price,
+      'serviceUnitId': serviceUnitId,
+    };
+  }
 }
 
 class ProductUnit {

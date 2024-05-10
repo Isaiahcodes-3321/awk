@@ -1,5 +1,6 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.dialogs.dart';
@@ -16,7 +17,6 @@ class BusinessAccountViewModel extends FormViewModel {
   final businessCreationService = locator<BusinessCreationService>();
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
   DateTime? pickedDate = DateTime.now();
 
   Future<void> showDatePickerDialog(BuildContext context) async {
@@ -79,14 +79,23 @@ class BusinessAccountViewModel extends FormViewModel {
     rebuildUi();
   }
 
+  // void setBusinessDetails() async {
+  //   bvnNo = bvnValue ?? '';
+  //   rebuildUi();
+  // }
+
   Future<bool> createBusinessAccount() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String identityIdValue = prefs.getString('identityId') ?? '';
     return businessCreationService.createBusinessAccount(
-        bvn: bvnValue ?? '',
         addressLine1: addressValue ?? '',
         city: cityValue ?? '',
         dob: dateOfBirthValue ?? '',
         postalCode: postalCodeValue ?? '',
-        state: stateValue ?? '');
+        state: stateValue ?? '',
+        identityNumber: bvnValue ?? '',
+        identityId: identityIdValue,
+        otp: otpValue ?? '');
   }
 
   Future saveBusinessData(BuildContext context) async {
@@ -132,5 +141,49 @@ class BusinessAccountViewModel extends FormViewModel {
     }
   }
 
-  void navigateBack() => navigationService.navigateTo(Routes.homeView);
+  void navigateBack() => navigationService.back();
+
+  Future<BusinessOTPResult> sendVerificationOTP() async {
+    return businessCreationService.sendVerificationOTP(
+        bvnNumber: bvnValue ?? '');
+  }
+
+  Future saveBVNData(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    final result = await runBusyFuture(sendVerificationOTP());
+
+    if (result.OTP != null) {
+      final identityId = result.OTP!.id;
+      prefs.setString('identityId', identityId);
+      navigationService.navigateTo(Routes.businessAccountView);
+    } else if (result.error != null) {
+      setValidationMessage(result.error?.message);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            validationMessage ?? 'An error occurred, Try again.',
+            textAlign: TextAlign.start,
+            style: ktsSubtitleTileText2,
+          ),
+          elevation: 2,
+          duration: const Duration(seconds: 3), // Adjust as needed
+          backgroundColor: kcErrorColor,
+          dismissDirection: DismissDirection.up,
+          behavior: SnackBarBehavior.fixed,
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(4),
+                  bottomRight: Radius.circular(4))),
+          padding: const EdgeInsets.all(12),
+          // margin: EdgeInsets.only(
+          //     bottom: MediaQuery.of(context).size.height * 0.85),
+        ),
+      );
+    } else {
+      // handle other errors
+    }
+  }
+
+  void navigateBack2() => navigationService.navigateTo(Routes.homeView);
 }

@@ -7,6 +7,7 @@ import 'package:verzo/app/app.router.dart';
 import 'package:verzo/services/products_services_service.dart';
 import 'package:verzo/ui/common/app_colors.dart';
 import 'package:verzo/ui/common/app_styles.dart';
+import 'package:verzo/ui/common/database_helper.dart';
 
 class UpdateProductViewModel extends FormViewModel {
   final navigationService = locator<NavigationService>();
@@ -87,9 +88,11 @@ class UpdateProductViewModel extends FormViewModel {
   }
 
   Future updateProductData(BuildContext context) async {
+    final db = await getProductDatabase();
     final result = await runBusyFuture(runProductUpdate());
 
     if (result.product != null) {
+      await db.delete('products');
       // navigate to success route
       navigationService.replaceWith(Routes.productView);
     } else if (result.error != null) {
@@ -122,6 +125,7 @@ class UpdateProductViewModel extends FormViewModel {
   }
 
   Future<bool> archiveProduct() async {
+    final db = await getProductDatabase();
     // Show a confirmation dialog
     final DialogResponse? response = await dialogService.showCustomDialog(
       variant: DialogType.archive,
@@ -145,6 +149,7 @@ class UpdateProductViewModel extends FormViewModel {
             description: 'Your product has been successfully archived.',
             barrierDismissible: true,
             mainButtonTitle: 'Ok');
+        await db.delete('products');
       }
 
       // Navigate to the product view
@@ -158,6 +163,7 @@ class UpdateProductViewModel extends FormViewModel {
   }
 
   Future<bool> deleteProduct() async {
+    final db = await getProductDatabase();
     // Show a confirmation dialog
     final DialogResponse? response = await dialogService.showCustomDialog(
       variant: DialogType.delete,
@@ -182,6 +188,7 @@ class UpdateProductViewModel extends FormViewModel {
           barrierDismissible: true,
           mainButtonTitle: 'Ok',
         );
+        await db.delete('products');
       }
 
       // Navigate to the product view

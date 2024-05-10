@@ -42,7 +42,7 @@ class _SettingsViewState extends State<SettingsView> {
                 children: [
                   Container(
                     height: 120,
-                    color: kcPrimaryColor,
+                    color: Color(0XFF2A5DC8),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 28),
                       child: Column(
@@ -72,7 +72,7 @@ class _SettingsViewState extends State<SettingsView> {
                                   child: const Icon(
                                     Icons.search,
                                     size: 20,
-                                    color: kcPrimaryColor,
+                                    color: Color(0XFF2A5DC8),
                                   ))
                             ],
                           ),
@@ -147,7 +147,7 @@ class _SettingsViewState extends State<SettingsView> {
                                       .navigateTo(Routes.profileView);
                                 },
                                 icon: const Icon(Icons.arrow_forward),
-                                iconSize: 20,
+                                iconSize: 24,
                                 color: kcTextSubTitleColor,
                               ),
                             ),
@@ -172,7 +172,7 @@ class _SettingsViewState extends State<SettingsView> {
                                       .navigateTo(Routes.passwordView);
                                 },
                                 icon: const Icon(Icons.arrow_forward),
-                                iconSize: 20,
+                                iconSize: 24,
                                 color: kcTextSubTitleColor,
                               ),
                             ),
@@ -218,7 +218,7 @@ class _SettingsViewState extends State<SettingsView> {
                                       .navigateTo(Routes.businessTasksView);
                                 },
                                 icon: const Icon(Icons.arrow_forward),
-                                iconSize: 20,
+                                iconSize: 24,
                                 color: kcTextSubTitleColor,
                               ),
                             ),
@@ -248,7 +248,7 @@ class _SettingsViewState extends State<SettingsView> {
                                       .navigateTo(Routes.businessProfileView);
                                 },
                                 icon: const Icon(Icons.arrow_forward),
-                                iconSize: 20,
+                                iconSize: 24,
                                 color: kcTextSubTitleColor,
                               ),
                             ),
@@ -320,7 +320,37 @@ class _SettingsViewState extends State<SettingsView> {
                               trailing: IconButton(
                                 onPressed: () {},
                                 icon: const Icon(Icons.arrow_forward),
-                                iconSize: 20,
+                                iconSize: 24,
+                                color: kcTextSubTitleColor,
+                              ),
+                            ),
+                            verticalSpaceIntermitent,
+                            Text(
+                              'Plan and billings',
+                              style: ktsSubtitleTextAuthentication2,
+                            ),
+                            ListTile(
+                              contentPadding: EdgeInsetsDirectional.zero,
+                              leading: SvgPicture.asset(
+                                'assets/images/Frame 2171.svg',
+                                width: 36,
+                                height: 36,
+                              ),
+                              title: Text(
+                                'Billings',
+                                style: ktsTextAuthentication,
+                              ),
+                              subtitle: Text(
+                                'Update your verzo plan',
+                                style: ktsFormHintText,
+                              ),
+                              trailing: IconButton(
+                                onPressed: () {
+                                  viewModel.navigationService
+                                      .navigateTo(Routes.billingView);
+                                },
+                                icon: const Icon(Icons.arrow_forward),
+                                iconSize: 24,
                                 color: kcTextSubTitleColor,
                               ),
                             ),
@@ -337,9 +367,16 @@ class _SettingsViewState extends State<SettingsView> {
                                         height: 20,
                                       ),
                                       horizontalSpaceTiny,
-                                      Text(
+                                      const Text(
                                         'Log out?',
-                                        style: ktsTextAuthentication,
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontFamily: 'Satoshi',
+                                            fontWeight: FontWeight.w500,
+                                            height: 0,
+                                            letterSpacing: -0.30,
+                                            color: kcTextTitleColor),
+                                        // style: ktsTextAuthentication,
                                         // style: TextStyle(
                                         //     fontSize: 16,
                                         //     fontFamily: 'Satoshi',

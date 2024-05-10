@@ -181,17 +181,33 @@ class TaskCard extends ViewModelWidget<BusinessTasksViewModel> {
         overflow: TextOverflow.ellipsis,
         maxLines: 1,
       ),
-      trailing: Text(
-        // expenses.merchantName,
-        businessTask.taskType,
-        style: TextStyle(
-          fontFamily: 'Satoshi',
-          color: kcTextSubTitleColor,
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-        ),
-        overflow: TextOverflow.ellipsis,
-        maxLines: 1,
+      trailing: Column(
+        children: [
+          Text(
+            // expenses.merchantName,
+            businessTask.taskType,
+            style: TextStyle(
+              fontFamily: 'Satoshi',
+              color: kcTextSubTitleColor,
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+            ),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+          ),
+          Text(
+            // expenses.merchantName,
+            businessTask.createdAt.substring(0, 10),
+            style: TextStyle(
+              fontFamily: 'Satoshi',
+              color: kcTextSubTitleColor,
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+            ),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+          ),
+        ],
       ),
     );
     // return Padding(

@@ -67,142 +67,119 @@ class UpdateCustomerView extends StackedView<UpdateCustomerViewModel> {
             children: [
               Text('Full name', style: ktsFormTitleText),
               verticalSpaceTiny,
-              SizedBox(
-                height: 50,
-                child: Stack(
-                  children: [
-                    TextFormField(
-                      cursorColor: kcPrimaryColor,
-                      decoration: InputDecoration(
-                          contentPadding:
-                              const EdgeInsets.symmetric(horizontal: 12),
-                          hintText: 'Enter full name',
-                          hintStyle: ktsFormHintText,
-                          // border: defaultFormBorder,
-                          enabledBorder: defaultFormBorder,
-                          focusedBorder: defaultFocusedFormBorder,
-                          errorBorder: defaultErrorFormBorder),
-                      textCapitalization: TextCapitalization.words,
-                      style: ktsBodyText,
-                      controller: viewModel.updateCustomerNameController,
-                      keyboardType: TextInputType.name,
-                      validator: ((value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter a name';
-                        }
-                        return null;
-                      }),
-                    ),
-                  ],
-                ),
+              TextFormField(
+                cursorColor: kcPrimaryColor,
+                decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                    hintText: 'Enter full name',
+                    hintStyle: ktsFormHintText,
+                    // border: defaultFormBorder,
+                    enabledBorder: defaultFormBorder,
+                    focusedBorder: defaultFocusedFormBorder,
+                    focusedErrorBorder: defaultErrorFormBorder,
+                    errorStyle: ktsErrorText,
+                    errorBorder: defaultErrorFormBorder),
+                textCapitalization: TextCapitalization.words,
+                style: ktsBodyText,
+                controller: viewModel.updateCustomerNameController,
+                keyboardType: TextInputType.name,
+                validator: ((value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a name';
+                  }
+                  return null;
+                }),
               ),
               verticalSpaceSmall,
               Text('Email address', style: ktsFormTitleText),
               verticalSpaceTiny,
-              SizedBox(
-                height: 50,
-                child: Stack(
-                  children: [
-                    TextFormField(
-                      cursorColor: kcPrimaryColor,
-                      decoration: InputDecoration(
-                          contentPadding:
-                              const EdgeInsets.symmetric(horizontal: 12),
-                          hintText: 'Enter email address',
-                          hintStyle: ktsFormHintText,
-                          // border: defaultFormBorder,
-                          enabledBorder: defaultFormBorder,
-                          focusedBorder: defaultFocusedFormBorder,
-                          errorBorder: defaultErrorFormBorder),
-                      // textCapitalization: TextCapitalization.words,
-                      style: ktsBodyText,
-                      controller: viewModel.updateCustomerEmailController,
-                      keyboardType: TextInputType.emailAddress,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter email address';
-                        }
-                        // Email regex pattern
-                        const emailPattern =
-                            r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-                        if (!RegExp(emailPattern).hasMatch(value)) {
-                          return 'Please enter a valid email address';
-                        }
-                        return null;
-                      },
-                    ),
-                  ],
-                ),
+              TextFormField(
+                cursorColor: kcPrimaryColor,
+                decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                    hintText: 'Enter email address',
+                    hintStyle: ktsFormHintText,
+                    // border: defaultFormBorder,
+                    enabledBorder: defaultFormBorder,
+                    focusedBorder: defaultFocusedFormBorder,
+                    focusedErrorBorder: defaultErrorFormBorder,
+                    errorStyle: ktsErrorText,
+                    errorBorder: defaultErrorFormBorder),
+                // textCapitalization: TextCapitalization.words,
+                style: ktsBodyText,
+                controller: viewModel.updateCustomerEmailController,
+                keyboardType: TextInputType.emailAddress,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter email address';
+                  }
+                  // Email regex pattern
+                  const emailPattern =
+                      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                  if (!RegExp(emailPattern).hasMatch(value)) {
+                    return 'Please enter a valid email address';
+                  }
+                  return null;
+                },
               ),
               verticalSpaceSmall,
               Text('Phone number', style: ktsFormTitleText),
               verticalSpaceTiny,
-              SizedBox(
-                height: 50,
-                child: Stack(
-                  children: [
-                    TextFormField(
-                      cursorColor: kcPrimaryColor,
-                      decoration: InputDecoration(
-                          contentPadding:
-                              const EdgeInsets.symmetric(horizontal: 12),
-                          hintText: 'Phone number',
-                          hintStyle: ktsFormHintText,
-                          // border: defaultFormBorder,
-                          enabledBorder: defaultFormBorder,
-                          focusedBorder: defaultFocusedFormBorder,
-                          errorBorder: defaultErrorFormBorder),
-                      // textCapitalization: TextCapitalization.words,
-                      style: ktsBodyText,
-                      controller: viewModel.updateCustomerMobileController,
-                      keyboardType: TextInputType.number,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter a phone number';
-                        }
+              TextFormField(
+                cursorColor: kcPrimaryColor,
+                decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                    hintText: 'Phone number',
+                    hintStyle: ktsFormHintText,
+                    // border: defaultFormBorder,
+                    enabledBorder: defaultFormBorder,
+                    focusedBorder: defaultFocusedFormBorder,
+                    focusedErrorBorder: defaultErrorFormBorder,
+                    errorStyle: ktsErrorText,
+                    errorBorder: defaultErrorFormBorder),
+                // textCapitalization: TextCapitalization.words,
+                style: ktsBodyText,
+                controller: viewModel.updateCustomerMobileController,
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a phone number';
+                  }
 
-                        // Check if the value consists only of whole numbers
-                        if (!RegExp(r'^\d+$').hasMatch(value)) {
-                          return 'Please enter a valid phone number with digits only';
-                        }
+                  // Check if the value consists only of whole numbers
+                  if (!RegExp(r'^\d+$').hasMatch(value)) {
+                    return 'Please enter a valid phone number with digits only';
+                  }
 
-                        return null;
-                      },
-                    ),
-                  ],
-                ),
+                  return null;
+                },
               ),
               verticalSpaceSmall,
               Text("Customer's address", style: ktsFormTitleText),
               verticalSpaceTiny,
-              SizedBox(
-                height: 50,
-                child: Stack(
-                  children: [
-                    TextFormField(
-                      cursorColor: kcPrimaryColor,
-                      decoration: InputDecoration(
-                          contentPadding:
-                              const EdgeInsets.symmetric(horizontal: 12),
-                          hintText: "Customer's address",
-                          hintStyle: ktsFormHintText,
-                          // border: defaultFormBorder,
-                          enabledBorder: defaultFormBorder,
-                          focusedBorder: defaultFocusedFormBorder,
-                          errorBorder: defaultErrorFormBorder),
-                      // textCapitalization: TextCapitalization.words,
-                      style: ktsBodyText,
-                      controller: viewModel.updateCustomerAddressController,
-                      keyboardType: TextInputType.text,
-                      validator: ((value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter an address';
-                        }
-                        return null;
-                      }),
-                    ),
-                  ],
-                ),
+              TextFormField(
+                maxLines: 3,
+                cursorColor: kcPrimaryColor,
+                decoration: InputDecoration(
+                    // contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                    hintText: "Customer's address",
+                    hintStyle: ktsFormHintText,
+                    // border: defaultFormBorder,
+                    enabledBorder: defaultFormBorder,
+                    focusedBorder: defaultFocusedFormBorder,
+                    focusedErrorBorder: defaultErrorFormBorder,
+                    errorStyle: ktsErrorText,
+                    errorBorder: defaultErrorFormBorder),
+                textCapitalization: TextCapitalization.words,
+                style: ktsBodyText,
+                controller: viewModel.updateCustomerAddressController,
+                keyboardType: TextInputType.text,
+                validator: ((value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter an address';
+                  }
+                  return null;
+                }),
               ),
             ],
           ),

@@ -86,6 +86,11 @@ import 'package:verzo/ui/views/business_tasks/business_tasks_view.dart';
 
 import 'package:verzo/ui/views/add_card/add_card_view.dart';
 import 'package:verzo/ui/views/card_transactions/card_transactions_view.dart';
+import 'package:verzo/services/billing_service.dart';
+import 'package:verzo/ui/views/billing/billing_view.dart';
+
+import 'package:verzo/ui/views/business_bvn/business_bvn_view.dart';
+import 'package:verzo/ui/dialogs/billing/billing_dialog.dart';
 // @stacked-import
 
 @StackedApp(
@@ -155,6 +160,8 @@ import 'package:verzo/ui/views/card_transactions/card_transactions_view.dart';
 
     MaterialRoute(page: AddCardView),
     MaterialRoute(page: CardTransactionsView),
+    MaterialRoute(page: BillingView),
+    MaterialRoute(page: BusinessBvnView),
 // @stacked-route
   ],
   dependencies: [
@@ -170,6 +177,7 @@ import 'package:verzo/ui/views/card_transactions/card_transactions_view.dart';
     LazySingleton(classType: PurchaseService),
     LazySingleton(classType: SalesService),
     LazySingleton(classType: ProductsServicesService),
+    LazySingleton(classType: BillingService),
 // @stacked-service
   ],
   bottomsheets: [
@@ -188,6 +196,7 @@ import 'package:verzo/ui/views/card_transactions/card_transactions_view.dart';
     StackedDialog(classType: LogoutDialog),
     StackedDialog(classType: CardDialog),
     StackedDialog(classType: CardSuccessDialog),
+    StackedDialog(classType: BillingDialog),
 // @stacked-dialog
   ],
 )

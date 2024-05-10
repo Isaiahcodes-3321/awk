@@ -1,5 +1,6 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -94,7 +95,7 @@ class MarkExpenseItemAsReceivedViewModel extends FormViewModel {
   }
 
   Future<ExpenseStatusResult> markExpenseItemAsRecieved(
-      String expenseItemId, int index) async {
+      String expenseItemId, int index, BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String businessIdValue = prefs.getString('businessId') ?? '';
 
@@ -116,6 +117,28 @@ class MarkExpenseItemAsReceivedViewModel extends FormViewModel {
           mainButtonTitle: 'Ok');
 
       expense.expenseStatusId = markItemSuccessful.expenseStatus;
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Inputed quantity exceeds expented quantity',
+            textAlign: TextAlign.start,
+            style: ktsSubtitleTileText2,
+          ),
+          elevation: 2,
+          duration: const Duration(seconds: 3), // Adjust as needed
+          backgroundColor: kcErrorColor,
+          dismissDirection: DismissDirection.up,
+          behavior: SnackBarBehavior.fixed,
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(4),
+                  bottomRight: Radius.circular(4))),
+          padding: const EdgeInsets.all(12),
+          // margin:
+          //     EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.9),
+        ),
+      );
     }
 
     expense.expenseStatusId = markItemSuccessful.expenseStatus;

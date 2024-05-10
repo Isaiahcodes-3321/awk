@@ -5,6 +5,7 @@ import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.dialogs.dart';
 import 'package:verzo/app/app.locator.dart';
 import 'package:verzo/services/sales_service.dart';
+import 'package:verzo/ui/common/database_helper.dart';
 
 class ArchivedCustomerViewModel extends FutureViewModel<List<Customers>> {
   final navigationService = locator<NavigationService>();
@@ -29,7 +30,7 @@ class ArchivedCustomerViewModel extends FutureViewModel<List<Customers>> {
   }
 
   Future<bool> unArchiveCustomer(String customerId) async {
-    // final db = await getCustomerDatabase();
+    final db = await getCustomerDatabase();
 
     // Show a confirmation dialog
     final DialogResponse? response = await dialogService.showCustomDialog(
@@ -53,7 +54,7 @@ class ArchivedCustomerViewModel extends FutureViewModel<List<Customers>> {
             description: 'Your customer has been successfully unarchived.',
             barrierDismissible: true,
             mainButtonTitle: 'Ok');
-        // await db.delete('customers');
+        await db.delete('customers');
       }
 
       reloadCustomer();
@@ -66,7 +67,7 @@ class ArchivedCustomerViewModel extends FutureViewModel<List<Customers>> {
   }
 
   Future<bool> deleteCustomer(String customerId) async {
-    // final db = await getCustomerDatabase();
+    final db = await getCustomerDatabase();
 
     // Show a confirmation dialog
     final DialogResponse? response = await dialogService.showCustomDialog(
@@ -90,7 +91,7 @@ class ArchivedCustomerViewModel extends FutureViewModel<List<Customers>> {
             description: 'Your customer has been successfully deleted.',
             barrierDismissible: true,
             mainButtonTitle: 'Ok');
-        // await db.delete('customers');
+        await db.delete('customers');
       }
 
       // Navigate to the customer view

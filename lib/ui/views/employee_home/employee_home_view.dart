@@ -353,6 +353,7 @@ class _NewViewState extends State<EmployeeNewView>
                               var businessCard = viewModel.businessCard[index];
                               return Cards(
                                 businessCard: businessCard,
+                                cardId: businessCard.id,
                               );
                             },
                             separatorBuilder:
@@ -493,14 +494,12 @@ class _NewViewState extends State<EmployeeNewView>
 }
 
 class Cards extends ViewModelWidget<EmployeeHomeViewModel> {
-  const Cards({
-    Key? key,
-    required this.businessCard,
-  }) : super(key: key);
+  const Cards({Key? key, required this.businessCard, required this.cardId})
+      : super(key: key);
 
   final BusinessCard businessCard;
 
-  // final String expenseId;
+  final String cardId;
 
   @override
   Widget build(BuildContext context, EmployeeHomeViewModel viewModel) {
@@ -634,14 +633,43 @@ class Cards extends ViewModelWidget<EmployeeHomeViewModel> {
                       radius: 20,
                       backgroundColor: kcPrimaryColor.withOpacity(0.6),
                       child: const Icon(
-                        Icons.add,
+                        Icons.credit_card_outlined,
                         color: kcButtonTextColor,
                         size: 24,
                       ),
                     ),
                     verticalSpaceTiny,
                     Text(
-                      'New card',
+                      'Request card',
+                      style: GoogleFonts.dmSans(
+                        color: kcButtonTextColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w300,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  viewModel.navigationService.navigateTo(
+                      Routes.cardTransactionsView,
+                      arguments: cardId);
+                },
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      radius: 20,
+                      backgroundColor: kcPrimaryColor.withOpacity(0.6),
+                      child: const Icon(
+                        Icons.receipt_outlined,
+                        color: kcButtonTextColor,
+                        size: 24,
+                      ),
+                    ),
+                    verticalSpaceTiny,
+                    Text(
+                      'Transactions',
                       style: GoogleFonts.dmSans(
                         color: kcButtonTextColor,
                         fontSize: 18,

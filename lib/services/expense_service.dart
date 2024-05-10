@@ -606,13 +606,12 @@ class ExpenseService {
     );
 
     final QueryResult result = await newClient.mutate(options);
+    bool isUnArchived = result.data?['unarchiveExpense'] ?? false;
 
     if (result.hasException) {
       // Handle any errors that may have occurred during the log out process
-      throw Exception(result.exception);
+      isUnArchived = false;
     }
-
-    bool isUnArchived = result.data?['unarchiveExpense'] ?? false;
 
     return isUnArchived;
   }
@@ -622,7 +621,7 @@ class ExpenseService {
     final token = prefs.getString('access_token');
 
     if (token == null) {
-      throw GraphQLExpenseError(
+      GraphQLExpenseError(
         message: "Access token not found",
       );
     }
@@ -666,7 +665,7 @@ class ExpenseService {
     final token = prefs.getString('access_token');
 
     if (token == null) {
-      throw GraphQLExpenseError(
+      GraphQLExpenseError(
         message: "Access token not found",
       );
     }
@@ -710,7 +709,7 @@ class ExpenseService {
     final token = prefs.getString('access_token');
 
     if (token == null) {
-      throw GraphQLExpenseError(
+      GraphQLExpenseError(
         message: "Access token not found",
       );
     }
@@ -742,7 +741,9 @@ class ExpenseService {
 
     if (result.hasException) {
       // Handle any errors that may have occurred during the mutation
-      throw Exception(result.exception);
+      GraphQLExpenseError(
+        message: result.exception?.graphqlErrors.first.message.toString(),
+      );
     }
 
     bool isCompleted =
@@ -767,7 +768,7 @@ class ExpenseService {
     final businessId = prefs.getString('businessId');
 
     if (token == null) {
-      throw GraphQLExpenseError(
+      GraphQLExpenseError(
         message: "Access token not found",
       );
     }
@@ -799,7 +800,9 @@ class ExpenseService {
 
     if (result.hasException) {
       // Handle any errors that may have occurred during the log out process
-      throw Exception(result.exception);
+      GraphQLExpenseError(
+        message: result.exception?.graphqlErrors.first.message.toString(),
+      );
     }
 
     bool isuploaded =
@@ -823,7 +826,7 @@ class ExpenseService {
     final businessId = prefs.getString('businessId');
 
     if (token == null) {
-      throw GraphQLExpenseError(
+      GraphQLExpenseError(
         message: "Access token not found",
       );
     }
@@ -857,7 +860,7 @@ class ExpenseService {
 
     if (result.hasException) {
       // Handle any errors that may have occurred during the log out process
-      throw GraphQLExpenseError(
+      GraphQLExpenseError(
         message: result.exception?.graphqlErrors.first.message.toString(),
       );
     }

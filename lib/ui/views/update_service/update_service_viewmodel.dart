@@ -7,6 +7,7 @@ import 'package:verzo/app/app.router.dart';
 import 'package:verzo/services/products_services_service.dart';
 import 'package:verzo/ui/common/app_colors.dart';
 import 'package:verzo/ui/common/app_styles.dart';
+import 'package:verzo/ui/common/database_helper.dart';
 
 class UpdateServiceViewModel extends FormViewModel {
   final navigationService = locator<NavigationService>();
@@ -45,6 +46,7 @@ class UpdateServiceViewModel extends FormViewModel {
   }
 
   Future<bool> archiveService() async {
+    final db = await getServiceDatabase();
     // Show a confirmation dialog
     final DialogResponse? response = await dialogService.showCustomDialog(
       variant: DialogType.archive,
@@ -69,6 +71,7 @@ class UpdateServiceViewModel extends FormViewModel {
           barrierDismissible: true,
           mainButtonTitle: 'Ok',
         );
+        await db.delete('services');
       }
 
       // Navigate to the service view
@@ -82,6 +85,7 @@ class UpdateServiceViewModel extends FormViewModel {
   }
 
   Future<bool> deleteService() async {
+    final db = await getServiceDatabase();
     // Show a confirmation dialog
     final DialogResponse? response = await dialogService.showCustomDialog(
       variant: DialogType.delete,
@@ -106,6 +110,7 @@ class UpdateServiceViewModel extends FormViewModel {
           barrierDismissible: true,
           mainButtonTitle: 'Ok',
         );
+        await db.delete('services');
       }
 
       // Navigate to the service view
@@ -139,9 +144,11 @@ class UpdateServiceViewModel extends FormViewModel {
   }
 
   Future updateServiceData(BuildContext context) async {
+    final db = await getServiceDatabase();
     final result = await runBusyFuture(runServiceUpdate());
 
     if (result.service != null) {
+      await db.delete('services');
       // navigate to success route
       navigationService.replaceWith(Routes.serviceView);
     } else if (result.error != null) {

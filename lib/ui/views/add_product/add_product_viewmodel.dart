@@ -7,6 +7,7 @@ import 'package:verzo/app/app.router.dart';
 import 'package:verzo/services/products_services_service.dart';
 import 'package:verzo/ui/common/app_colors.dart';
 import 'package:verzo/ui/common/app_styles.dart';
+import 'package:verzo/ui/common/database_helper.dart';
 import 'package:verzo/ui/views/add_product/add_product_view.form.dart';
 
 class AddProductViewModel extends FormViewModel {
@@ -39,9 +40,11 @@ class AddProductViewModel extends FormViewModel {
   }
 
   Future saveProductData(BuildContext context) async {
+    final db = await getProductDatabase();
     final result = await runBusyFuture(runProductCreation());
 
     if (result.product != null) {
+      await db.delete('products');
       // navigate to success route
       navigationService.replaceWith(Routes.productView);
     } else if (result.error != null) {

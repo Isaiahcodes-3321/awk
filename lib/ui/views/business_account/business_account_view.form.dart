@@ -12,6 +12,7 @@ import 'package:stacked/stacked.dart';
 const bool _autoTextFieldValidation = true;
 
 const String BvnValueKey = 'bvn';
+const String OtpValueKey = 'otp';
 const String AddressValueKey = 'address';
 const String CityValueKey = 'city';
 const String StateValueKey = 'state';
@@ -26,6 +27,7 @@ final Map<String, FocusNode> _BusinessAccountViewFocusNodes = {};
 final Map<String, String? Function(String?)?>
     _BusinessAccountViewTextValidations = {
   BvnValueKey: null,
+  OtpValueKey: null,
   AddressValueKey: null,
   CityValueKey: null,
   StateValueKey: null,
@@ -36,6 +38,8 @@ final Map<String, String? Function(String?)?>
 mixin $BusinessAccountView {
   TextEditingController get bvnController =>
       _getFormTextEditingController(BvnValueKey);
+  TextEditingController get otpController =>
+      _getFormTextEditingController(OtpValueKey);
   TextEditingController get addressController =>
       _getFormTextEditingController(AddressValueKey);
   TextEditingController get cityController =>
@@ -48,6 +52,7 @@ mixin $BusinessAccountView {
       _getFormTextEditingController(DateOfBirthValueKey);
 
   FocusNode get bvnFocusNode => _getFormFocusNode(BvnValueKey);
+  FocusNode get otpFocusNode => _getFormFocusNode(OtpValueKey);
   FocusNode get addressFocusNode => _getFormFocusNode(AddressValueKey);
   FocusNode get cityFocusNode => _getFormFocusNode(CityValueKey);
   FocusNode get stateFocusNode => _getFormFocusNode(StateValueKey);
@@ -79,6 +84,7 @@ mixin $BusinessAccountView {
   /// with the latest textController values
   void syncFormWithViewModel(FormStateHelper model) {
     bvnController.addListener(() => _updateFormData(model));
+    otpController.addListener(() => _updateFormData(model));
     addressController.addListener(() => _updateFormData(model));
     cityController.addListener(() => _updateFormData(model));
     stateController.addListener(() => _updateFormData(model));
@@ -96,6 +102,7 @@ mixin $BusinessAccountView {
   )
   void listenToFormUpdated(FormViewModel model) {
     bvnController.addListener(() => _updateFormData(model));
+    otpController.addListener(() => _updateFormData(model));
     addressController.addListener(() => _updateFormData(model));
     cityController.addListener(() => _updateFormData(model));
     stateController.addListener(() => _updateFormData(model));
@@ -111,6 +118,7 @@ mixin $BusinessAccountView {
       model.formValueMap
         ..addAll({
           BvnValueKey: bvnController.text,
+          OtpValueKey: otpController.text,
           AddressValueKey: addressController.text,
           CityValueKey: cityController.text,
           StateValueKey: stateController.text,
@@ -158,6 +166,7 @@ extension ValueProperties on FormStateHelper {
   }
 
   String? get bvnValue => this.formValueMap[BvnValueKey] as String?;
+  String? get otpValue => this.formValueMap[OtpValueKey] as String?;
   String? get addressValue => this.formValueMap[AddressValueKey] as String?;
   String? get cityValue => this.formValueMap[CityValueKey] as String?;
   String? get stateValue => this.formValueMap[StateValueKey] as String?;
@@ -173,6 +182,17 @@ extension ValueProperties on FormStateHelper {
 
     if (_BusinessAccountViewTextEditingControllers.containsKey(BvnValueKey)) {
       _BusinessAccountViewTextEditingControllers[BvnValueKey]?.text =
+          value ?? '';
+    }
+  }
+
+  set otpValue(String? value) {
+    this.setData(
+      this.formValueMap..addAll({OtpValueKey: value}),
+    );
+
+    if (_BusinessAccountViewTextEditingControllers.containsKey(OtpValueKey)) {
+      _BusinessAccountViewTextEditingControllers[OtpValueKey]?.text =
           value ?? '';
     }
   }
@@ -238,6 +258,9 @@ extension ValueProperties on FormStateHelper {
   bool get hasBvn =>
       this.formValueMap.containsKey(BvnValueKey) &&
       (bvnValue?.isNotEmpty ?? false);
+  bool get hasOtp =>
+      this.formValueMap.containsKey(OtpValueKey) &&
+      (otpValue?.isNotEmpty ?? false);
   bool get hasAddress =>
       this.formValueMap.containsKey(AddressValueKey) &&
       (addressValue?.isNotEmpty ?? false);
@@ -256,6 +279,8 @@ extension ValueProperties on FormStateHelper {
 
   bool get hasBvnValidationMessage =>
       this.fieldsValidationMessages[BvnValueKey]?.isNotEmpty ?? false;
+  bool get hasOtpValidationMessage =>
+      this.fieldsValidationMessages[OtpValueKey]?.isNotEmpty ?? false;
   bool get hasAddressValidationMessage =>
       this.fieldsValidationMessages[AddressValueKey]?.isNotEmpty ?? false;
   bool get hasCityValidationMessage =>
@@ -269,6 +294,8 @@ extension ValueProperties on FormStateHelper {
 
   String? get bvnValidationMessage =>
       this.fieldsValidationMessages[BvnValueKey];
+  String? get otpValidationMessage =>
+      this.fieldsValidationMessages[OtpValueKey];
   String? get addressValidationMessage =>
       this.fieldsValidationMessages[AddressValueKey];
   String? get cityValidationMessage =>
@@ -284,6 +311,8 @@ extension ValueProperties on FormStateHelper {
 extension Methods on FormStateHelper {
   setBvnValidationMessage(String? validationMessage) =>
       this.fieldsValidationMessages[BvnValueKey] = validationMessage;
+  setOtpValidationMessage(String? validationMessage) =>
+      this.fieldsValidationMessages[OtpValueKey] = validationMessage;
   setAddressValidationMessage(String? validationMessage) =>
       this.fieldsValidationMessages[AddressValueKey] = validationMessage;
   setCityValidationMessage(String? validationMessage) =>
@@ -298,6 +327,7 @@ extension Methods on FormStateHelper {
   /// Clears text input fields on the Form
   void clearForm() {
     bvnValue = '';
+    otpValue = '';
     addressValue = '';
     cityValue = '';
     stateValue = '';
@@ -309,6 +339,7 @@ extension Methods on FormStateHelper {
   void validateForm() {
     this.setValidationMessages({
       BvnValueKey: getValidationMessage(BvnValueKey),
+      OtpValueKey: getValidationMessage(OtpValueKey),
       AddressValueKey: getValidationMessage(AddressValueKey),
       CityValueKey: getValidationMessage(CityValueKey),
       StateValueKey: getValidationMessage(StateValueKey),
@@ -334,6 +365,7 @@ String? getValidationMessage(String key) {
 void updateValidationData(FormStateHelper model) =>
     model.setValidationMessages({
       BvnValueKey: getValidationMessage(BvnValueKey),
+      OtpValueKey: getValidationMessage(OtpValueKey),
       AddressValueKey: getValidationMessage(AddressValueKey),
       CityValueKey: getValidationMessage(CityValueKey),
       StateValueKey: getValidationMessage(StateValueKey),

@@ -167,6 +167,8 @@ Future<void> logout() async {
   final dbSales = await getSalesDatabase2();
   final dbSales2 = await getSalesDatabaseList();
   final dbCustomers = await getCustomerDatabase();
+  final dbProducts = await getProductDatabase();
+  final dbServices = await getServiceDatabase();
   final dbExpenseWeek = await getExpensesForWeekDatabase();
   final dbExpenseMonth = await getExpensesForMonthDatabase();
   final dbPurchaseWeek = await getPurchasesForWeekDatabase();
@@ -202,6 +204,12 @@ Future<void> logout() async {
 
     // Delete data from the 'customers' table
     await dbCustomers.delete('customers');
+
+    // Delete data from the 'products' table
+    await dbProducts.delete('products');
+
+    // Delete data from the 'services' table
+    await dbServices.delete('services');
 
     // Delete data from the 'expenses_for_week' table
     await dbExpenseWeek.delete('expenses_for_week');

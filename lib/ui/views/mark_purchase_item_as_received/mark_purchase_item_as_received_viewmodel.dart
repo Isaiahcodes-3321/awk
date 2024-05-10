@@ -94,7 +94,7 @@ class MarkPurchaseItemAsReceivedViewModel extends FormViewModel {
   List<TextEditingController> quantityReceivedControllers = [];
 
   Future<PurchaseStatusResult> markPurchaseItemAsRecieved(
-      String purchaseItemId, int index) async {
+      String purchaseItemId, int index, BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String businessIdValue = prefs.getString('businessId') ?? '';
 
@@ -116,6 +116,28 @@ class MarkPurchaseItemAsReceivedViewModel extends FormViewModel {
           mainButtonTitle: 'Ok');
 
       purchase.purchaseStatusId = markItemSuccessful.purchaseStatus;
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Inputed quantity exceeds expented quantity',
+            textAlign: TextAlign.start,
+            style: ktsSubtitleTileText2,
+          ),
+          elevation: 2,
+          duration: const Duration(seconds: 3), // Adjust as needed
+          backgroundColor: kcErrorColor,
+          dismissDirection: DismissDirection.up,
+          behavior: SnackBarBehavior.fixed,
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(4),
+                  bottomRight: Radius.circular(4))),
+          padding: const EdgeInsets.all(12),
+          // margin:
+          //     EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.9),
+        ),
+      );
     }
 
     purchase.purchaseStatusId = markItemSuccessful.purchaseStatus;

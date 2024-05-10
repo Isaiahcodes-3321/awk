@@ -25,6 +25,8 @@ dependencies:
   flutter_launcher_icons: ^0.13.1
   form_field_validator: ^1.1.0
   responsive_sizer: ^3.3.1
+  webview_flutter: ^3.0.1
+
 
 dev_dependencies:
   build_runner: ^2.4.5
@@ -76,6 +78,8 @@ flutter:
         - assets/images/trending_up.svg
         - assets/images/Group_search.svg
         - assets/images/Group_2780.svg
+        - assets/images/Group 2171.svg
+        - assets/images/Frame 2171.svg
         - assets/images/Group_3161.svg
         - assets/images/home-02.svg
         - assets/images/home-02-2-3.svg

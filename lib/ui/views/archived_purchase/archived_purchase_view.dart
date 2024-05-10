@@ -208,6 +208,7 @@ class ArchivedPurchaseOrderCard
             },
             icon: SvgPicture.asset(
               'assets/images/unarchive2.svg',
+              color: kcPrimaryColor,
               // width: 20,
               // height: 20,
             ),
@@ -218,6 +219,7 @@ class ArchivedPurchaseOrderCard
               'assets/images/trash-04.svg',
               width: 18,
               height: 18,
+              color: kcErrorColor,
             ),
             onPressed: (() {
               viewModel.deletePurchase(purchaseId);

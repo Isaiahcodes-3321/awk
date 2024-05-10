@@ -7,6 +7,7 @@ import 'package:verzo/app/app.router.dart';
 import 'package:verzo/services/products_services_service.dart';
 import 'package:verzo/ui/common/app_colors.dart';
 import 'package:verzo/ui/common/app_styles.dart';
+import 'package:verzo/ui/common/database_helper.dart';
 import 'package:verzo/ui/views/add_service/add_service_view.form.dart';
 
 class AddServiceViewModel extends FormViewModel {
@@ -39,9 +40,11 @@ class AddServiceViewModel extends FormViewModel {
   }
 
   Future saveServiceData(BuildContext context) async {
+    final db = await getServiceDatabase();
     final result = await runBusyFuture(runServiceCreation());
 
     if (result.service != null) {
+      await db.delete('services');
       // navigate to success route
       navigationService.replaceWith(Routes.serviceView);
     } else if (result.error != null) {

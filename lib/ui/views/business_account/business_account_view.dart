@@ -13,6 +13,7 @@ import 'business_account_viewmodel.dart';
 
 @FormView(fields: [
   FormTextField(name: 'bvn'),
+  FormTextField(name: 'otp'),
   FormTextField(name: 'address'),
   FormTextField(name: 'city'),
   FormTextField(name: 'state'),
@@ -52,14 +53,22 @@ class BusinessAccountView extends StackedView<BusinessAccountViewModel>
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Bank Verification Number (BVN)', style: ktsFormTitleText),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //   children: [
+                //     Text('BVN', style: ktsSubtitleTextAuthentication),
+                //     Text(viewModel.bvnNo, style: ktsSubtitleTextAuthentication),
+                //   ],
+                // ),
+                // verticalSpaceTiny1,
+                Text('BVN OTP', style: ktsFormTitleText),
                 verticalSpaceTiny,
                 TextFormField(
                   cursorColor: kcPrimaryColor,
                   decoration: InputDecoration(
                       contentPadding:
                           const EdgeInsets.symmetric(horizontal: 12),
-                      hintText: 'BVN',
+                      hintText: 'Enter 6 digit OTP',
                       hintStyle: ktsFormHintText,
                       // border: defaultFormBorder,
                       enabledBorder: defaultFormBorder,
@@ -69,22 +78,22 @@ class BusinessAccountView extends StackedView<BusinessAccountViewModel>
                       errorBorder: defaultErrorFormBorder),
                   // textCapitalization: TextCapitalization.words,
                   style: ktsBodyText,
-                  controller: bvnController,
+                  controller: otpController,
                   keyboardType: TextInputType.number,
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return 'Please enter your 11 digit BVN';
+                      return 'Please enter your 6 digit OTP';
                     }
-                    if (value.length != 11) {
-                      return 'Please enter your 11 digit BVN';
+                    if (value.length != 6) {
+                      return 'Please enter your 6 digit OTP';
                     }
                     if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
-                      return 'Please enter your 11 digit BVN';
+                      return 'Please enter your 6 digit OTP';
                     }
                     return null;
                   },
                 ),
-                verticalSpaceSmall,
+                verticalSpaceSmallMid,
                 Text('Date of birth (DOB)', style: ktsFormTitleText),
                 verticalSpaceTiny,
                 TextFormField(
@@ -253,14 +262,15 @@ class BusinessAccountView extends StackedView<BusinessAccountViewModel>
     );
   }
 
-  @override
-  void onDispose(BusinessAccountViewModel viewModel) {
-    super.onDispose(viewModel);
-    disposeForm();
-  }
+  // @override
+  // void onDispose(BusinessAccountViewModel viewModel) {
+  //   super.onDispose(viewModel);
+  //   disposeForm();
+  // }
 
   @override
-  void onViewModelReady(BusinessAccountViewModel viewModel) {
+  void onViewModelReady(BusinessAccountViewModel viewModel) async {
+    // viewModel.setBusinessDetails;
     syncFormWithViewModel(viewModel);
   }
 

@@ -11,6 +11,7 @@ import 'package:verzo/services/expense_service.dart';
 import 'package:verzo/services/purchase_service.dart';
 import 'package:verzo/services/sales_service.dart';
 import 'package:verzo/services/products_services_service.dart';
+import 'package:verzo/services/billing_service.dart';
 // @stacked-import
 
 import 'test_helpers.mocks.dart';
@@ -28,6 +29,7 @@ import 'test_helpers.mocks.dart';
   MockSpec<PurchaseService>(onMissingStub: OnMissingStub.returnDefault),
   MockSpec<SalesService>(onMissingStub: OnMissingStub.returnDefault),
   MockSpec<ProductsServicesService>(onMissingStub: OnMissingStub.returnDefault),
+  MockSpec<BillingService>(onMissingStub: OnMissingStub.returnDefault),
 // @stacked-mock-spec
 ])
 void registerServices() {
@@ -43,6 +45,7 @@ void registerServices() {
   getAndRegisterPurchaseService();
   getAndRegisterSalesService();
   getAndRegisterProductsServicesService();
+  getAndRegisterBillingService();
 // @stacked-mock-register
 }
 
@@ -156,6 +159,13 @@ MockProductsServicesService getAndRegisterProductsServicesService() {
   _removeRegistrationIfExists<ProductsServicesService>();
   final service = MockProductsServicesService();
   locator.registerSingleton<ProductsServicesService>(service);
+  return service;
+}
+
+MockBillingService getAndRegisterBillingService() {
+  _removeRegistrationIfExists<BillingService>();
+  final service = MockBillingService();
+  locator.registerSingleton<BillingService>(service);
   return service;
 }
 // @stacked-mock-create

@@ -774,7 +774,7 @@ class SalesService {
     final token = prefs.getString('access_token');
 
     if (token == null) {
-      throw GraphQLSaleError(
+      GraphQLSaleError(
         message: "Access token not found",
       );
     }
@@ -798,13 +798,11 @@ class SalesService {
     );
 
     final QueryResult result = await newClient.mutate(options);
-
+    bool isUnArchived = result.data?['unarchiveSale'] ?? false;
     if (result.hasException) {
       // Handle any errors that may have occurred during the log out process
-      throw Exception(result.exception);
+      isUnArchived = false;
     }
-
-    bool isUnArchived = result.data?['unarchiveSale'] ?? false;
 
     return isUnArchived;
   }
@@ -814,7 +812,7 @@ class SalesService {
     final token = prefs.getString('access_token');
 
     if (token == null) {
-      throw GraphQLSaleError(
+      GraphQLSaleError(
         message: "Access token not found",
       );
     }
@@ -838,13 +836,11 @@ class SalesService {
     );
 
     final QueryResult result = await newClient.mutate(options);
-
+    bool isArchived = result.data?['archiveSale'] ?? false;
     if (result.hasException) {
       // Handle any errors that may have occurred during the log out process
-      throw Exception(result.exception);
+      isArchived = false;
     }
-
-    bool isArchived = result.data?['archiveSale'] ?? false;
 
     return isArchived;
   }
@@ -854,7 +850,7 @@ class SalesService {
     final token = prefs.getString('access_token');
 
     if (token == null) {
-      throw GraphQLSaleError(
+      GraphQLSaleError(
         message: "Access token not found",
       );
     }
@@ -878,13 +874,11 @@ class SalesService {
     );
 
     final QueryResult result = await newClient.mutate(options);
-
+    bool isDeleted = result.data?['deleteSale'] ?? false;
     if (result.hasException) {
       // Handle any errors that may have occurred during the log out process
-      throw Exception(result.exception);
+      isDeleted = false;
     }
-
-    bool isDeleted = result.data?['deleteSale'] ?? false;
 
     return isDeleted;
   }
@@ -898,7 +892,7 @@ class SalesService {
     final token = prefs.getString('access_token');
 
     if (token == null) {
-      throw GraphQLSaleError(
+      GraphQLSaleError(
         message: "Access token not found",
       );
     }
@@ -930,7 +924,9 @@ class SalesService {
 
     if (result.hasException) {
       // Handle any errors that may have occurred during the mutation
-      throw Exception(result.exception);
+      GraphQLSaleError(
+        message: result.exception?.graphqlErrors.first.message.toString(),
+      );
     }
 
     bool isEffected = result.data?['effectSaleExpense']['effected'] ?? false;
@@ -951,7 +947,7 @@ class SalesService {
     final token = prefs.getString('access_token');
 
     if (token == null) {
-      throw GraphQLSaleError(
+      GraphQLSaleError(
         message: "Access token not found",
       );
     }
@@ -983,7 +979,7 @@ class SalesService {
 
     if (result.hasException) {
       // Handle any errors that may have occurred during the log out process
-      throw GraphQLSaleError(
+      GraphQLSaleError(
         message: result.exception?.graphqlErrors.first.message.toString(),
       );
     }
@@ -999,7 +995,7 @@ class SalesService {
     final token = prefs.getString('access_token');
 
     if (token == null) {
-      throw GraphQLSaleError(
+      GraphQLSaleError(
         message: "Access token not found",
       );
     }
@@ -1026,7 +1022,9 @@ class SalesService {
 
     if (result.hasException) {
       // Handle any errors that may have occurred during the log out process
-      throw Exception(result.exception);
+      GraphQLSaleError(
+        message: result.exception?.graphqlErrors.first.message.toString(),
+      );
     }
 
     bool isDelivered =
@@ -1047,7 +1045,7 @@ class SalesService {
     // final businessId = prefs.getString('businessId');
 
     if (token == null) {
-      throw GraphQLSaleError(
+      GraphQLSaleError(
         message: "Access token not found",
       );
     }
@@ -1072,13 +1070,11 @@ class SalesService {
     );
 
     final QueryResult result = await newClient.mutate(options);
-
+    bool isSent = result.data?['sendInvoiceB'];
     if (result.hasException) {
       // Handle any errors that may have occurred during the log out process
-      throw Exception(result.exception);
+      isSent = false;
     }
-
-    bool isSent = result.data?['sendInvoiceB'];
 
     return isSent;
   }
@@ -1280,7 +1276,7 @@ class SalesService {
     final token = prefs.getString('access_token');
 
     if (token == null) {
-      throw GraphQLSaleError(
+      GraphQLSaleError(
         message: "Access token not found",
       );
     }
@@ -1304,13 +1300,11 @@ class SalesService {
     );
 
     final QueryResult result = await newClient.mutate(options);
-
+    bool isArchived = result.data?['archiveCustomerByBusiness'] ?? false;
     if (result.hasException) {
       // Handle any errors that may have occurred during the log out process
-      throw Exception(result.exception);
+      isArchived = false;
     }
-
-    bool isArchived = result.data?['archiveCustomerByBusiness'] ?? false;
 
     return isArchived;
   }
@@ -1320,7 +1314,7 @@ class SalesService {
     final token = prefs.getString('access_token');
 
     if (token == null) {
-      throw GraphQLSaleError(
+      GraphQLSaleError(
         message: "Access token not found",
       );
     }
@@ -1344,13 +1338,11 @@ class SalesService {
     );
 
     final QueryResult result = await newClient.mutate(options);
-
+    bool isUnArchived = result.data?['unarchiveCustomerByBusiness'] ?? false;
     if (result.hasException) {
       // Handle any errors that may have occurred during the log out process
-      throw Exception(result.exception);
+      isUnArchived = false;
     }
-
-    bool isUnArchived = result.data?['unarchiveCustomerByBusiness'] ?? false;
 
     return isUnArchived;
   }
@@ -1360,7 +1352,7 @@ class SalesService {
     final token = prefs.getString('access_token');
 
     if (token == null) {
-      throw GraphQLSaleError(
+      GraphQLSaleError(
         message: "Access token not found",
       );
     }
@@ -1384,13 +1376,11 @@ class SalesService {
     );
 
     final QueryResult result = await newClient.mutate(options);
-
+    bool isDeleted = result.data?['deleteCustomer'] ?? false;
     if (result.hasException) {
       // Handle any errors that may have occurred during the log out process
-      throw Exception(result.exception);
+      isDeleted = false;
     }
-
-    bool isDeleted = result.data?['deleteCustomer'] ?? false;
 
     return isDeleted;
   }

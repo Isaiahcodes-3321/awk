@@ -76,7 +76,7 @@ class AddCardViewModel extends FormViewModel {
       final result = await businessService.viewBusinessAccount(
           businessId: businessIdValue);
       if (result == null) {
-        await navigationService.replaceWith(Routes.businessAccountView);
+        await navigationService.replaceWith(Routes.businessBvnView);
       } else {
         return dashboardService.createSudoCard(
           businessId: businessIdValue,

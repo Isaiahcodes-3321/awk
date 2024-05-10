@@ -203,9 +203,133 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
                       Container(
                         padding: EdgeInsets.zero,
                         width: MediaQuery.of(context).size.width * 0.9,
-                        child: Text(
-                          'Dashboard',
-                          style: ktsHeroTextWhiteDashboardHeader,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    globalKey.currentState?.openDrawer();
+                                  },
+                                  child: const Icon(Icons.menu,
+                                      size: 24, color: kcButtonTextColor),
+                                ),
+                                horizontalSpaceTiny,
+                                Text(
+                                  'Dashboard',
+                                  style: ktsHeroTextWhiteDashboardHeader,
+                                ),
+                              ],
+                            ),
+                            PopupMenuButton(
+                              iconColor: kcButtonTextColor,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 32, vertical: 64),
+                              surfaceTintColor: kcButtonTextColor,
+                              elevation: 3,
+                              color: kcButtonTextColor,
+                              offset: const Offset(0, 38),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: CircleAvatar(
+                                radius: 14,
+                                backgroundColor:
+                                    kcButtonTextColor.withOpacity(0.1),
+                                child: const Icon(
+                                  Icons.filter_list,
+                                  color: kcButtonTextColor,
+                                  size: 18,
+                                ),
+                              ),
+
+                              // SvgPicture.asset(
+                              //   'assets/images/Frame 1000007915.svg',
+                              //   width: 30,
+                              //   height: 30,
+                              //   // color: kcPrimaryColor.withOpacity(0.3),
+                              // ),
+                              itemBuilder: (BuildContext context) {
+                                return [
+                                  PopupMenuItem(
+                                    onTap: () {
+                                      setState(() {
+                                        viewModel.isChecked =
+                                            true; // Set the checkbox state to true for 'Last 7 days'
+                                      });
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Checkbox(
+                                          fillColor: MaterialStateProperty
+                                              .resolveWith<Color?>(
+                                            (Set<MaterialState> states) {
+                                              return viewModel.isChecked
+                                                  ? kcFormBorderColor
+                                                      .withOpacity(.7)
+                                                  : null;
+
+                                              // kcFormBorderColor.withOpacity(
+                                              //     .2); // You can customize the fill color if needed
+                                            },
+                                          ),
+                                          checkColor: kcTextTitleColor,
+                                          side: const BorderSide(
+                                            width: 1,
+                                            color:
+                                                kcFormBorderColor, // Set the border color
+                                          ),
+                                          value: viewModel.isChecked,
+                                          onChanged: null,
+                                        ),
+                                        Text(
+                                          'Last 7 days',
+                                          style: ktsFormHintText,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  PopupMenuItem(
+                                    onTap: () {
+                                      setState(() {
+                                        viewModel.isChecked =
+                                            false; // Set the checkbox state to false for 'Last 30 days'
+                                      });
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Checkbox(
+                                          fillColor: MaterialStateProperty
+                                              .resolveWith<Color?>(
+                                            (Set<MaterialState> states) {
+                                              return !viewModel.isChecked
+                                                  ? kcFormBorderColor
+                                                      .withOpacity(.7)
+                                                  : null;
+                                              // You can customize the fill color if needed
+                                            },
+                                          ),
+                                          checkColor: kcTextTitleColor,
+                                          side: const BorderSide(
+                                            width: 1,
+                                            color:
+                                                kcFormBorderColor, // Set the border color
+                                          ),
+                                          value: !viewModel.isChecked,
+                                          onChanged: null,
+                                        ),
+                                        Text(
+                                          'Last 30 days',
+                                          style: ktsFormHintText,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ];
+                              },
+                            )
+                          ],
                         ),
                       ),
                       verticalSpaceTiny1,
@@ -289,20 +413,20 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
                                                   ],
                                                 ),
                                                 horizontalSpaceRegular,
-                                                Column(
-                                                  children: [
-                                                    Text(
-                                                      'CVV',
-                                                      style: ktsButtonText2,
-                                                    ),
-                                                    verticalSpaceTinyt1,
-                                                    Text(
-                                                      'XXX',
-                                                      style:
-                                                          ktsHeroTextWhiteDashboard2,
-                                                    )
-                                                  ],
-                                                )
+                                                // Column(
+                                                //   children: [
+                                                //     Text(
+                                                //       'CVV',
+                                                //       style: ktsButtonText2,
+                                                //     ),
+                                                //     verticalSpaceTinyt1,
+                                                //     Text(
+                                                //       'XXX',
+                                                //       style:
+                                                //           ktsHeroTextWhiteDashboard2,
+                                                //     )
+                                                //   ],
+                                                // )
                                               ],
                                             ),
                                             SvgPicture.asset(
@@ -360,7 +484,7 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
                         return Material(
                           color: Colors.transparent,
                           child: ListView.separated(
-                            padding: const EdgeInsets.symmetric(vertical: 6),
+                            padding: const EdgeInsets.symmetric(vertical: 0),
                             physics: const NeverScrollableScrollPhysics(),
                             primary: false,
                             shrinkWrap: true,
@@ -384,7 +508,7 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
               DraggableScrollableSheet(
                 snap: false,
                 initialChildSize: 0.8,
-                minChildSize: 0.2,
+                minChildSize: 0.4,
                 maxChildSize: 0.8,
                 builder: (context, controller) => Container(
                   decoration: const BoxDecoration(
@@ -412,135 +536,7 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
                                 color: kcTextSubTitleColor.withOpacity(0.3)),
                           ),
                         ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          height: 60,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  globalKey.currentState?.openDrawer();
-                                },
-                                child: const Icon(
-                                  Icons.menu,
-                                  size: 20,
-                                  color: kcPrimaryColor,
-                                ),
-                              ),
-                              PopupMenuButton(
-                                iconColor: kcPrimaryColor,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 32, vertical: 64),
-                                surfaceTintColor: kcButtonTextColor,
-                                elevation: 3,
-                                color: kcButtonTextColor,
-                                offset: const Offset(0, 38),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: CircleAvatar(
-                                  radius: 14,
-                                  backgroundColor:
-                                      kcPrimaryColor.withOpacity(0.1),
-                                  child: const Icon(
-                                    Icons.filter_list,
-                                    color: kcPrimaryColor,
-                                    size: 16,
-                                  ),
-                                ),
-
-                                // SvgPicture.asset(
-                                //   'assets/images/Frame 1000007915.svg',
-                                //   width: 30,
-                                //   height: 30,
-                                //   // color: kcPrimaryColor.withOpacity(0.3),
-                                // ),
-                                itemBuilder: (BuildContext context) {
-                                  return [
-                                    PopupMenuItem(
-                                      onTap: () {
-                                        setState(() {
-                                          viewModel.isChecked =
-                                              true; // Set the checkbox state to true for 'Last 7 days'
-                                        });
-                                      },
-                                      child: Row(
-                                        children: [
-                                          Checkbox(
-                                            fillColor: MaterialStateProperty
-                                                .resolveWith<Color?>(
-                                              (Set<MaterialState> states) {
-                                                return viewModel.isChecked
-                                                    ? kcFormBorderColor
-                                                        .withOpacity(.7)
-                                                    : null;
-
-                                                // kcFormBorderColor.withOpacity(
-                                                //     .2); // You can customize the fill color if needed
-                                              },
-                                            ),
-                                            checkColor: kcTextTitleColor,
-                                            side: const BorderSide(
-                                              width: 1,
-                                              color:
-                                                  kcFormBorderColor, // Set the border color
-                                            ),
-                                            value: viewModel.isChecked,
-                                            onChanged: null,
-                                          ),
-                                          Text(
-                                            'Last 7 days',
-                                            style: ktsFormHintText,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    PopupMenuItem(
-                                      onTap: () {
-                                        setState(() {
-                                          viewModel.isChecked =
-                                              false; // Set the checkbox state to false for 'Last 30 days'
-                                        });
-                                      },
-                                      child: Row(
-                                        children: [
-                                          Checkbox(
-                                            fillColor: MaterialStateProperty
-                                                .resolveWith<Color?>(
-                                              (Set<MaterialState> states) {
-                                                return !viewModel.isChecked
-                                                    ? kcFormBorderColor
-                                                        .withOpacity(.7)
-                                                    : null;
-                                                // You can customize the fill color if needed
-                                              },
-                                            ),
-                                            checkColor: kcTextTitleColor,
-                                            side: const BorderSide(
-                                              width: 1,
-                                              color:
-                                                  kcFormBorderColor, // Set the border color
-                                            ),
-                                            value: !viewModel.isChecked,
-                                            onChanged: null,
-                                          ),
-                                          Text(
-                                            'Last 30 days',
-                                            style: ktsFormHintText,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ];
-                                },
-                              )
-                            ],
-                          ),
-                        ),
-                        verticalSpaceTiny,
+                        verticalSpaceSmallMid,
                         SingleChildScrollView(
                           padding: const EdgeInsets.only(
                             top: 0,
@@ -552,23 +548,6 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Column(
-                              //   mainAxisAlignment: MainAxisAlignment.start,
-                              //   mainAxisSize: MainAxisSize.min,
-                              //   crossAxisAlignment: CrossAxisAlignment.start,
-                              //   children: [
-                              //     Text(
-                              //       'Dashboard',
-                              //       style: ktsHeaderText,
-                              //     ),
-                              //     verticalSpaceTinyt,
-                              //     Text(
-                              //       'Manage your business on verzo',
-                              //       style: ktsSubtitleTextAuthentication,
-                              //     ),
-                              //   ],
-                              // ),
-                              // verticalSpaceSmallMid,
                               SizedBox(
                                 height: 110,
                                 child: ListView(
@@ -1109,7 +1088,7 @@ class Cards extends ViewModelWidget<HomeViewModel> {
   @override
   Widget build(BuildContext context, HomeViewModel viewModel) {
     return Column(
-      // mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -1172,19 +1151,19 @@ class Cards extends ViewModelWidget<HomeViewModel> {
                             ],
                           ),
                           horizontalSpaceRegular,
-                          Column(
-                            children: [
-                              Text(
-                                'CVV',
-                                style: ktsButtonText2,
-                              ),
-                              verticalSpaceTinyt1,
-                              Text(
-                                'XXX',
-                                style: ktsHeroTextWhiteDashboard2,
-                              )
-                            ],
-                          )
+                          // Column(
+                          //   children: [
+                          //     Text(
+                          //       'CVV',
+                          //       style: ktsButtonText2,
+                          //     ),
+                          //     verticalSpaceTinyt1,
+                          //     Text(
+                          //       'XXX',
+                          //       style: ktsHeroTextWhiteDashboard2,
+                          //     )
+                          //   ],
+                          // )
                         ],
                       ),
                       SvgPicture.asset(
@@ -2007,6 +1986,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
           Widget? child,
         ) {
           return Drawer(
+            shape:
+                const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+            surfaceTintColor: kcButtonTextColor,
             backgroundColor: kcButtonTextColor,
             width: MediaQuery.of(context).size.width * 0.8,
             elevation: 100,

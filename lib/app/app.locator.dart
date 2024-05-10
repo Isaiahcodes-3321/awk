@@ -12,6 +12,7 @@ import 'package:stacked_services/src/navigation/navigation_service.dart';
 import 'package:stacked_shared/stacked_shared.dart';
 
 import '../services/authentication_service.dart';
+import '../services/billing_service.dart';
 import '../services/business_creation_service.dart';
 import '../services/dashboard_service.dart';
 import '../services/expense_service.dart';
@@ -44,4 +45,5 @@ Future<void> setupLocator({
   locator.registerLazySingleton(() => PurchaseService());
   locator.registerLazySingleton(() => SalesService());
   locator.registerLazySingleton(() => ProductsServicesService());
+  locator.registerLazySingleton(() => BillingService());
 }

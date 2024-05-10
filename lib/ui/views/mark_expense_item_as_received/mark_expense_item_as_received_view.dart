@@ -130,7 +130,7 @@ class MarkExpenseItemAsReceivedView
                                               .validate()) {
                                         await viewModel
                                             .markExpenseItemAsRecieved(
-                                                expenseItem.id, index);
+                                                expenseItem.id, index, context);
                                         viewModel.rebuildUi();
                                         Navigator.pop(context);
                                       }

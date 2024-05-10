@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -343,9 +344,9 @@ class AuthenticationLayout extends StatelessWidget {
                               text: 'By using the platform you agree to our ',
                               style: ktsFormHintText,
                             ),
-                            const TextSpan(
+                            TextSpan(
                               text: 'Privacy Policy',
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: kcPrimaryColor,
                                 fontSize: 14,
                                 fontFamily: 'Satoshi',
@@ -355,11 +356,23 @@ class AuthenticationLayout extends StatelessWidget {
                                 height: 0,
                                 letterSpacing: -0.30,
                               ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () async {
+                                  // Handle tap on Privacy Policy
+                                  // Navigate to the designated URL
+                                  String url = "https://verzo.app/privacy";
+                                  var urllaunchable = await canLaunchUrlString(
+                                      url); //canLaunch is from url_launcher package
+                                  if (urllaunchable) {
+                                    await launchUrlString(
+                                        url); //launch is from url_launcher package to launch URL
+                                  } else {}
+                                },
                             ),
                             TextSpan(text: ' and ', style: ktsFormHintText),
-                            const TextSpan(
+                            TextSpan(
                               text: 'Terms of Use',
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: kcPrimaryColor,
                                 fontSize: 14,
                                 fontFamily: 'Satoshi',
@@ -369,6 +382,18 @@ class AuthenticationLayout extends StatelessWidget {
                                 height: 0,
                                 letterSpacing: -0.30,
                               ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () async {
+                                  // Handle tap on Privacy Policy
+                                  // Navigate to the designated URL
+                                  String url = "https://verzo.app/terms";
+                                  var urllaunchable = await canLaunchUrlString(
+                                      url); //canLaunch is from url_launcher package
+                                  if (urllaunchable) {
+                                    await launchUrlString(
+                                        url); //launch is from url_launcher package to launch URL
+                                  } else {}
+                                },
                             ),
                           ],
                         ),

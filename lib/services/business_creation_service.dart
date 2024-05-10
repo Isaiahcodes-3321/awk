@@ -9,6 +9,7 @@ class BusinessCreationService {
   ValueNotifier<GraphQLClient> client;
 
   final MutationOptions _createBusinessMutation;
+  final MutationOptions _sendVerificationOTPMutation;
   final MutationOptions _setUpBusinessAccountMutation;
   final MutationOptions _updateBusinessMutation;
 
@@ -41,6 +42,19 @@ class BusinessCreationService {
         }
       '''),
         ),
+        _sendVerificationOTPMutation = MutationOptions(
+          document: gql('''
+        mutation SendVerificationOTP(\$bvnNumber: String!) {
+          sendVerificationOTP(bvnNumber: \$bvnNumber){
+            message
+            data{
+              _id
+              otpId
+            }
+          }
+        }
+      '''),
+        ),
         _updateBusinessMutation = MutationOptions(
           document: gql('''
         mutation UpdateBusiness(\$businessId: String!,\$input: UpdateBusiness) {
@@ -67,6 +81,7 @@ class BusinessCreationService {
             tasks{
               taskType{
                 taskType
+                createdAt
               }
               user{
                 id
@@ -149,6 +164,56 @@ class BusinessCreationService {
     }
   }
 
+  Future<BusinessOTPResult> sendVerificationOTP(
+      {required String bvnNumber}) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('access_token');
+
+    if (token == null) {
+      return BusinessOTPResult.error(
+        error: GraphQLBusinessError(
+          message: "Access token not found",
+        ),
+      );
+    }
+
+    // Use the token to create an authlink
+    final authLink = AuthLink(
+      getToken: () => 'Bearer $token',
+    );
+
+    // Create a new GraphQLClient with the authlink
+    final newClient = GraphQLClient(
+      cache: GraphQLCache(),
+      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+    );
+
+    final MutationOptions options = MutationOptions(
+      document: _sendVerificationOTPMutation.document,
+      variables: {'bvnNumber': bvnNumber},
+    );
+
+    final QueryResult result = await newClient.mutate(options);
+
+    if (result.hasException) {
+      return BusinessOTPResult.error(
+        error: GraphQLBusinessError(
+          message: result.exception?.graphqlErrors.first.message.toString(),
+        ),
+      );
+    }
+
+    var businessOTPData = result.data?['sendVerificationOTP'];
+
+    var message = businessOTPData['message'];
+    var id = businessOTPData['data']['_id'];
+    var otpId = businessOTPData['data']['otpId'];
+    // var otpVerified = businessOTPData['createBusiness']['otpVerified'];
+
+    var OTP = BusinessOTPSuccessResult(id: id, message: message, otpId: otpId);
+    return BusinessOTPResult(OTP: OTP);
+  }
+
   Future<BusinessCreationResult> createBusinessProfile(
       {required String businessName,
       required String businessEmail,
@@ -212,7 +277,9 @@ class BusinessCreationService {
   }
 
   Future<bool> createBusinessAccount({
-    required String bvn,
+    required String identityNumber,
+    required String identityId,
+    required String otp,
     required String addressLine1,
     required String city,
     required String dob,
@@ -244,7 +311,9 @@ class BusinessCreationService {
       variables: {
         'input': {
           'dob': dob,
-          'bvn': bvn,
+          'otp': otp,
+          'identityNumber': identityNumber,
+          'identityId': identityId,
           'addressLine1': addressLine1,
           'city': city,
           'state': state,
@@ -406,6 +475,7 @@ class BusinessCreationService {
       final taskTypeData = data['taskType'];
       final userData = data['user'];
       return BusinessTask(
+          createdAt: taskTypeData['createdAt'],
           taskType: taskTypeData['taskType'],
           userId: userData['id'],
           userEmail: userData['email'],
@@ -428,12 +498,14 @@ class BusinessTask {
   final String userEmail;
   final String userFullname;
   final String userId;
+  final String createdAt;
 
   BusinessTask(
       {required this.taskType,
       required this.userEmail,
       required this.userId,
-      required this.userFullname});
+      required this.userFullname,
+      required this.createdAt});
 }
 
 // class BusinessAccountResult {
@@ -488,6 +560,29 @@ class BusinessCreationSuccessResult {
   late final String result_businessMobile;
 }
 
+class BusinessOTPResult {
+  late final BusinessOTPSuccessResult? OTP;
+  late final GraphQLBusinessError? error;
+
+  BusinessOTPResult({this.OTP}) : error = null;
+  BusinessOTPResult.error({this.error}) : OTP = null;
+
+  bool get hasError => error != null;
+}
+
+class BusinessOTPSuccessResult {
+  BusinessOTPSuccessResult({
+    required this.id,
+    required this.message,
+    required this.otpId,
+  });
+
+  late final String id;
+  late final String message;
+
+  late final String otpId;
+}
+
 class BusinessUpdateResult {
   late final BusinessUpdateSuccessResult? business;
   late final GraphQLBusinessError? error;
@@ -526,4 +621,18 @@ class BusinessAccount {
       required this.accountNumber,
       required this.accountType,
       required this.bvn});
+}
+
+class OTPresponse {
+  late final String id;
+  late final String message;
+
+  late final String otpId;
+  late final bool otpVerified;
+
+  OTPresponse(
+      {required this.message,
+      required this.id,
+      required this.otpId,
+      required this.otpVerified});
 }

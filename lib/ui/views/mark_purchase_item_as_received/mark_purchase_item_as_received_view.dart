@@ -131,7 +131,9 @@ class MarkPurchaseItemAsReceivedView
                                               .validate()) {
                                         await viewModel
                                             .markPurchaseItemAsRecieved(
-                                                purchaseItem.id, index);
+                                                purchaseItem.id,
+                                                index,
+                                                context);
                                         viewModel.rebuildUi();
                                         Navigator.pop(context);
                                       }

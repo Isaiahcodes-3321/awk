@@ -40,7 +40,7 @@ class _ExpenseViewState extends State<ExpenseView> {
                   focusElevation: 4.0, // Elevation when button is focused
                   hoverElevation: 4.0,
                   foregroundColor: kcButtonTextColor,
-                  backgroundColor: kcPrimaryColor.withOpacity(0.7),
+                  backgroundColor: Color(0XFF2A5DC8).withOpacity(0.7),
                   shape: const CircleBorder(
                     eccentricity: 1,
                     side: BorderSide.none,
@@ -190,8 +190,8 @@ class _ExpenseViewState extends State<ExpenseView> {
                         height: 76.h,
                         decoration: const BoxDecoration(
                             borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(32),
-                                topRight: Radius.circular(32)),
+                                topLeft: Radius.circular(24),
+                                topRight: Radius.circular(24)),
                             color: kcButtonTextColor),
                         child: Column(
                           children: [
@@ -305,21 +305,7 @@ class _ExpenseViewState extends State<ExpenseView> {
                                     itemCount: viewModel.data!.length,
                                     itemBuilder: (context, index) {
                                       var expense = viewModel.data![index];
-                                      return
-                                          // Container(
-                                          //   clipBehavior: Clip.antiAlias,
-                                          //   padding: EdgeInsets.zero,
-                                          //   width: double.infinity,
-                                          //   decoration: BoxDecoration(
-                                          //     // color: kcButtonTextColor,
-                                          //     borderRadius:
-                                          //         BorderRadius.circular(12),
-                                          //     border: Border.all(
-                                          //         width: 1.3,
-                                          //         color: kcBorderColor),
-                                          //   ),
-                                          //   child:
-                                          ExpenseCard(
+                                      return ExpenseCard(
                                         expenses: expense,
                                         expenseId: expense.id,
                                         // ),

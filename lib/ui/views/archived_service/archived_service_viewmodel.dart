@@ -5,6 +5,7 @@ import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.dialogs.dart';
 import 'package:verzo/app/app.locator.dart';
 import 'package:verzo/services/products_services_service.dart';
+import 'package:verzo/ui/common/database_helper.dart';
 
 class ArchivedServiceViewModel extends FutureViewModel<List<Services>> {
   final navigationService = locator<NavigationService>();
@@ -27,6 +28,7 @@ class ArchivedServiceViewModel extends FutureViewModel<List<Services>> {
   }
 
   Future<bool> unArchiveService(String serviceId) async {
+    final db = await getServiceDatabase();
     // Show a confirmation dialog
     final DialogResponse? response = await dialogService.showCustomDialog(
       variant: DialogType.archive,
@@ -51,6 +53,7 @@ class ArchivedServiceViewModel extends FutureViewModel<List<Services>> {
           barrierDismissible: true,
           mainButtonTitle: 'Ok',
         );
+        await db.delete('services');
       }
 
       reloadService();

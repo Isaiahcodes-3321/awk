@@ -9,6 +9,7 @@ import 'package:stacked_services/stacked_services.dart';
 import 'app.locator.dart';
 import '../ui/dialogs/archive/archive_dialog.dart';
 import '../ui/dialogs/archive_success/archive_success_dialog.dart';
+import '../ui/dialogs/billing/billing_dialog.dart';
 import '../ui/dialogs/card/card_dialog.dart';
 import '../ui/dialogs/card_success/card_success_dialog.dart';
 import '../ui/dialogs/delete/delete_dialog.dart';
@@ -31,6 +32,7 @@ enum DialogType {
   logout,
   card,
   cardSuccess,
+  billing,
 }
 
 void setupDialogUi() {
@@ -59,6 +61,8 @@ void setupDialogUi() {
         CardDialog(request: request, completer: completer),
     DialogType.cardSuccess: (context, request, completer) =>
         CardSuccessDialog(request: request, completer: completer),
+    DialogType.billing: (context, request, completer) =>
+        BillingDialog(request: request, completer: completer),
   };
 
   dialogService.registerCustomDialogBuilders(builders);

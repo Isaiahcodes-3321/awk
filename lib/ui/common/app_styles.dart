@@ -70,7 +70,7 @@ TextStyle ktsHeroTextWhiteDashboardHeader = const TextStyle(
     letterSpacing: 0.2,
     height: 0,
     color: kcButtonTextColor,
-    fontSize: 32,
+    fontSize: 30,
     fontWeight: FontWeight.w600);
 
 TextStyle ktsHeroTextWhiteDashboard2 = GoogleFonts.dmSans(

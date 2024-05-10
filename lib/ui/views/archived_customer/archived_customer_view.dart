@@ -180,7 +180,7 @@ class ArchivedCustomerCard extends ViewModelWidget<ArchivedCustomerViewModel> {
         style: TextStyle(
           fontFamily: 'Satoshi',
           color: kcTextTitleColor.withOpacity(0.9),
-          fontSize: 18,
+          fontSize: 16,
           fontWeight: FontWeight.w600,
         ),
         overflow: TextOverflow.ellipsis,
@@ -209,6 +209,7 @@ class ArchivedCustomerCard extends ViewModelWidget<ArchivedCustomerViewModel> {
               'assets/images/unarchive2.svg',
               // width: 20,
               // height: 20,
+              color: kcPrimaryColor,
             ),
           ),
           IconButton(
@@ -217,6 +218,7 @@ class ArchivedCustomerCard extends ViewModelWidget<ArchivedCustomerViewModel> {
               'assets/images/trash-04.svg',
               width: 18,
               height: 18,
+              color: kcErrorColor,
             ),
             onPressed: (() {
               viewModel.deleteCustomer(customerId);

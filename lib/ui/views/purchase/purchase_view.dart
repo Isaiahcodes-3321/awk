@@ -43,7 +43,7 @@ class _PurchaseViewState extends State<PurchaseView> {
               focusElevation: 4.0, // Elevation when button is focused
               hoverElevation: 4.0,
               foregroundColor: kcButtonTextColor,
-              backgroundColor: kcPrimaryColor.withOpacity(0.7),
+              backgroundColor: Color(0XFF2A5DC8).withOpacity(0.7),
               shape: const CircleBorder(
                 eccentricity: 1,
                 side: BorderSide.none,
@@ -188,8 +188,8 @@ class _PurchaseViewState extends State<PurchaseView> {
                     height: 76.h,
                     decoration: const BoxDecoration(
                         borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(32),
-                            topRight: Radius.circular(32)),
+                            topLeft: Radius.circular(24),
+                            topRight: Radius.circular(24)),
                         color: kcButtonTextColor),
                     child: Column(
                       children: [

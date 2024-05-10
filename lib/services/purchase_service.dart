@@ -352,13 +352,11 @@ class PurchaseService {
     );
 
     final QueryResult result = await newClient.mutate(options);
-
+    bool isUnArchived = result.data?['unarchivePurchase'] ?? false;
     if (result.hasException) {
       // Handle any errors that may have occurred during the log out process
-      throw Exception(result.exception);
+      isUnArchived = false;
     }
-
-    bool isUnArchived = result.data?['unarchivePurchase'] ?? false;
 
     return isUnArchived;
   }
@@ -368,7 +366,7 @@ class PurchaseService {
     final token = prefs.getString('access_token');
 
     if (token == null) {
-      throw GraphQLPurchaseError(
+      GraphQLPurchaseError(
         message: "Access token not found",
       );
     }
@@ -392,13 +390,11 @@ class PurchaseService {
     );
 
     final QueryResult result = await newClient.mutate(options);
-
+    bool isArchived = result.data?['archivePurchase'] ?? false;
     if (result.hasException) {
       // Handle any errors that may have occurred during the log out process
-      throw Exception(result.exception);
+      isArchived = false;
     }
-
-    bool isArchived = result.data?['archivePurchase'] ?? false;
 
     return isArchived;
   }
@@ -408,7 +404,7 @@ class PurchaseService {
     final token = prefs.getString('access_token');
 
     if (token == null) {
-      throw GraphQLPurchaseError(
+      GraphQLPurchaseError(
         message: "Access token not found",
       );
     }
@@ -432,13 +428,11 @@ class PurchaseService {
     );
 
     final QueryResult result = await newClient.mutate(options);
-
+    bool isDeleted = result.data?['deletePurchase'] ?? false;
     if (result.hasException) {
       // Handle any errors that may have occurred during the log out process
-      throw Exception(result.exception);
+      isDeleted = false;
     }
-
-    bool isDeleted = result.data?['deletePurchase'] ?? false;
 
     return isDeleted;
   }
@@ -455,7 +449,7 @@ class PurchaseService {
     final businessId = prefs.getString('businessId');
 
     if (token == null) {
-      throw GraphQLPurchaseError(
+      GraphQLPurchaseError(
         message: "Access token not found",
       );
     }
@@ -489,7 +483,9 @@ class PurchaseService {
 
     if (result.hasException) {
       // Handle any errors that may have occurred during the log out process
-      throw Exception(result.exception);
+      GraphQLPurchaseError(
+        message: result.exception?.graphqlErrors.first.message.toString(),
+      );
     }
 
     bool isPaid = result.data?['makePurchasePayment']['paid'] ?? false;
@@ -510,7 +506,7 @@ class PurchaseService {
     final businessId = prefs.getString('businessId');
 
     if (token == null) {
-      throw GraphQLPurchaseError(
+      GraphQLPurchaseError(
         message: "Access token not found",
       );
     }
@@ -542,7 +538,9 @@ class PurchaseService {
 
     if (result.hasException) {
       // Handle any errors that may have occurred during the log out process
-      throw Exception(result.exception);
+      GraphQLPurchaseError(
+        message: result.exception?.graphqlErrors.first.message.toString(),
+      );
     }
 
     bool isuploaded =
@@ -563,7 +561,7 @@ class PurchaseService {
     final token = prefs.getString('access_token');
 
     if (token == null) {
-      throw GraphQLPurchaseError(
+      GraphQLPurchaseError(
         message: "Access token not found",
       );
     }
@@ -595,7 +593,9 @@ class PurchaseService {
 
     if (result.hasException) {
       // Handle any errors that may have occurred during the log out process
-      throw Exception(result.exception);
+      GraphQLPurchaseError(
+        message: result.exception?.graphqlErrors.first.message.toString(),
+      );
     }
 
     bool isCompleted =
@@ -617,7 +617,7 @@ class PurchaseService {
     // final businessId = prefs.getString('businessId');
 
     if (token == null) {
-      throw GraphQLPurchaseError(
+      GraphQLPurchaseError(
         message: "Access token not found",
       );
     }
@@ -642,13 +642,11 @@ class PurchaseService {
     );
 
     final QueryResult result = await newClient.mutate(options);
-
+    bool isSent = result.data?['sendPurchase'];
     if (result.hasException) {
       // Handle any errors that may have occurred during the log out process
-      throw Exception(result.exception);
+      isSent = false;
     }
-
-    bool isSent = result.data?['sendPurchase'];
 
     return isSent;
   }
