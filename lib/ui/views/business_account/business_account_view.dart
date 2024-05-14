@@ -105,6 +105,7 @@ class BusinessAccountView extends StackedView<BusinessAccountViewModel>
                       dateOfBirthController.text = formattedDate;
                     }
                   },
+                  readOnly: true, // Set readOnly property to true
                   cursorColor: kcPrimaryColor,
                   decoration: InputDecoration(
                       contentPadding:

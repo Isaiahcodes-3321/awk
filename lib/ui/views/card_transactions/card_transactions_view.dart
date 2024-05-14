@@ -172,20 +172,7 @@ class CardTransaction extends ViewModelWidget<CardTransactionsViewModel> {
         maxLines: 1,
       ),
       subtitle: Text(
-        // expenses.expenseDate,
-        cardTransactions.amount.toString(),
-        style: TextStyle(
-          fontFamily: 'Satoshi',
-          color: kcTextSubTitleColor,
-          fontSize: 14,
-          fontWeight: FontWeight.w400,
-        ),
-        overflow: TextOverflow.ellipsis,
-        maxLines: 1,
-      ),
-      trailing: Text(
-        // expenses.merchantName,
-        cardTransactions.currency,
+        '${cardTransactions.currency}${cardTransactions.amount}',
         style: TextStyle(
           fontFamily: 'Satoshi',
           color: kcTextSubTitleColor,

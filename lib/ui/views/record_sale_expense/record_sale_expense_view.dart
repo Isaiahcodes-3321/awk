@@ -64,6 +64,7 @@ class RecordSaleExpenseView extends StackedView<RecordSaleExpenseViewModel>
                       transactionDateController.text = formattedDate;
                     }
                   },
+                  readOnly: true, // Set readOnly property to true
                   cursorColor: kcPrimaryColor,
                   decoration: InputDecoration(
                       contentPadding:

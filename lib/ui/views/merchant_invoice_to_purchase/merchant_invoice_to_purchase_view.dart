@@ -58,6 +58,7 @@ class MerchantInvoiceToPurchaseView
                       dateController.text = formattedDate;
                     }
                   },
+                  readOnly: true,
                   cursorColor: kcPrimaryColor,
                   decoration: InputDecoration(
                       contentPadding:

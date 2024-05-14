@@ -60,10 +60,9 @@ class _HomeViewState extends State<HomeView>
           await viewModel.getPurchasesForWeek();
           await viewModel.getExpenseByBusiness();
           await viewModel.getPurchasesByBusiness();
-          // await viewModel.getCustomersByBusiness();
-          await viewModel.totalMonthlyInvoicesAmount();
-          await viewModel.getExpensesForMonth();
-          await viewModel.getPurchasesForMonth();
+          // await viewModel.totalMonthlyInvoicesAmount();
+          // await viewModel.getExpensesForMonth();
+          // await viewModel.getPurchasesForMonth();
         },
         builder: (
           BuildContext context,
@@ -174,10 +173,10 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
           await viewModel.getPurchasesForWeek();
           await viewModel.getExpenseByBusiness();
           await viewModel.getPurchasesByBusiness();
-          // await viewModel.getCustomersByBusiness();
-          await viewModel.totalMonthlyInvoicesAmount();
-          await viewModel.getExpensesForMonth();
-          await viewModel.getPurchasesForMonth();
+
+          // await viewModel.totalMonthlyInvoicesAmount();
+          // await viewModel.getExpensesForMonth();
+          // await viewModel.getPurchasesForMonth();
         },
         builder: (
           BuildContext context,
@@ -1235,11 +1234,39 @@ class Cards extends ViewModelWidget<HomeViewModel> {
                   ],
                 ),
               ),
+              // GestureDetector(
+              //   onTap: () {
+              //     viewModel.navigationService.navigateTo(Routes.addCardView);
+              //     // viewModel.createSudoCard();
+              //   },
+              //   child: Column(
+              //     children: [
+              //       CircleAvatar(
+              //         radius: 20,
+              //         backgroundColor: kcPrimaryColor.withOpacity(0.6),
+              //         child: const Icon(
+              //           Icons.visibility,
+              //           color: kcButtonTextColor,
+              //           size: 24,
+              //         ),
+              //       ),
+              //       verticalSpaceTiny,
+              //       Text(
+              //         'View card',
+              //         style: GoogleFonts.dmSans(
+              //           color: kcButtonTextColor,
+              //           fontSize: 18,
+              //           fontWeight: FontWeight.w300,
+              //         ),
+              //       )
+              //     ],
+              //   ),
+              // ),
               GestureDetector(
                 onTap: () {
-                  viewModel.navigationService.navigateTo(
-                      Routes.cardTransactionsView,
-                      arguments: cardId);
+                  // viewModel.navigationService.navigateTo(
+                  //     Routes.cardTransactionsView,
+                  //     arguments: cardId);
                 },
                 child: Column(
                   children: [
@@ -1999,10 +2026,24 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
-                      Icons.account_circle_rounded,
-                      size: 58,
-                      color: Colors.grey.withOpacity(.4),
+                    // Replace Icon with Container
+                    Container(
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: kcPrimaryColor,
+                      ),
+                      padding:
+                          const EdgeInsets.all(16), // Adjust padding as needed
+                      child: Text(
+                        viewModel.businessName.isNotEmpty
+                            ? viewModel.businessName[0].toUpperCase()
+                            : '',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 20, // Adjust font size as needed
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                     horizontalSpaceTiny,
                     Expanded(

@@ -169,6 +169,7 @@ class UpdatePurchaseView extends StackedView<UpdatePurchaseViewModel> {
                           formattedDate;
                     }
                   },
+                  readOnly: true,
                   cursorColor: kcPrimaryColor,
                   decoration: InputDecoration(
                       contentPadding:

@@ -161,6 +161,7 @@ class AddSalesView extends StackedView<AddSalesViewModel> with $AddSalesView {
                     dateOfIssueController.text = formattedDate;
                   }
                 },
+                readOnly: true, // Set readOnly property to true
                 cursorColor: kcPrimaryColor,
                 decoration: InputDecoration(
                     contentPadding: const EdgeInsets.symmetric(horizontal: 12),

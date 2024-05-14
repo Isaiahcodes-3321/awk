@@ -318,11 +318,10 @@ class _SettingsViewState extends State<SettingsView> {
                                 style: ktsFormHintText,
                               ),
                               trailing: IconButton(
-                                onPressed: () {},
-                                icon: const Icon(Icons.arrow_forward),
-                                iconSize: 24,
-                                color: kcTextSubTitleColor,
-                              ),
+                                  onPressed: () {},
+                                  icon: const Icon(Icons.arrow_forward),
+                                  iconSize: 24,
+                                  color: kcTextSubTitleColor),
                             ),
                             verticalSpaceIntermitent,
                             Text(

@@ -64,6 +64,7 @@ class MarkPurchaseItemAsReceivedView
                       transactionDateController.text = formattedDate;
                     }
                   },
+                  readOnly: true,
                   cursorColor: kcPrimaryColor,
                   decoration: InputDecoration(
                       contentPadding:

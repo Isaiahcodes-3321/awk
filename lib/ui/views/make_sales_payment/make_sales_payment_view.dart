@@ -76,6 +76,7 @@ class MakeSalesPaymentView extends StackedView<MakeSalesPaymentViewModel>
                       paymentTransactionDateController.text = formattedDate;
                     }
                   },
+                  readOnly: true,
                   cursorColor: kcPrimaryColor,
                   decoration: InputDecoration(
                       contentPadding:

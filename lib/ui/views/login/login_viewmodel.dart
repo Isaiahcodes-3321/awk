@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.locator.dart';
@@ -16,6 +17,19 @@ class LoginViewModel extends FormViewModel {
   bool isPasswordVisible = false;
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  void setEmailPassword() async {
+    final prefs = await SharedPreferences.getInstance();
+    emailController1.text = prefs.getString('email') ?? '';
+    passwordController1.text = prefs.getString('password') ?? '';
+  }
+
+  TextEditingController emailController1 = TextEditingController();
+  TextEditingController passwordController1 = TextEditingController();
+  // void getDateByLogin() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   final date = prefs.getString('date');
+  // }
 
   Future<void> getUserAndRoleData() async {
     final result = await _dashboardService.getUserAndRoleData();
@@ -44,8 +58,9 @@ class LoginViewModel extends FormViewModel {
     rebuildUi();
   }
 
-  Future<AuthenticationResult> runAuthentication() => _authenticationService
-      .loginWithEmail(email: emailValue ?? '', password: passwordValue ?? '');
+  Future<AuthenticationResult> runAuthentication() =>
+      _authenticationService.loginWithEmail(
+          email: emailController1.text, password: passwordController1.text);
 
   Future saveData(BuildContext context) async {
     final result = await runBusyFuture(runAuthentication());

@@ -154,6 +154,7 @@ class AddPurchaseView extends StackedView<AddPurchaseViewModel>
                       transactionDateController.text = formattedDate;
                     }
                   },
+                  readOnly: true,
                   cursorColor: kcPrimaryColor,
                   decoration: InputDecoration(
                       contentPadding:

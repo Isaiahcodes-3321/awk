@@ -59,7 +59,11 @@ class LoginView extends StackedView<LoginViewModel> with $LoginView {
                         errorStyle: ktsErrorText,
                         errorBorder: defaultErrorFormBorder),
                     style: ktsBodyText,
-                    controller: emailController,
+                    controller: viewModel.emailController1,
+                    // controller:
+                    //     viewModel.email != null && viewModel.email!.isNotEmpty
+                    //         ? TextEditingController(text: viewModel.email!)
+                    //         : emailController,
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -102,7 +106,11 @@ class LoginView extends StackedView<LoginViewModel> with $LoginView {
                         errorStyle: ktsErrorText,
                         errorBorder: defaultErrorFormBorder),
                     style: ktsBodyText,
-                    controller: passwordController,
+                    controller: viewModel.passwordController1,
+                    // controller: viewModel.password != null &&
+                    //         viewModel.password!.isNotEmpty
+                    //     ? TextEditingController(text: viewModel.password!)
+                    //     : passwordController,
                     keyboardType: TextInputType.visiblePassword,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -144,7 +152,8 @@ class LoginView extends StackedView<LoginViewModel> with $LoginView {
   }
 
   @override
-  void onViewModelReady(LoginViewModel viewModel) {
-    syncFormWithViewModel(viewModel);
+  void onViewModelReady(LoginViewModel viewModel) async {
+    viewModel.setEmailPassword();
+    // syncFormWithViewModel(viewModel);
   }
 }

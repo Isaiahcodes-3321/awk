@@ -88,7 +88,7 @@ class ExpenseService {
         ),
         _getExpenseByBusinessMobileQuery = QueryOptions(
           document: gql('''
-        query GetExpenseByBusinessMobile(\$businessId: String!,\$cursor: String, \$take: Float ) {
+        query GetExpenseByBusinessMobile(\$businessId: String!,\$cursor: String, \$take: Int ) {
           getExpenseByBusinessMobile(businessId: \$businessId, cursor: \$cursor, take: \$take) {
             expenseByBusiness{
             id
@@ -107,7 +107,7 @@ class ExpenseService {
         ),
         _getArchivedExpenseByBusinessMobileQuery = QueryOptions(
           document: gql('''
-        query GetArchivedExpenseByBusinessMobile(\$businessId: String!,\$cursor: String, \$take: Float ) {
+        query GetArchivedExpenseByBusinessMobile(\$businessId: String!,\$cursor: String, \$take: Int ) {
           getArchivedExpenseByBusinessMobile(businessId: \$businessId, cursor: \$cursor, take: \$take) {
             expenseByBusiness{
             id

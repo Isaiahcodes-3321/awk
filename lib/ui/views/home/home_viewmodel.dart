@@ -38,7 +38,7 @@ class HomeViewModel extends ReactiveViewModel with ListenableServiceMixin {
   List<Expenses> get expenses => _expenses.value;
 
   final _take = ReactiveValue<int>(3);
-  int get take => _take.value;
+  num get take => _take.value;
 
   final _purchases = ReactiveValue<List<Purchases>>([]);
   List<Purchases> get purchases => _purchases.value;

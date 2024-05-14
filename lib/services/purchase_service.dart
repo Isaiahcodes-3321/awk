@@ -122,7 +122,7 @@ class PurchaseService {
         ),
         _getArchivedPurchaseByBusinessQuery = QueryOptions(
           document: gql('''
-        query GetArchivedPurchaseByBusinessMobile(\$businessId: String!, \$take: Float) {
+        query GetArchivedPurchaseByBusinessMobile(\$businessId: String!, \$take: Int) {
           getArchivedPurchaseByBusinessMobile(businessId: \$businessId, take: \$take) {
             purchaseByBusiness{
               id
@@ -141,7 +141,7 @@ class PurchaseService {
         ),
         _getPurchaseByBusinessQuery = QueryOptions(
           document: gql('''
-        query GetPurchaseByBusinessMobile(\$businessId: String!, \$take: Float) {
+        query GetPurchaseByBusinessMobile(\$businessId: String!, \$take: Int) {
           getPurchaseByBusinessMobile(businessId: \$businessId, take: \$take) {
             purchaseByBusiness{
               id

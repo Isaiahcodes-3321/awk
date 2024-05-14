@@ -109,6 +109,7 @@ class AddExpenseView extends StackedView<AddExpenseViewModel>
                     expenseDateController.text = formattedDate;
                   }
                 },
+                readOnly: true, // Set readOnly property to true
                 cursorColor: kcPrimaryColor,
                 decoration: InputDecoration(
                     contentPadding: const EdgeInsets.symmetric(horizontal: 12),

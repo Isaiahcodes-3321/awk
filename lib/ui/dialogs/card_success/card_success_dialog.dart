@@ -38,7 +38,7 @@ class CardSuccessDialog extends StackedView<CardSuccessDialogModel> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SvgPicture.asset(
-              'assets/images/Frame_43540-5.svg',
+              'assets/images/Frame 43540.svg',
               width: 48,
               height: 48,
             ),

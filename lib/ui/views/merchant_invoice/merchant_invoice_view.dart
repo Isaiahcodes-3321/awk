@@ -67,6 +67,7 @@ class MerchantInvoiceView extends StackedView<MerchantInvoiceViewModel>
                       dateController.text = formattedDate;
                     }
                   },
+                  readOnly: true, // Set readOnly property to true
                   cursorColor: kcPrimaryColor,
                   decoration: InputDecoration(
                       contentPadding:

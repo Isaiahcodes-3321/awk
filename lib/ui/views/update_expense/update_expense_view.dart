@@ -118,6 +118,7 @@ class UpdateExpenseView extends StackedView<UpdateExpenseViewModel> {
                           formattedDate;
                     }
                   },
+                  readOnly: true, // Set readOnly property to true
                   cursorColor: kcPrimaryColor,
                   decoration: InputDecoration(
                       contentPadding:

@@ -126,7 +126,7 @@ class SalesService {
         ),
         _getSaleByBusinessMobileQuery = QueryOptions(
           document: gql('''
-        query GetSaleByBusinessMobile(\$businessId: String!, \$cursor: String, \$take: Float) {
+        query GetSaleByBusinessMobile(\$businessId: String!, \$cursor: String, \$take: Int) {
           getSaleByBusinessMobile (businessId: \$businessId, cursor: \$cursor, take: \$take) {
             salesByBusiness{
             id
@@ -149,7 +149,7 @@ class SalesService {
         ),
         _getArchivedSalesByBusinessMobileQuery = QueryOptions(
           document: gql('''
-        query GetArchivedSalesByBusinessMobile(\$businessId: String!, \$cursor: String, \$take: Float) {
+        query GetArchivedSalesByBusinessMobile(\$businessId: String!, \$cursor: String, \$take: Int) {
           getArchivedSalesByBusinessMobile (businessId: \$businessId, cursor: \$cursor, take: \$take) {
             salesByBusiness{
             id

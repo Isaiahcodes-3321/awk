@@ -26,6 +26,7 @@ dependencies:
   form_field_validator: ^1.1.0
   responsive_sizer: ^3.3.1
   webview_flutter: ^3.0.1
+  dropdown_button2: ^2.3.9
 
 
 dev_dependencies:
@@ -51,6 +52,7 @@ flutter:
         - assets/images/Icon_launcher.png
         - assets/images/Icon_launcher2.png
         - assets/images/Frame_43540.svg
+        - assets/images/Frame 43540.svg
         - assets/images/Frame_43540-2.svg
         - assets/images/Frame_43540-3.svg
         - assets/images/Frame_43540-4.svg

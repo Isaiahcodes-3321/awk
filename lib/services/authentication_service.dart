@@ -10,6 +10,7 @@ class AuthenticationService {
   ValueNotifier<GraphQLClient> client;
 
   final MutationOptions _signInMutation;
+  final MutationOptions _refreshTokenMutation;
   final MutationOptions _logOutMutation;
   final MutationOptions _signUpMutation;
 
@@ -31,6 +32,16 @@ class AuthenticationService {
         }
       '''),
         ),
+        _refreshTokenMutation = MutationOptions(
+          document: gql('''
+        mutation RefreshToken(\$userId: String!) {
+          refreshToken(userId: \$userId) {
+            access_token
+            refresh_token
+          }
+        }
+      '''),
+        ),
         _logOutMutation = MutationOptions(
           document: gql('''
         mutation LogOut {
@@ -48,7 +59,6 @@ class AuthenticationService {
         }
       '''),
         );
-
   Future<bool> isLoggedIn() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool('isLoggedIn') ?? false;
@@ -89,8 +99,13 @@ class AuthenticationService {
       );
     }
 
+    final loginDate = DateTime.now().toIso8601String();
+
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString('access_token', accessToken ?? "");
+    prefs.setString('access_token', accessToken ?? '');
+    prefs.setString('email', email);
+    prefs.setString('date', loginDate);
+    prefs.setString('password', password);
     prefs.setBool('isVerified', verified);
     prefs.setString('refresh_token', refreshToken ?? "");
     prefs.setBool('isLoggedIn', true);
@@ -101,6 +116,60 @@ class AuthenticationService {
         verified: verified ?? false);
 
     return AuthenticationResult(tokens: tokens);
+  }
+
+  Future<AuthenticationResult2> refreshToken({String? userId}) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('refresh_token');
+    final userId = prefs.getString('userId');
+
+    if (token == null) {
+      return AuthenticationResult2.error(
+        error: GraphQLAuthError(
+          message: "Access token not found",
+        ),
+      );
+    }
+    // Use the token to create an authlink
+    final authLink = AuthLink(
+      getToken: () => 'Bearer $token',
+    );
+
+    // Create a new GraphQLClient with the authlink
+    final newClient = GraphQLClient(
+      cache: GraphQLCache(),
+      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+    );
+    final MutationOptions options = MutationOptions(
+      document: _refreshTokenMutation.document,
+      variables: {
+        'userId': userId,
+      },
+    );
+
+    final QueryResult result = await newClient.mutate(options);
+
+    if (result.hasException) {
+      return AuthenticationResult2.error(
+        error: GraphQLAuthError(
+          message: result.exception?.graphqlErrors.first.message.toString(),
+        ),
+      );
+    }
+
+    var accessToken = result.data?['refreshToken']['access_token'];
+    var refreshToken = result.data?['refreshToken']['refresh_token'];
+
+    prefs.setString('access_token', accessToken);
+    prefs.setString('refresh_token', refreshToken);
+    prefs.setBool('isLoggedIn', true);
+
+    var tokens = AuthenticationSuccessResult2(
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+    );
+
+    return AuthenticationResult2(tokens: tokens);
   }
 
   Future<bool> logout() async {
@@ -132,6 +201,7 @@ class AuthenticationService {
 
     prefs.setString('access_token', '');
     prefs.setString('refresh_token', '');
+    prefs.setString('date', '');
     prefs.setBool('isLoggedIn', false);
 
     if (result.hasException) {
@@ -227,6 +297,26 @@ class AuthenticationSuccessResult {
   late final String refreshToken;
   bool verified;
   // bool business;
+}
+
+class AuthenticationResult2 {
+  late final AuthenticationSuccessResult2? tokens;
+  late final GraphQLAuthError? error;
+
+  AuthenticationResult2({this.tokens}) : error = null;
+  AuthenticationResult2.error({this.error}) : tokens = null;
+
+  bool get hasError => error != null;
+}
+
+class AuthenticationSuccessResult2 {
+  AuthenticationSuccessResult2({
+    required this.accessToken,
+    required this.refreshToken,
+  });
+
+  late final String accessToken;
+  late final String refreshToken;
 }
 
 class GraphQLAuthError {

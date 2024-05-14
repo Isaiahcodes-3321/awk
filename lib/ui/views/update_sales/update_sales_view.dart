@@ -161,6 +161,7 @@ class UpdateSalesView extends StackedView<UpdateSalesViewModel> {
                               formattedDate;
                         }
                       },
+                      readOnly: true, // Set readOnly property to true
                       cursorColor: kcPrimaryColor,
                       decoration: InputDecoration(
                           contentPadding:
