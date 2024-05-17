@@ -1607,13 +1607,20 @@ class MockBusinessCreationService extends _i1.Mock
       ) as _i15.Future<List<_i6.BusinessCategory>>);
 
   @override
-  _i15.Future<List<_i6.BusinessTask>> getBusinessTasks(
-          {required String? businessId}) =>
+  _i15.Future<List<_i6.BusinessTask>> getBusinessTasks({
+    required String? businessId,
+    num? take,
+    String? cursor,
+  }) =>
       (super.noSuchMethod(
         Invocation.method(
           #getBusinessTasks,
           [],
-          {#businessId: businessId},
+          {
+            #businessId: businessId,
+            #take: take,
+            #cursor: cursor,
+          },
         ),
         returnValue:
             _i15.Future<List<_i6.BusinessTask>>.value(<_i6.BusinessTask>[]),
@@ -4042,13 +4049,20 @@ class MockProductsServicesService extends _i1.Mock
       ) as _i15.Future<List<_i12.ServiceUnit>>);
 
   @override
-  _i15.Future<List<_i12.Items>> getProductOrServiceByBusiness(
-          {required String? businessId}) =>
+  _i15.Future<List<_i12.Items>> getProductOrServiceByBusiness({
+    required String? businessId,
+    num? take,
+    String? cursor,
+  }) =>
       (super.noSuchMethod(
         Invocation.method(
           #getProductOrServiceByBusiness,
           [],
-          {#businessId: businessId},
+          {
+            #businessId: businessId,
+            #take: take,
+            #cursor: cursor,
+          },
         ),
         returnValue: _i15.Future<List<_i12.Items>>.value(<_i12.Items>[]),
         returnValueForMissingStub:

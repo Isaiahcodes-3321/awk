@@ -135,9 +135,9 @@ class RecordSaleExpenseView extends StackedView<RecordSaleExpenseViewModel>
                                                   .validate()) {
                                             await viewModel
                                                 .effectSaleExpenseSaleExpense(
-                                              saleExpenses!.id,
-                                              index,
-                                            );
+                                                    saleExpenses!.id,
+                                                    index,
+                                                    context);
                                             viewModel.rebuildUi();
                                             Navigator.pop(context);
                                           }
@@ -302,9 +302,9 @@ class RecordSaleExpenseView extends StackedView<RecordSaleExpenseViewModel>
                                                   .validate()) {
                                             await viewModel
                                                 .effectSaleExpenseSaleServiceExpense(
-                                              saleServiceExpenses!.id,
-                                              index,
-                                            );
+                                                    saleServiceExpenses!.id,
+                                                    index,
+                                                    context);
                                             viewModel.rebuildUi();
                                             Navigator.pop(context);
                                           }

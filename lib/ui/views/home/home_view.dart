@@ -60,9 +60,9 @@ class _HomeViewState extends State<HomeView>
           await viewModel.getPurchasesForWeek();
           await viewModel.getExpenseByBusiness();
           await viewModel.getPurchasesByBusiness();
-          // await viewModel.totalMonthlyInvoicesAmount();
-          // await viewModel.getExpensesForMonth();
-          // await viewModel.getPurchasesForMonth();
+          await viewModel.totalMonthlyInvoicesAmount();
+          await viewModel.getExpensesForMonth();
+          await viewModel.getPurchasesForMonth();
         },
         builder: (
           BuildContext context,
@@ -174,9 +174,9 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
           await viewModel.getExpenseByBusiness();
           await viewModel.getPurchasesByBusiness();
 
-          // await viewModel.totalMonthlyInvoicesAmount();
-          // await viewModel.getExpensesForMonth();
-          // await viewModel.getPurchasesForMonth();
+          await viewModel.totalMonthlyInvoicesAmount();
+          await viewModel.getExpensesForMonth();
+          await viewModel.getPurchasesForMonth();
         },
         builder: (
           BuildContext context,

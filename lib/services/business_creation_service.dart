@@ -434,7 +434,7 @@ class BusinessCreationService {
   }
 
   Future<List<BusinessTask>> getBusinessTasks(
-      {required String businessId}) async {
+      {required String businessId, num? take, String? cursor}) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('access_token');
 
@@ -455,7 +455,7 @@ class BusinessCreationService {
     final QueryOptions options = QueryOptions(
       document: _getBusinessTasksQuery.document,
       variables: {
-        'input': {'businessId': businessId}
+        'input': {'businessId': businessId, 'take': take, 'cursor': cursor}
       },
     );
 

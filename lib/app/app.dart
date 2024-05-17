@@ -91,6 +91,7 @@ import 'package:verzo/ui/views/billing/billing_view.dart';
 
 import 'package:verzo/ui/views/business_bvn/business_bvn_view.dart';
 import 'package:verzo/ui/dialogs/billing/billing_dialog.dart';
+import 'package:verzo/ui/dialogs/billing_success/billing_success_dialog.dart';
 // @stacked-import
 
 @StackedApp(
@@ -197,6 +198,7 @@ import 'package:verzo/ui/dialogs/billing/billing_dialog.dart';
     StackedDialog(classType: CardDialog),
     StackedDialog(classType: CardSuccessDialog),
     StackedDialog(classType: BillingDialog),
+    StackedDialog(classType: BillingSuccessDialog),
 // @stacked-dialog
   ],
 )

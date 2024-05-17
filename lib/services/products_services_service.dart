@@ -166,8 +166,8 @@ class ProductsServicesService {
         ),
         _getProductOrServiceByBusinessQuery = QueryOptions(
           document: gql('''
-        query GetProductOrServiceByBusiness(\$input: String!) {
-          getProductOrServiceByBusiness(businessId: \$input) {
+        query GetProductOrServiceByBusiness(\$businessId: String!,\$cursor: String, \$take: Int) {
+          getProductOrServiceByBusiness(businessId: \$businessId, cursor: \$cursor, take: \$take) {
             productOrServiceByBusiness{
               id
               title
@@ -899,7 +899,7 @@ class ProductsServicesService {
   }
 
   Future<List<Items>> getProductOrServiceByBusiness(
-      {required String businessId}) async {
+      {required String businessId, num? take, String? cursor}) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('access_token');
 
@@ -920,7 +920,7 @@ class ProductsServicesService {
     );
     final QueryOptions options = QueryOptions(
       document: _getProductOrServiceByBusinessQuery.document,
-      variables: {'input': businessId},
+      variables: {'businessId': businessId, 'take': take, 'cursor': cursor},
     );
 
     final QueryResult productorserviceByBusinessResult =

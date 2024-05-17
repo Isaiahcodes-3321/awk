@@ -15,6 +15,7 @@ class DashboardService {
   final QueryOptions _getCardsByBusinessQuery;
   final QueryOptions _getUserCardsByBusinessQuery;
   final QueryOptions _viewCardTransactionsQuery;
+  // final QueryOptions _viewCardQuery;
   final QueryOptions _getBusinessesByUserIdQuery;
   final QueryOptions _getUserByIdQuery;
   final QueryOptions _getUsersByBusinessQuery;

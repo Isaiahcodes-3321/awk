@@ -101,7 +101,7 @@ class RecordSaleExpenseViewModel extends FormViewModel {
   List<TextEditingController> saleServiceDescriptionControllers = [];
 
   Future<SaleStatusResult> effectSaleExpenseSaleExpense(
-      String expenseId, int index) async {
+      String expenseId, int index, BuildContext context) async {
     final SaleStatusResult effectSaleExpenseSuccessful =
         await _saleService.effectSaleExpense(
             expenseId: expenseId,
@@ -118,6 +118,28 @@ class RecordSaleExpenseViewModel extends FormViewModel {
           mainButtonTitle: 'Ok');
 
       sale.saleStatusId = effectSaleExpenseSuccessful.saleStatus;
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'An error occured, try again later',
+            textAlign: TextAlign.start,
+            style: ktsSubtitleTileText2,
+          ),
+          elevation: 2,
+          duration: const Duration(seconds: 3), // Adjust as needed
+          backgroundColor: kcErrorColor,
+          dismissDirection: DismissDirection.up,
+          behavior: SnackBarBehavior.fixed,
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(4),
+                  bottomRight: Radius.circular(4))),
+          padding: const EdgeInsets.all(12),
+          // margin:
+          //     EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.9),
+        ),
+      );
     }
 
     sale.saleStatusId = effectSaleExpenseSuccessful.saleStatus;
@@ -128,7 +150,7 @@ class RecordSaleExpenseViewModel extends FormViewModel {
   }
 
   Future<SaleStatusResult> effectSaleExpenseSaleServiceExpense(
-      String expenseId, int index) async {
+      String expenseId, int index, BuildContext context) async {
     final SaleStatusResult effectSaleExpenseSuccessful =
         await _saleService.effectSaleExpense(
             expenseId: expenseId,
@@ -145,6 +167,28 @@ class RecordSaleExpenseViewModel extends FormViewModel {
           mainButtonTitle: 'Ok');
 
       sale.saleStatusId = effectSaleExpenseSuccessful.saleStatus;
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'An error occured, try again later',
+            textAlign: TextAlign.start,
+            style: ktsSubtitleTileText2,
+          ),
+          elevation: 2,
+          duration: const Duration(seconds: 3), // Adjust as needed
+          backgroundColor: kcErrorColor,
+          dismissDirection: DismissDirection.up,
+          behavior: SnackBarBehavior.fixed,
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(4),
+                  bottomRight: Radius.circular(4))),
+          padding: const EdgeInsets.all(12),
+          // margin:
+          //     EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.9),
+        ),
+      );
     }
 
     sale.saleStatusId = effectSaleExpenseSuccessful.saleStatus;

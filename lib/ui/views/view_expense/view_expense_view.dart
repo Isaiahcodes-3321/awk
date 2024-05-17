@@ -557,7 +557,7 @@ class ViewExpenseView extends StackedView<ViewExpenseViewModel> {
                                           .bottom),
                                   child: SizedBox(
                                     height: MediaQuery.of(context).size.height *
-                                        0.9,
+                                        0.84,
                                     child: MarkExpenseItemAsReceivedView(
                                       selectedExpense: viewModel.expense!,
                                     ),

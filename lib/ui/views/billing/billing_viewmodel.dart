@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 import 'package:verzo/app/app.dialogs.dart';
 import 'package:verzo/app/app.locator.dart';
 import 'package:verzo/app/app.router.dart';
 import 'package:verzo/services/billing_service.dart';
 import 'package:verzo/ui/common/app_colors.dart';
 import 'package:verzo/ui/common/app_styles.dart';
-import 'package:verzo/ui/common/ui_helpers.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class BillingViewModel extends FormViewModel {
@@ -162,7 +160,7 @@ class BillingViewModel extends FormViewModel {
     final result = await runSubscriptionCreationB();
     if (result.subscription != null) {
       await dialogService.showCustomDialog(
-          variant: DialogType.info,
+          variant: DialogType.billingSuccess,
           title: 'Successful!',
           description: "Your payment was successfully completed",
           barrierDismissible: true,
@@ -173,7 +171,7 @@ class BillingViewModel extends FormViewModel {
     } else {
       if (result.error != null) {
         await dialogService.showCustomDialog(
-            variant: DialogType.info,
+            variant: DialogType.billingSuccess,
             title: 'Unsuccessful!',
             description: "Your payment was not completed",
             barrierDismissible: true,

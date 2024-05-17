@@ -516,6 +516,7 @@ class ViewSalesView extends StackedView<ViewSalesViewModel> {
               // const Divider(
               //   color: kcBorderColor,
               // ),
+              verticalSpaceSmall,
               Row(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,

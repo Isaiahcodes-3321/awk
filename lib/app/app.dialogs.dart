@@ -10,6 +10,7 @@ import 'app.locator.dart';
 import '../ui/dialogs/archive/archive_dialog.dart';
 import '../ui/dialogs/archive_success/archive_success_dialog.dart';
 import '../ui/dialogs/billing/billing_dialog.dart';
+import '../ui/dialogs/billing_success/billing_success_dialog.dart';
 import '../ui/dialogs/card/card_dialog.dart';
 import '../ui/dialogs/card_success/card_success_dialog.dart';
 import '../ui/dialogs/delete/delete_dialog.dart';
@@ -33,6 +34,7 @@ enum DialogType {
   card,
   cardSuccess,
   billing,
+  billingSuccess,
 }
 
 void setupDialogUi() {
@@ -63,6 +65,8 @@ void setupDialogUi() {
         CardSuccessDialog(request: request, completer: completer),
     DialogType.billing: (context, request, completer) =>
         BillingDialog(request: request, completer: completer),
+    DialogType.billingSuccess: (context, request, completer) =>
+        BillingSuccessDialog(request: request, completer: completer),
   };
 
   dialogService.registerCustomDialogBuilders(builders);

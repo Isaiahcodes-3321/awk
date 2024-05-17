@@ -263,7 +263,7 @@ class AddSalesViewModel extends FormViewModel {
       item: convertItemsToItemDetails(selectedItems),
       dueDate: dueDateValue ?? '',
       dateOfIssue: dateOfIssueValue ?? '',
-      vat: 7.5,
+      vat: 7.5 * 100,
     );
   }
 
