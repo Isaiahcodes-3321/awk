@@ -39,21 +39,16 @@ class LoginViewModel extends FormViewModel {
       navigationService.replaceWith(Routes.employeeHomeView);
     } else {
       await getUserAndBusinessData();
-      // navigate to success route
-      navigationService.replaceWith(Routes.homeView);
     }
   }
 
   Future<void> getUserAndBusinessData() async {
     final result = await _dashboardService.getUserAndBusinessData();
-    // if (result.user != null) {
-    //   user = result.user;
-    // }
-    // if (result.businesses != null) {
-    //   businesses = result.businesses;
-    // }
-    if (result.businesses.isEmpty || result.businesses == null) {
+    if (result.businesses == []) {
       navigationService.replaceWith(Routes.businessCreationView);
+    } else {
+      // navigate to success route
+      navigationService.replaceWith(Routes.homeView);
     }
     rebuildUi();
   }

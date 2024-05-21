@@ -116,7 +116,7 @@ class HomeViewModel extends ReactiveViewModel with ListenableServiceMixin {
     // if (result.businesses != null) {
     //   businesses = result.businesses;
     // }
-    if (result.businesses.isEmpty) {
+    if (result.businesses.isEmpty || result.businesses == []) {
       navigationService.replaceWith(Routes.businessCreationView);
     }
     rebuildUi();

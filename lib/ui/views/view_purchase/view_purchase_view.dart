@@ -581,7 +581,7 @@ class ViewPurchaseView extends StackedView<ViewPurchaseViewModel> {
                                 );
                               },
                             ).whenComplete(() async {
-                              viewModel.rebuildUi();
+                              // viewModel.rebuildUi();
                               // Navigator.of(context).pop();
                             });
                           }

@@ -5,22 +5,21 @@ import 'package:verzo/ui/common/app_colors.dart';
 import 'package:verzo/ui/common/app_styles.dart';
 import 'package:verzo/ui/common/authentication_layout.dart';
 import 'package:verzo/ui/common/ui_helpers.dart';
-import 'package:verzo/ui/views/create_merchant/create_merchant_view.form.dart';
+import 'package:verzo/ui/views/create_product_unit/create_product_unit_view.form.dart';
 
-import 'create_merchant_viewmodel.dart';
+import 'create_product_unit_viewmodel.dart';
 
 @FormView(fields: [
-  FormTextField(name: 'name'),
-  FormTextField(name: 'email'),
+  FormTextField(name: 'unitName'),
 ])
-class CreateMerchantView extends StackedView<CreateMerchantViewModel>
-    with $CreateMerchantView {
-  const CreateMerchantView({Key? key}) : super(key: key);
+class CreateProductUnitView extends StackedView<CreateProductUnitViewModel>
+    with $CreateProductUnitView {
+  const CreateProductUnitView({Key? key}) : super(key: key);
 
   @override
   Widget builder(
     BuildContext context,
-    CreateMerchantViewModel viewModel,
+    CreateProductUnitViewModel viewModel,
     Widget? child,
   ) {
     return Scaffold(
@@ -29,14 +28,15 @@ class CreateMerchantView extends StackedView<CreateMerchantViewModel>
         busy: viewModel.isBusy,
         // validationMessage: viewModel.validationMessage,
         onBackPressed: viewModel.navigateBack,
-        title: 'Create a merchant',
-        subtitle: 'This can be your supplier or manufacturer',
-        mainButtonTitle: 'Save merchant',
+        title: 'New product unit',
+        subtitle: 'Enter unit details',
+        mainButtonTitle: 'Save unit',
         onMainButtonTapped: () {
           if (viewModel.formKey.currentState!.validate()) {
-            viewModel.saveMerchantData(context);
+            viewModel.saveProductUnitData(context);
           }
         },
+
         form: Form(
           key: viewModel.formKey,
           child: Column(
@@ -44,13 +44,13 @@ class CreateMerchantView extends StackedView<CreateMerchantViewModel>
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Name', style: ktsFormTitleText),
+              Text('Unit name', style: ktsFormTitleText),
               verticalSpaceTiny,
               TextFormField(
                 cursorColor: kcPrimaryColor,
                 decoration: InputDecoration(
                     contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-                    hintText: 'Enter merchant name',
+                    hintText: 'Unit name',
                     hintStyle: ktsFormHintText,
                     // border: defaultFormBorder,
                     enabledBorder: defaultFormBorder,
@@ -60,7 +60,7 @@ class CreateMerchantView extends StackedView<CreateMerchantViewModel>
                     errorBorder: defaultErrorFormBorder),
                 textCapitalization: TextCapitalization.words,
                 style: ktsBodyText,
-                controller: nameController,
+                controller: unitNameController,
                 keyboardType: TextInputType.name,
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
@@ -84,39 +84,6 @@ class CreateMerchantView extends StackedView<CreateMerchantViewModel>
                   return null;
                 },
               ),
-              verticalSpaceSmall,
-              Text('Email address', style: ktsFormTitleText),
-              verticalSpaceTiny,
-              TextFormField(
-                cursorColor: kcPrimaryColor,
-                decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-                    hintText: 'Enter email address',
-                    hintStyle: ktsFormHintText,
-                    // border: defaultFormBorder,
-                    enabledBorder: defaultFormBorder,
-                    focusedBorder: defaultFocusedFormBorder,
-                    focusedErrorBorder: defaultErrorFormBorder,
-                    errorStyle: ktsErrorText,
-                    errorBorder: defaultErrorFormBorder),
-                // textCapitalization: TextCapitalization.words,
-                style: ktsBodyText,
-                controller: emailController,
-                keyboardType: TextInputType.emailAddress,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your email address';
-                  }
-                  // Email regex pattern
-                  const emailPattern =
-                      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-                  if (!RegExp(emailPattern).hasMatch(value)) {
-                    return 'Please enter a valid email address';
-                  }
-                  return null;
-                },
-              ),
-              // verticalSpaceSmall
             ],
           ),
         ),
@@ -125,19 +92,19 @@ class CreateMerchantView extends StackedView<CreateMerchantViewModel>
   }
 
   @override
-  void onDispose(CreateMerchantViewModel viewModel) {
+  void onDispose(CreateProductUnitViewModel viewModel) {
     super.onDispose(viewModel);
     disposeForm();
   }
 
   @override
-  void onViewModelReady(CreateMerchantViewModel viewModel) {
+  void onViewModelReady(CreateProductUnitViewModel viewModel) {
     syncFormWithViewModel(viewModel);
   }
 
   @override
-  CreateMerchantViewModel viewModelBuilder(
+  CreateProductUnitViewModel viewModelBuilder(
     BuildContext context,
   ) =>
-      CreateMerchantViewModel();
+      CreateProductUnitViewModel();
 }

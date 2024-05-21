@@ -593,7 +593,8 @@ class SalesService {
         invoiceDetailsData.map((invoiceData) {
       final Map<String, dynamic> detailData =
           invoiceData['productInvoiceDetail'] ??
-              invoiceData['serviceInvoiceDetail'];
+              invoiceData['serviceInvoiceDetail'] ??
+              invoiceData[null];
 
       return ItemDetail(
         id: detailData['product']?['id'] ?? detailData['service']?['id'],

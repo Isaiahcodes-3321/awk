@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked/stacked_annotations.dart';
+import 'package:verzo/app/app.router.dart';
 import 'package:verzo/ui/common/app_colors.dart';
 import 'package:verzo/ui/common/app_styles.dart';
 import 'package:verzo/ui/common/authentication_layout.dart';
@@ -104,6 +105,58 @@ class AddProductView extends StackedView<AddProductViewModel>
                 },
               ),
               verticalSpaceSmall,
+              Text('Initial stock level', style: ktsFormTitleText),
+              verticalSpaceTiny,
+              TextFormField(
+                cursorColor: kcPrimaryColor,
+                decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                    hintText: '0',
+                    hintStyle: ktsFormHintText,
+                    // border: defaultFormBorder,
+                    enabledBorder: defaultFormBorder,
+                    focusedBorder: defaultFocusedFormBorder,
+                    focusedErrorBorder: defaultErrorFormBorder,
+                    errorStyle: ktsErrorText,
+                    errorBorder: defaultErrorFormBorder),
+                style: ktsBodyText,
+                controller: initialStockLevelController,
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a valid number';
+                  }
+
+                  // Check if the value is not a whole number (non-integer) or is negative
+                  final parsedValue = int.tryParse(value);
+                  if (parsedValue == null || parsedValue < 0) {
+                    return 'Please enter a valid non-negative whole number (integer)';
+                  }
+
+                  return null;
+                },
+              ),
+              verticalSpaceSmall,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Product unit details',
+                      style: ktsSubtitleTextAuthentication),
+                  GestureDetector(
+                    onTap: () async {
+                      // Navigate to the create customer view
+                      await viewModel.navigationService
+                          .navigateTo(Routes.createProductUnitView);
+                      await viewModel.getProductUnits();
+                    },
+                    child: Text(
+                      '+ Add unit',
+                      style: ktsAddNewText,
+                    ),
+                  )
+                ],
+              ),
+              verticalSpaceSmall,
               Text('Product unit', style: ktsFormTitleText),
               verticalSpaceTiny,
               DropdownButtonFormField(
@@ -142,38 +195,6 @@ class AddProductView extends StackedView<AddProductViewModel>
                   productUnitIdController.text = value.toString();
                 },
                 // Customize the dropdown item style
-              ),
-              verticalSpaceSmall,
-              Text('Initial stock level', style: ktsFormTitleText),
-              verticalSpaceTiny,
-              TextFormField(
-                cursorColor: kcPrimaryColor,
-                decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-                    hintText: '0',
-                    hintStyle: ktsFormHintText,
-                    // border: defaultFormBorder,
-                    enabledBorder: defaultFormBorder,
-                    focusedBorder: defaultFocusedFormBorder,
-                    focusedErrorBorder: defaultErrorFormBorder,
-                    errorStyle: ktsErrorText,
-                    errorBorder: defaultErrorFormBorder),
-                style: ktsBodyText,
-                controller: initialStockLevelController,
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a valid number';
-                  }
-
-                  // Check if the value is not a whole number (non-integer) or is negative
-                  final parsedValue = int.tryParse(value);
-                  if (parsedValue == null || parsedValue < 0) {
-                    return 'Please enter a valid non-negative whole number (integer)';
-                  }
-
-                  return null;
-                },
               ),
             ],
           ),

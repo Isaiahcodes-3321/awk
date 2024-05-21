@@ -15,7 +15,7 @@ class DashboardService {
   final QueryOptions _getCardsByBusinessQuery;
   final QueryOptions _getUserCardsByBusinessQuery;
   final QueryOptions _viewCardTransactionsQuery;
-  // final QueryOptions _viewCardQuery;
+  final QueryOptions _getCardByIdQuery;
   final QueryOptions _getBusinessesByUserIdQuery;
   final QueryOptions _getUserByIdQuery;
   final QueryOptions _getUsersByBusinessQuery;
@@ -139,6 +139,18 @@ class DashboardService {
             amount
             currency
             type 
+            }
+            }
+            '''),
+        ),
+        _getCardByIdQuery = QueryOptions(
+          document: gql('''
+        query getCardById(\$cardId: String!){
+          getCardById(cardId: \$businessId){
+            id
+            amount
+            currency
+            maskedPan
             }
             }
             '''),
@@ -321,6 +333,54 @@ class DashboardService {
     }).toList();
 
     return businessCards;
+  }
+
+  Future<BusinessCard> getCardsById({
+    required String cardId,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('access_token');
+
+    if (token == null) {
+      throw GraphQLAuthError(
+        message: "Access token not found",
+      );
+    }
+    final authLink = AuthLink(
+      getToken: () => 'Bearer $token',
+    );
+
+    // Create a new GraphQLClient with the authlink
+    final newClient = GraphQLClient(
+      cache: GraphQLCache(),
+      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+    );
+
+    final QueryOptions options = QueryOptions(
+      document: _getCardByIdQuery.document,
+      variables: {
+        'cardId': cardId,
+      },
+    );
+
+    final QueryResult businessCardByIdResult = await newClient.query(options);
+
+    if (businessCardByIdResult.hasException) {
+      throw GraphQLAuthError(
+        message: businessCardByIdResult.exception?.graphqlErrors.first.message
+            .toString(),
+      );
+    }
+
+    final businessCardByIdData = businessCardByIdResult.data?['getCardById'];
+
+    final BusinessCard businessCardById = BusinessCard(
+        expiryDate: businessCardByIdData['expiryDate'],
+        id: businessCardByIdData['id'],
+        maskedPan: businessCardByIdData['maskedPan'],
+        currency: businessCardByIdData['currency']);
+
+    return businessCardById;
   }
 
   Future<List<BusinessCard>> getUserCardsByBusiness({
@@ -507,7 +567,7 @@ class DashboardService {
     prefs.setString('userName', user.fullname);
     prefs.setString('userEmail', user.email);
 
-    if (businesses.isNotEmpty) {
+    if (businesses.isNotEmpty || businesses == []) {
       prefs.setString('businessId', businesses[0].id);
       prefs.setString('businessName', businesses[0].businessName);
       prefs.setString('businessEmail', businesses[0].businessEmail);

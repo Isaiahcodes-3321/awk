@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked/stacked_annotations.dart';
+import 'package:verzo/app/app.router.dart';
 import 'package:verzo/ui/common/app_colors.dart';
 import 'package:verzo/ui/common/app_styles.dart';
 import 'package:verzo/ui/common/authentication_layout.dart';
@@ -104,6 +105,26 @@ class AddServiceView extends StackedView<AddServiceViewModel>
 
                     return null;
                   },
+                ),
+                verticalSpaceSmall,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Service unit details',
+                        style: ktsSubtitleTextAuthentication),
+                    GestureDetector(
+                      onTap: () async {
+                        // Navigate to the create customer view
+                        await viewModel.navigationService
+                            .navigateTo(Routes.createServiceUnitView);
+                        await viewModel.getServiceUnits();
+                      },
+                      child: Text(
+                        '+ Add unit',
+                        style: ktsAddNewText,
+                      ),
+                    )
+                  ],
                 ),
                 verticalSpaceSmall,
                 Text('Service unit', style: ktsFormTitleText),

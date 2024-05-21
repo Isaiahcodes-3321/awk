@@ -1234,39 +1234,39 @@ class Cards extends ViewModelWidget<HomeViewModel> {
                   ],
                 ),
               ),
-              // GestureDetector(
-              //   onTap: () {
-              //     viewModel.navigationService.navigateTo(Routes.addCardView);
-              //     // viewModel.createSudoCard();
-              //   },
-              //   child: Column(
-              //     children: [
-              //       CircleAvatar(
-              //         radius: 20,
-              //         backgroundColor: kcPrimaryColor.withOpacity(0.6),
-              //         child: const Icon(
-              //           Icons.visibility,
-              //           color: kcButtonTextColor,
-              //           size: 24,
-              //         ),
-              //       ),
-              //       verticalSpaceTiny,
-              //       Text(
-              //         'View card',
-              //         style: GoogleFonts.dmSans(
-              //           color: kcButtonTextColor,
-              //           fontSize: 18,
-              //           fontWeight: FontWeight.w300,
-              //         ),
-              //       )
-              //     ],
-              //   ),
-              // ),
               GestureDetector(
                 onTap: () {
-                  // viewModel.navigationService.navigateTo(
-                  //     Routes.cardTransactionsView,
-                  //     arguments: cardId);
+                  viewModel.navigationService.navigateTo(Routes.addCardView);
+                  // viewModel.createSudoCard();
+                },
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      radius: 20,
+                      backgroundColor: kcPrimaryColor.withOpacity(0.6),
+                      child: const Icon(
+                        Icons.visibility,
+                        color: kcButtonTextColor,
+                        size: 24,
+                      ),
+                    ),
+                    verticalSpaceTiny,
+                    Text(
+                      'View card',
+                      style: GoogleFonts.dmSans(
+                        color: kcButtonTextColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w300,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  viewModel.navigationService.navigateTo(
+                      Routes.cardTransactionsView,
+                      arguments: cardId);
                 },
                 child: Column(
                   children: [

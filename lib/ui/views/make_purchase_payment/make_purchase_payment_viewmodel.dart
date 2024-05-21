@@ -8,6 +8,7 @@ import 'package:verzo/app/app.locator.dart';
 import 'package:verzo/services/purchase_service.dart';
 import 'package:verzo/ui/common/app_colors.dart';
 import 'package:verzo/ui/common/app_styles.dart';
+import 'package:verzo/ui/common/database_helper.dart';
 import 'package:verzo/ui/views/make_purchase_payment/make_purchase_payment_view.form.dart';
 
 class MakePurchasePaymentViewModel extends FormViewModel {
@@ -112,10 +113,13 @@ class MakePurchasePaymentViewModel extends FormViewModel {
   }
 
   Future payment(BuildContext context) async {
+    final db = await getPurchaseDatabase();
+    final db2 = await getPurchaseDatabaseList();
     final result = await runBusyFuture(makePurchasePayment());
 
     if (result.isCompleted) {
-      // navigationService.back();
+      await db.delete('purchases');
+      await db2.delete('purchases');
       Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

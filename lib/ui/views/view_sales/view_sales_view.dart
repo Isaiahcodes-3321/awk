@@ -742,6 +742,8 @@ class ViewSalesView extends StackedView<ViewSalesViewModel> {
                                 );
                               },
                             ).whenComplete(() async {
+                              viewModel.rebuildUi();
+                              // viewModel.reloadView();
                               // Navigator.of(context).pop();
                             });
                           }

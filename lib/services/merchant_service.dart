@@ -77,9 +77,6 @@ class MerchantService {
 
     final QueryResult result = await newClient.mutate(options);
 
-    var merchantId = result.data?['createMerchant']['id'];
-    var merchantName = result.data?['createMerchant']['name'];
-
     if (result.hasException) {
       return MerchantCreationResult.error(
         error: GraphQLMerchantError(
@@ -87,6 +84,9 @@ class MerchantService {
         ),
       );
     }
+
+    var merchantId = result.data?['createMerchant']['id'];
+    var merchantName = result.data?['createMerchant']['name'];
 
     if (result.data == null || result.data!['createMerchant'] == null) {
       return MerchantCreationResult.error(

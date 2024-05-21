@@ -92,6 +92,8 @@ import 'package:verzo/ui/views/billing/billing_view.dart';
 import 'package:verzo/ui/views/business_bvn/business_bvn_view.dart';
 import 'package:verzo/ui/dialogs/billing/billing_dialog.dart';
 import 'package:verzo/ui/dialogs/billing_success/billing_success_dialog.dart';
+import 'package:verzo/ui/views/create_service_unit/create_service_unit_view.dart';
+import 'package:verzo/ui/views/create_product_unit/create_product_unit_view.dart';
 // @stacked-import
 
 @StackedApp(
@@ -163,6 +165,8 @@ import 'package:verzo/ui/dialogs/billing_success/billing_success_dialog.dart';
     MaterialRoute(page: CardTransactionsView),
     MaterialRoute(page: BillingView),
     MaterialRoute(page: BusinessBvnView),
+    MaterialRoute(page: CreateServiceUnitView),
+    MaterialRoute(page: CreateProductUnitView),
 // @stacked-route
   ],
   dependencies: [

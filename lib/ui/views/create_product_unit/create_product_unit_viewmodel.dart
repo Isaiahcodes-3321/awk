@@ -3,29 +3,27 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.locator.dart';
-import 'package:verzo/services/merchant_service.dart';
+import 'package:verzo/services/products_services_service.dart';
 import 'package:verzo/ui/common/app_colors.dart';
 import 'package:verzo/ui/common/app_styles.dart';
-import 'package:verzo/ui/views/create_merchant/create_merchant_view.form.dart';
+import 'package:verzo/ui/views/create_service_unit/create_service_unit_view.form.dart';
 
-class CreateMerchantViewModel extends FormViewModel {
+class CreateProductUnitViewModel extends FormViewModel {
   final navigationService = locator<NavigationService>();
-  final _createMerchantService = locator<MerchantService>();
+  final productServiceService = locator<ProductsServicesService>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  Future<MerchantCreationResult> runMerchantCreation() async {
+  Future<ProductUnitCreationResult> runProductUnitCreation() async {
     final prefs = await SharedPreferences.getInstance();
     final businessIdValue = prefs.getString('id');
-    return _createMerchantService.createMerchant(
-        name: nameValue ?? '',
-        businessId: businessIdValue ?? '',
-        email: emailValue ?? '');
+    return productServiceService.createBusinessProductUnit(
+        businessId: businessIdValue ?? '', unitName: unitNameValue ?? '');
   }
 
-  Future saveMerchantData(context) async {
-    final result = await runBusyFuture(runMerchantCreation());
+  Future saveProductUnitData(context) async {
+    final result = await runBusyFuture(runProductUnitCreation());
 
-    if (result.merchant != null) {
+    if (result.productUnit != null) {
       // navigate to success route
 
       navigationService.back();

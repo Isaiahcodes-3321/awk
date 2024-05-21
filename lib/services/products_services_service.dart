@@ -7,21 +7,23 @@ class ProductsServicesService {
 
 //Products
   final MutationOptions _createProductMutation;
+  final MutationOptions _createBusinessProductUnitMutation;
   final MutationOptions _updateProductMutation;
   final QueryOptions _getProductByIdQuery;
   final MutationOptions _archiveProductMutation;
   final MutationOptions _unarchiveProductMutation;
   final MutationOptions _deleteProductMutation;
-  final QueryOptions _getProductUnits;
+  final QueryOptions _getCombinedProductUnits;
 
 //Services
   final MutationOptions _createServiceMutation;
+  final MutationOptions _createBusinessServiceUnitMutation;
   final MutationOptions _updateServiceMutation;
   final QueryOptions _getServiceByIdQuery;
   final MutationOptions _archiveServiceMutation;
   final MutationOptions _unarchiveServiceMutation;
   final MutationOptions _deleteServiceMutation;
-  final QueryOptions _getServiceUnits;
+  final QueryOptions _getCombinedServiceUnits;
 
 //product/services
   final QueryOptions _getProductOrServiceByBusinessQuery;
@@ -42,6 +44,16 @@ class ProductsServicesService {
             id
             productName
             price
+          }
+        }
+      '''),
+        ),
+        _createBusinessProductUnitMutation = MutationOptions(
+          document: gql('''
+        mutation CreateBusinessProductUnit(\$input: CreateBusinessProductUnit!) {
+          createBusinessProductUnit(input: \$input) {
+            id
+            unitName
           }
         }
       '''),
@@ -91,10 +103,10 @@ class ProductsServicesService {
         }
       '''),
         ),
-        _getProductUnits = QueryOptions(
+        _getCombinedProductUnits = QueryOptions(
           document: gql('''
-        query GetProductUnits{
-          getProductUnits{
+        query GetCombinedProductUnits(\$businessId: String!){
+          getCombinedProductUnits(businessId: \$businessId){
             id
             unitName
             }
@@ -111,6 +123,16 @@ class ProductsServicesService {
           }
          }
         '''),
+        ),
+        _createBusinessServiceUnitMutation = MutationOptions(
+          document: gql('''
+        mutation CreateBusinessServiceUnit(\$input: CreateBusinessServiceUnit!) {
+          createBusinessServiceUnit(input: \$input) {
+            id
+            unitName
+          }
+        }
+      '''),
         ),
         _updateServiceMutation = MutationOptions(
           document: gql('''
@@ -154,10 +176,10 @@ class ProductsServicesService {
         }
       '''),
         ),
-        _getServiceUnits = QueryOptions(
+        _getCombinedServiceUnits = QueryOptions(
           document: gql('''
-        query GetServiceUnits{
-          getServiceUnits{
+        query GetCombinedServiceUnits(\$businessId: String!){
+          getCombinedServiceUnits(businessId: \$businessId){
             id
             unitName
             }
@@ -322,6 +344,66 @@ class ProductsServicesService {
         result_price: resultPrice);
 
     return ProductCreationResult(product: product);
+  }
+
+  Future<ProductUnitCreationResult> createBusinessProductUnit(
+      {required String unitName, required String businessId}) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('access_token');
+    final businessId = prefs.getString('businessId');
+
+    if (token == null) {
+      return ProductUnitCreationResult.error(
+        error: GraphQLProductError(
+          message: "Access token not found",
+        ),
+      );
+    }
+
+    // Use the token to create an authlink
+    final authLink = AuthLink(
+      getToken: () => 'Bearer $token',
+    );
+
+    // Create a new GraphQLClient with the authlink
+    final newClient = GraphQLClient(
+      cache: GraphQLCache(),
+      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+    );
+
+    final MutationOptions options = MutationOptions(
+      document: _createBusinessProductUnitMutation.document,
+      variables: {
+        'input': {'unitName': unitName, 'businessId': businessId},
+      },
+    );
+
+    final QueryResult result = await newClient.mutate(options);
+
+    if (result.hasException) {
+      return ProductUnitCreationResult.error(
+        error: GraphQLProductError(
+          message: result.exception?.graphqlErrors.first.message.toString(),
+        ),
+      );
+    }
+
+    var productUnitId = result.data?['createBusinessProductUnit']['id'];
+    var productUnitName = result.data?['createBusinessProductUnit']['unitName'];
+
+    if (result.data == null ||
+        result.data!['createBusinessProductUnit'] == null) {
+      return ProductUnitCreationResult.error(
+        error: GraphQLProductError(
+          message: "Error parsing response data",
+        ),
+      );
+    }
+
+    var productUnit = ProductUnitCreationSuccessResult(
+        id: productUnitId, unitName: productUnitName);
+
+    return ProductUnitCreationResult(productUnit: productUnit);
   }
 
   Future<ProductUpdateResult> updateProducts(
@@ -557,21 +639,44 @@ class ProductsServicesService {
   }
 
   Future<List<ProductUnit>> getProductUnits() async {
-    final QueryOptions options = QueryOptions(
-      document: _getProductUnits.document,
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('access_token');
+    final businessId = prefs.getString('businessId');
+    if (token == null) {
+      GraphQLProductError(
+        message: "Access token not found",
+      );
+    }
+
+    // Use the token to create an authlink
+    final authLink = AuthLink(
+      getToken: () => 'Bearer $token',
     );
 
-    final QueryResult productUnitsResult = await client.value.query(options);
+    // Create a new GraphQLClient with the authlink
+    final newClient = GraphQLClient(
+      cache: GraphQLCache(),
+      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+    );
+
+    final QueryOptions options = QueryOptions(
+      document: _getCombinedProductUnits.document,
+      variables: {
+        'businessId': businessId,
+      },
+    );
+
+    final QueryResult productUnitsResult = await newClient.query(options);
 
     if (productUnitsResult.hasException) {
-      throw GraphQLProductError(
+      GraphQLProductError(
         message: productUnitsResult.exception?.graphqlErrors.first.message
             .toString(),
       );
     }
 
     final List productUnitsData =
-        productUnitsResult.data?['getProductUnits'] ?? [];
+        productUnitsResult.data?['getCombinedProductUnits'] ?? [];
 
     final List<ProductUnit> productUnits = productUnitsData.map((data) {
       return ProductUnit(id: data['id'], unitName: data['unitName']);
@@ -648,6 +753,66 @@ class ProductsServicesService {
         result_price: resultPrice);
 
     return ServiceCreationResult(service: service);
+  }
+
+  Future<ServiceUnitCreationResult> createBusinessServiceUnit(
+      {required String unitName, required String businessId}) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('access_token');
+    final businessId = prefs.getString('businessId');
+
+    if (token == null) {
+      return ServiceUnitCreationResult.error(
+        error: GraphQLServiceError(
+          message: "Access token not found",
+        ),
+      );
+    }
+
+    // Use the token to create an authlink
+    final authLink = AuthLink(
+      getToken: () => 'Bearer $token',
+    );
+
+    // Create a new GraphQLClient with the authlink
+    final newClient = GraphQLClient(
+      cache: GraphQLCache(),
+      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+    );
+
+    final MutationOptions options = MutationOptions(
+      document: _createBusinessServiceUnitMutation.document,
+      variables: {
+        'input': {'unitName': unitName, 'businessId': businessId},
+      },
+    );
+
+    final QueryResult result = await newClient.mutate(options);
+
+    if (result.hasException) {
+      return ServiceUnitCreationResult.error(
+        error: GraphQLServiceError(
+          message: result.exception?.graphqlErrors.first.message.toString(),
+        ),
+      );
+    }
+
+    var serviceUnitId = result.data?['createBusinessServiceUnit']['id'];
+    var serviceUnitName = result.data?['createBusinessServiceUnit']['unitName'];
+
+    if (result.data == null ||
+        result.data!['createBusinessServiceUnit'] == null) {
+      return ServiceUnitCreationResult.error(
+        error: GraphQLServiceError(
+          message: "Error parsing response data",
+        ),
+      );
+    }
+
+    var serviceUnit = ServiceUnitCreationSuccessResult(
+        id: serviceUnitId, unitName: serviceUnitName);
+
+    return ServiceUnitCreationResult(serviceUnit: serviceUnit);
   }
 
   Future<ServiceUpdateResult> updateServices(
@@ -875,21 +1040,44 @@ class ProductsServicesService {
   }
 
   Future<List<ServiceUnit>> getServiceUnits() async {
-    final QueryOptions options = QueryOptions(
-      document: _getServiceUnits.document,
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('access_token');
+    final businessId = prefs.getString('businessId');
+    if (token == null) {
+      GraphQLProductError(
+        message: "Access token not found",
+      );
+    }
+
+    // Use the token to create an authlink
+    final authLink = AuthLink(
+      getToken: () => 'Bearer $token',
     );
 
-    final QueryResult serviceUnitsResult = await client.value.query(options);
+    // Create a new GraphQLClient with the authlink
+    final newClient = GraphQLClient(
+      cache: GraphQLCache(),
+      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+    );
+
+    final QueryOptions options = QueryOptions(
+      document: _getCombinedServiceUnits.document,
+      variables: {
+        'businessId': businessId,
+      },
+    );
+
+    final QueryResult serviceUnitsResult = await newClient.query(options);
 
     if (serviceUnitsResult.hasException) {
-      throw GraphQLProductError(
+      GraphQLServiceError(
         message: serviceUnitsResult.exception?.graphqlErrors.first.message
             .toString(),
       );
     }
 
     final List serviceUnitsData =
-        serviceUnitsResult.data?['getServiceUnits'] ?? [];
+        serviceUnitsResult.data?['getCombinedServiceUnits'] ?? [];
 
     final List<ServiceUnit> serviceUnits = serviceUnitsData.map((data) {
       return ServiceUnit(id: data['id'], unitName: data['unitName']);
@@ -1255,6 +1443,40 @@ class ServiceUnit {
   final String unitName;
 
   ServiceUnit({required this.id, required this.unitName});
+}
+
+class ProductUnitCreationResult {
+  late final ProductUnitCreationSuccessResult? productUnit;
+  late final GraphQLProductError? error;
+
+  ProductUnitCreationResult({this.productUnit}) : error = null;
+  ProductUnitCreationResult.error({this.error}) : productUnit = null;
+
+  bool get hasError => error != null;
+}
+
+class ProductUnitCreationSuccessResult {
+  final String id;
+  final String unitName;
+
+  ProductUnitCreationSuccessResult({required this.id, required this.unitName});
+}
+
+class ServiceUnitCreationResult {
+  late final ServiceUnitCreationSuccessResult? serviceUnit;
+  late final GraphQLServiceError? error;
+
+  ServiceUnitCreationResult({this.serviceUnit}) : error = null;
+  ServiceUnitCreationResult.error({this.error}) : serviceUnit = null;
+
+  bool get hasError => error != null;
+}
+
+class ServiceUnitCreationSuccessResult {
+  final String id;
+  final String unitName;
+
+  ServiceUnitCreationSuccessResult({required this.id, required this.unitName});
 }
 
 class Items {
