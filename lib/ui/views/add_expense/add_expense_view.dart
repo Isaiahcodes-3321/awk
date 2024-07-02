@@ -62,6 +62,10 @@ class AddExpenseView extends StackedView<AddExpenseViewModel>
               Text('Category', style: ktsFormTitleText),
               verticalSpaceTiny,
               DropdownButtonFormField(
+                hint: Text(
+                  'Select',
+                  style: ktsFormHintText,
+                ),
                 menuMaxHeight: 320,
                 elevation: 4,
                 // padding: EdgeInsets.symmetric(horizontal: 12),
@@ -79,16 +83,17 @@ class AddExpenseView extends StackedView<AddExpenseViewModel>
                 focusColor: kcPrimaryColor,
                 style: ktsBodyText,
                 decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-                    hintStyle: ktsFormHintText,
-                    hintText: 'Select',
-                    enabledBorder: defaultFormBorder,
-                    focusedBorder: defaultFocusedFormBorder,
-                    focusedErrorBorder: defaultErrorFormBorder,
-                    errorStyle: ktsErrorText,
-                    errorBorder: defaultErrorFormBorder,
-                    // labelStyle: ktsFormText,
-                    border: defaultFormBorder),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                  // hintStyle: ktsFormHintText,
+                  // hintText: 'Select',
+                  enabledBorder: defaultFormBorder,
+                  focusedBorder: defaultFocusedFormBorder,
+                  focusedErrorBorder: defaultErrorFormBorder,
+                  errorStyle: ktsErrorText,
+                  errorBorder: defaultErrorFormBorder,
+                  // labelStyle: ktsFormText,
+                  // border: defaultFormBorder
+                ),
                 items: viewModel.expenseCategorydropdownItems,
                 value: expenseCategoryIdController.text.isEmpty
                     ? null
@@ -163,6 +168,10 @@ class AddExpenseView extends StackedView<AddExpenseViewModel>
               Text('Merchant', style: ktsFormTitleText),
               verticalSpaceTiny,
               DropdownButtonFormField(
+                hint: Text(
+                  'Select',
+                  style: ktsFormHintText,
+                ),
                 menuMaxHeight: 320,
                 elevation: 4,
                 // padding: EdgeInsets.symmetric(horizontal: 12),
@@ -181,8 +190,8 @@ class AddExpenseView extends StackedView<AddExpenseViewModel>
                 style: ktsBodyText,
                 decoration: InputDecoration(
                     contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-                    hintStyle: ktsFormHintText,
-                    hintText: 'Select',
+                    // hintStyle: ktsFormHintText,
+                    // hintText: 'Select',
                     enabledBorder: defaultFormBorder,
                     focusedBorder: defaultFocusedFormBorder,
                     focusedErrorBorder: defaultErrorFormBorder,
@@ -239,6 +248,7 @@ class AddExpenseView extends StackedView<AddExpenseViewModel>
                   GestureDetector(
                     onTap: () async {
                       ExpenseDetail? result = await showModalBottomSheet(
+                        backgroundColor: kcButtonTextColor,
                         context: context,
                         isScrollControlled: true,
                         builder: (BuildContext context) {
@@ -576,6 +586,10 @@ class AddExpenseItemBottomSheet extends StackedView<AddExpenseViewModel>
             Text('Account', style: ktsFormTitleText),
             verticalSpaceTiny,
             DropdownButtonFormField(
+              hint: Text(
+                'Select',
+                style: ktsFormHintText,
+              ),
               menuMaxHeight: 320,
               elevation: 4,
               // padding: EdgeInsets.symmetric(horizontal: 12),
@@ -594,8 +608,8 @@ class AddExpenseItemBottomSheet extends StackedView<AddExpenseViewModel>
               style: ktsBodyText,
               decoration: InputDecoration(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-                  hintStyle: ktsFormHintText,
-                  hintText: 'Select account',
+                  // hintStyle: ktsFormHintText,
+                  // hintText: 'Select account',
                   enabledBorder: defaultFormBorder,
                   focusedBorder: defaultFocusedFormBorder,
                   focusedErrorBorder: defaultErrorFormBorder,

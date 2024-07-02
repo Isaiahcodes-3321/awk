@@ -128,6 +128,10 @@ class UpdateProductView extends StackedView<UpdateProductViewModel> {
               DropdownButtonFormField(
                 menuMaxHeight: 320,
                 elevation: 4,
+                hint: Text(
+                  'Select',
+                  style: ktsFormHintText,
+                ),
                 // padding: EdgeInsets.symmetric(horizontal: 12),
                 dropdownColor: kcButtonTextColor,
                 validator: (value) {

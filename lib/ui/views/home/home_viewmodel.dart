@@ -1,9 +1,12 @@
 import 'dart:convert';
 
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:verzo/app/app.locator.dart';
 import 'package:verzo/app/app.router.dart';
+import 'package:verzo/services/authentication_service.dart';
+import 'package:verzo/services/business_creation_service.dart';
 import 'package:verzo/services/dashboard_service.dart';
 import 'package:verzo/services/expense_service.dart';
 import 'package:verzo/services/purchase_service.dart';
@@ -23,11 +26,15 @@ enum DrawerItem {
 enum FilterItems { weekly, monthly }
 
 class HomeViewModel extends ReactiveViewModel with ListenableServiceMixin {
+  final MethodChannel platform =
+      const MethodChannel('com.verzo/vgs_show_view_channel');
   final navigationService = locator<NavigationService>();
   final _dashboardService = locator<DashboardService>();
   final _expenseService = locator<ExpenseService>();
   final _purchaseService = locator<PurchaseService>();
+  final businessService = locator<BusinessCreationService>();
   final _saleService = locator<SalesService>();
+  final authService = locator<AuthenticationService>();
   final DialogService dialogService = locator<DialogService>();
 
   bool isChecked = true;
@@ -108,23 +115,79 @@ class HomeViewModel extends ReactiveViewModel with ListenableServiceMixin {
   // User? user; // Store user data here
   // List<Business>? businesses;
 
-  Future<void> getUserAndBusinessData() async {
-    final result = await _dashboardService.getUserAndBusinessData();
-    // if (result.user != null) {
-    //   user = result.user;
-    // }
-    // if (result.businesses != null) {
-    //   businesses = result.businesses;
-    // }
-    if (result.businesses.isEmpty || result.businesses == []) {
-      navigationService.replaceWith(Routes.businessCreationView);
+  // Future<void> getUserAndBusinessData() async {
+  //   final result = await _dashboardService.getUserAndBusinessData();
+  //   // if (result.user != null) {
+  //   //   user = result.user;
+  //   // }
+  //   // if (result.businesses != null) {
+  //   //   businesses = result.businesses;
+  //   // }
+  //   if (result.businesses.isEmpty || result.businesses == []) {
+  //     navigationService.replaceWith(Routes.businessCreationView);
+  //   }
+  //   rebuildUi();
+  // }
+
+  Future<void> revealSensitiveData(String cardId) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String businessIdValue = prefs.getString('businessId') ?? '';
+
+      final result1 = await authService.refreshToken();
+      if (result1.error != null) {
+        await navigationService.replaceWithLoginView();
+      }
+
+      final result = await _dashboardService.generateCardToken(
+          businessId: businessIdValue, cardId: cardId);
+
+      if (result.isNotEmpty) {
+        String cardToken = result;
+        await platform.invokeMethod('revealData', {'cardToken': cardToken});
+      } else {
+        print("Failed to generate card token.");
+      }
+    } on PlatformException catch (e) {
+      print("Failed to reveal data: '${e.message}'.");
     }
-    rebuildUi();
+  }
+
+  // Future<String> generateCardToken() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   String businessIdValue = prefs.getString('businessId') ?? '';
+  //   final result1 = await authService.refreshToken();
+  //   if (result1.error != null) {
+  //     await navigationService.replaceWithLoginView();
+  //   }
+  //   final result = await _dashboardService.generateCardToken(
+  //       businessId: businessIdValue, cardId: '');
+  //   return result;
+  // }
+
+  Future<void> checkbusinessAcccount() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String businessIdValue = prefs.getString('businessId') ?? '';
+    final result1 = await authService.refreshToken();
+    if (result1.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
+    final result =
+        await businessService.viewBusinessAccount(businessId: businessIdValue);
+    if (result == null) {
+      await navigationService.navigateTo(Routes.businessBvnView);
+    } else {
+      await navigationService.navigateTo(Routes.addCardView);
+    }
   }
 
   Future<List<BusinessCard>> getCardsByBusiness() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String businessIdValue = prefs.getString('businessId') ?? '';
+    final result1 = await authService.refreshToken();
+    if (result1.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
     final result =
         await _dashboardService.getCardsByBusiness(businessId: businessIdValue);
     businessCard = result;
@@ -167,6 +230,10 @@ class HomeViewModel extends ReactiveViewModel with ListenableServiceMixin {
       // If there are expenses in the database, set them in your ViewModel.
       _expenses.value = expensesFromDatabase;
     } else {
+      final result = await authService.refreshToken();
+      if (result.error != null) {
+        await navigationService.replaceWithLoginView();
+      }
       // If the database is empty, fetch data from your service.
       final expenseList = await _expenseService.getExpenseByBusiness(
         businessId: businessIdValue,
@@ -226,6 +293,10 @@ class HomeViewModel extends ReactiveViewModel with ListenableServiceMixin {
       // If there are purchases in the database, set them in your ViewModel.
       _purchases.value = purchasesFromDatabase;
     } else {
+      final result = await authService.refreshToken();
+      if (result.error != null) {
+        await navigationService.replaceWithLoginView();
+      }
       // If the database is empty, fetch data from your service.
       final purchaseList = await _purchaseService.getPurchaseByBusiness(
         businessId: businessIdValue,
@@ -302,6 +373,10 @@ class HomeViewModel extends ReactiveViewModel with ListenableServiceMixin {
       // If there are sales data in the database, set them in your ViewModel.
       _invoices.value = salesFromDatabase;
     } else {
+      final result = await authService.refreshToken();
+      if (result.error != null) {
+        await navigationService.replaceWithLoginView();
+      }
       // If the database is empty, fetch data from your service.
       final invoiceList = await _saleService.getSaleByBusiness(
         businessId: businessIdValue,
@@ -581,6 +656,10 @@ class HomeViewModel extends ReactiveViewModel with ListenableServiceMixin {
             firstRecord['percentageIncreaseInOverdueInvoicesThisWeek'],
       );
     } else {
+      final result = await authService.refreshToken();
+      if (result.error != null) {
+        await navigationService.replaceWithLoginView();
+      }
       // If there's no data in the database, fetch data from your service.
       final weeklyInvoices = await _dashboardService.totalWeeklyInvoicesAmount(
           businessId: businessIdValue);

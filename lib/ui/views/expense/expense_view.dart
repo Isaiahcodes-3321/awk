@@ -366,9 +366,9 @@ class ExpenseCard extends ViewModelWidget<ExpenseViewModel> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    // '#${purchase.reference}',
-                    // expenses.merchantName,
-                    '${expenses.description[0].toUpperCase()}${expenses.description.substring(1)}',
+                    expenses.description.length <= 15
+                        ? '${expenses.description[0].toUpperCase()}${expenses.description.substring(1)}'
+                        : '${expenses.description[0].toUpperCase()}${expenses.description.substring(1, 15)}...',
                     style: TextStyle(
                       fontFamily: 'Satoshi',
                       color: kcTextTitleColor.withOpacity(0.9),
@@ -414,7 +414,7 @@ class ExpenseCard extends ViewModelWidget<ExpenseViewModel> {
                 children: [
                   Text(
                     expenses.expenseDate,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontFamily: 'Satoshi',
                       color: kcTextSubTitleColor,
                       fontSize: 14,
@@ -425,7 +425,7 @@ class ExpenseCard extends ViewModelWidget<ExpenseViewModel> {
                   ),
                   Text(
                     expenses.merchantName,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontFamily: 'Satoshi',
                       color: kcTextSubTitleColor,
                       fontSize: 14,

@@ -243,23 +243,25 @@ class ViewExpenseView extends StackedView<ViewExpenseViewModel> {
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Description',
-                        style: ktsFormHintText,
-                      ),
-                      verticalSpaceTinyt,
-                      Text(
-                        viewModel.expense!.description,
-                        style: ktsTextAuthentication3,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      ),
-                    ],
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Description',
+                          style: ktsFormHintText,
+                        ),
+                        verticalSpaceTinyt,
+                        Text(
+                          viewModel.expense!.description,
+                          style: ktsTextAuthentication3,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      ],
+                    ),
                   ),
                   Column(
                     mainAxisSize: MainAxisSize.min,
@@ -547,6 +549,7 @@ class ViewExpenseView extends StackedView<ViewExpenseViewModel> {
                     onTap: viewModel.expense!.expenseStatusId == 1
                         ? () {
                             showModalBottomSheet(
+                              backgroundColor: kcButtonTextColor,
                               context: context,
                               isScrollControlled: true,
                               builder: (BuildContext context) {
@@ -597,6 +600,7 @@ class ViewExpenseView extends StackedView<ViewExpenseViewModel> {
                     onTap: viewModel.expense!.expenseStatusId == 2
                         ? () {
                             showModalBottomSheet(
+                              backgroundColor: kcButtonTextColor,
                               context: context,
                               isScrollControlled: true,
                               builder: (BuildContext context) {
@@ -659,6 +663,7 @@ class ViewExpenseView extends StackedView<ViewExpenseViewModel> {
                             // Navigator.of(context).pop();
                             // Handle the action
                             showModalBottomSheet(
+                              backgroundColor: kcButtonTextColor,
                               context: context,
                               isScrollControlled: true,
                               builder: (BuildContext context) {

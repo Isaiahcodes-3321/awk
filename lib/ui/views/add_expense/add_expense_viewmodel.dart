@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.locator.dart';
+import 'package:verzo/app/app.router.dart';
+import 'package:verzo/services/authentication_service.dart';
 import 'package:verzo/services/expense_service.dart';
 import 'package:verzo/services/merchant_service.dart';
 import 'package:verzo/ui/common/app_colors.dart';
@@ -15,6 +17,7 @@ class AddExpenseViewModel extends FormViewModel {
   final navigationService = locator<NavigationService>();
   final _expenseService = locator<ExpenseService>();
   final _merchantService = locator<MerchantService>();
+  final authService = locator<AuthenticationService>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final GlobalKey<FormState> formBottomSheetKey = GlobalKey<FormState>();
 
@@ -157,6 +160,10 @@ class AddExpenseViewModel extends FormViewModel {
   }
 
   Future<List<COA>> getCOAs() async {
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
     final cOAs = await _expenseService.getCOAs();
     cOAsdropdownItems = cOAs.map((cOA) {
       return DropdownMenuItem<String>(
@@ -171,6 +178,10 @@ class AddExpenseViewModel extends FormViewModel {
   Future<List<Merchants>> getMerchantsByBusiness() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String businessIdValue = prefs.getString('businessId') ?? '';
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
 
 // Retrieve existing expense categories
     final merchants = await _merchantService.getMerchantsByBusiness(
@@ -197,6 +208,10 @@ class AddExpenseViewModel extends FormViewModel {
   Future<ExpenseCreationResult> runExpenseCreation() async {
     final prefs = await SharedPreferences.getInstance();
     final businessIdValue = prefs.getString('businessId');
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
     return _expenseService.createExpenses(
         expenseItem: expenseItems,
         description: descriptionValue ?? '',

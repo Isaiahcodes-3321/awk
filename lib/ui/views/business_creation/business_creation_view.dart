@@ -157,6 +157,10 @@ class BusinessCreationView extends StackedView<BusinessCreationViewModel>
                 Text('Business Category', style: ktsFormTitleText),
                 verticalSpaceTiny,
                 DropdownButtonFormField(
+                  hint: Text(
+                    'Select',
+                    style: ktsFormHintText,
+                  ),
                   menuMaxHeight: 320,
                   elevation: 4,
                   // padding: EdgeInsets.symmetric(horizontal: 12),
@@ -175,8 +179,8 @@ class BusinessCreationView extends StackedView<BusinessCreationViewModel>
                   decoration: InputDecoration(
                       contentPadding:
                           const EdgeInsets.symmetric(horizontal: 12),
-                      hintStyle: ktsFormHintText,
-                      hintText: 'Select',
+                      // hintStyle: ktsFormHintText,
+                      // hintText: 'Select',
                       enabledBorder: defaultFormBorder,
                       focusedBorder: defaultFocusedFormBorder,
                       focusedErrorBorder: defaultErrorFormBorder,

@@ -5,6 +5,8 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 import 'package:verzo/app/app.locator.dart';
+import 'package:verzo/app/app.router.dart';
+import 'package:verzo/services/authentication_service.dart';
 import 'package:verzo/services/products_services_service.dart';
 import 'package:verzo/ui/common/database_helper.dart';
 import 'package:verzo/ui/common/typesense.dart';
@@ -12,6 +14,7 @@ import 'package:verzo/ui/common/typesense.dart';
 class ServiceViewModel extends FutureViewModel<List<Services>> {
   final navigationService = locator<NavigationService>();
   final _productservicesService = locator<ProductsServicesService>();
+  final authService = locator<AuthenticationService>();
   final DialogService dialogService = locator<DialogService>();
   final TextEditingController searchController = TextEditingController();
 
@@ -73,10 +76,14 @@ class ServiceViewModel extends FutureViewModel<List<Services>> {
   Future<List<Services>> getServiceByBusiness() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String businessIdValue = prefs.getString('businessId') ?? '';
-
-    // Retrieve existing products/services
-    services = await _productservicesService.getServiceByBusiness(
-        businessId: businessIdValue);
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    } else if (result.tokens != null) {
+      // Retrieve existing products/services
+      services = await _productservicesService.getServiceByBusiness(
+          businessId: businessIdValue);
+    }
 
     rebuildUi();
 

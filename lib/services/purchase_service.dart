@@ -221,7 +221,7 @@ class PurchaseService {
               .map((purchaseItemDetail) => {
                     'productId': purchaseItemDetail.productId,
                     'itemDescription': purchaseItemDetail.itemDescription,
-                    'unitPrice': purchaseItemDetail.unitPrice,
+                    'unitPrice': purchaseItemDetail.unitPrice * 100,
                     'quantity': purchaseItemDetail.quantity,
                     'index': purchaseItemDetail.index,
                   })
@@ -301,7 +301,7 @@ class PurchaseService {
         productId: itemData['product']['id'],
         itemDescription: itemData['description'],
         index: itemData['index'],
-        unitPrice: itemData['unitPrice'],
+        unitPrice: itemData['unitPrice'] / 100,
         quantity: itemData['quantity'],
         quantityRecieved: itemData['quantityReceived'],
       );
@@ -315,7 +315,7 @@ class PurchaseService {
         merchantId: purchaseByIdData['merchantId'],
         merchantName: purchaseByIdData['merchant']['name'],
         merchantEmail: purchaseByIdData['merchant']['email'],
-        total: purchaseByIdData['total'],
+        total: purchaseByIdData['total'] / 100,
         purchaseStatusId: purchaseByIdData['purchaseStatusId'],
         purchaseItems: purchaseItems,
         reference: purchaseByIdData['reference']);
@@ -642,7 +642,14 @@ class PurchaseService {
     );
 
     final QueryResult result = await newClient.mutate(options);
-    bool isSent = result.data?['sendPurchase'];
+
+    if (result.hasException) {
+      GraphQLPurchaseError(
+        message: result.exception?.graphqlErrors.first.message.toString(),
+      );
+    }
+
+    bool isSent = result.data?['sendPurchase'] ?? false;
     if (result.hasException) {
       // Handle any errors that may have occurred during the log out process
       isSent = false;
@@ -691,7 +698,7 @@ class PurchaseService {
               ?.map((purchaseItemDetail) => {
                     'productId': purchaseItemDetail.productId,
                     'itemDescription': purchaseItemDetail.itemDescription,
-                    'unitPrice': purchaseItemDetail.unitPrice,
+                    'unitPrice': purchaseItemDetail.unitPrice * 100,
                     'quantity': purchaseItemDetail.quantity,
                     'index': purchaseItemDetail.index,
                   })
@@ -778,7 +785,7 @@ class PurchaseService {
           merchantName: merchantData['name'],
           merchantEmail: '',
           purchaseItems: [],
-          total: data['total'],
+          total: data['total'] / 100,
           purchaseStatusId: 0,
           paid: data['paid'] ?? false);
     }).toList();
@@ -836,7 +843,7 @@ class PurchaseService {
           merchantName: merchantData['name'],
           merchantEmail: '',
           purchaseItems: [],
-          total: data['total'],
+          total: data['total'] / 100,
           purchaseStatusId: 0,
           paid: data['paid'] ?? false);
     }).toList();

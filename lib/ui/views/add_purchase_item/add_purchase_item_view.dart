@@ -109,6 +109,14 @@ class AddPurchaseItemView extends StackedView<AddPurchaseItemViewModel>
               Text('Product unit', style: ktsFormTitleText),
               verticalSpaceTiny,
               DropdownButtonFormField(
+                hint: Text(
+                  'Select',
+                  style: ktsFormHintText,
+                ),
+                menuMaxHeight: 320,
+                elevation: 4,
+                // padding: EdgeInsets.symmetric(horizontal: 12),
+                dropdownColor: kcButtonTextColor,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please select a unit';
@@ -121,16 +129,17 @@ class AddPurchaseItemView extends StackedView<AddPurchaseItemViewModel>
                 focusColor: kcPrimaryColor,
                 style: ktsBodyText,
                 decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-                    hintStyle: ktsFormHintText,
-                    hintText: 'Select',
-                    enabledBorder: defaultFormBorder,
-                    focusedBorder: defaultFocusedFormBorder,
-                    focusedErrorBorder: defaultErrorFormBorder,
-                    errorStyle: ktsErrorText,
-                    errorBorder: defaultErrorFormBorder,
-                    // labelStyle: ktsFormText,
-                    border: defaultFormBorder),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                  // hintStyle: ktsFormHintText,
+                  // hintText: 'Select',
+                  enabledBorder: defaultFormBorder,
+                  focusedBorder: defaultFocusedFormBorder,
+                  focusedErrorBorder: defaultErrorFormBorder,
+                  errorStyle: ktsErrorText,
+                  errorBorder: defaultErrorFormBorder,
+                ),
+                // labelStyle: ktsFormText,
+                // border: defaultFormBorder),
                 items: viewModel.productUnitdropdownItems,
                 // itemHeight: 12,
                 value: productUnitIdController.text.isEmpty

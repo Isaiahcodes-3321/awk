@@ -7,6 +7,8 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 import 'package:verzo/app/app.locator.dart';
+import 'package:verzo/app/app.router.dart';
+import 'package:verzo/services/authentication_service.dart';
 import 'package:verzo/services/purchase_service.dart';
 import 'package:verzo/ui/common/database_helper.dart';
 
@@ -15,6 +17,7 @@ import 'package:verzo/ui/common/typesense.dart';
 class PurchaseViewModel extends FutureViewModel<List<Purchases>> {
   final navigationService = locator<NavigationService>();
   final _purchaseService = locator<PurchaseService>();
+  final authService = locator<AuthenticationService>();
   final DialogService dialogService = locator<DialogService>();
   TextEditingController searchController = TextEditingController();
 
@@ -92,10 +95,15 @@ class PurchaseViewModel extends FutureViewModel<List<Purchases>> {
   Future<List<Purchases>> getPurchaseByBusiness() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String businessIdValue = prefs.getString('businessId') ?? '';
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    } else if (result.tokens != null) {
+      // Retrieve existing customers
+      purchases = await _purchaseService.getPurchaseByBusiness(
+          businessId: businessIdValue);
+    }
 
-    // Retrieve existing customers
-    purchases = await _purchaseService.getPurchaseByBusiness(
-        businessId: businessIdValue);
     rebuildUi();
     return purchases;
   }

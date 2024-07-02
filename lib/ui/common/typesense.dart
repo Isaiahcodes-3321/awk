@@ -183,7 +183,8 @@ Future<List<Products>> searchProducts(
     return Products(
       id: document['id'],
       productName: document['productName'],
-      price: document['price'], quantity: 0,
+      price: document['price'],
+      quantity: 0,
       // reorderLevel: 0,
       // trackReorderLevel: false,
     );

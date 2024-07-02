@@ -14,6 +14,8 @@ class EmployeeSettingsViewModel extends BaseViewModel {
   String userName = '';
   String userEmail = '';
   String businessName = '';
+  String businessEmail = '';
+  String businessMobile = '';
 
   void setUserDetails() async {
     final prefs = await SharedPreferences.getInstance();
@@ -22,6 +24,9 @@ class EmployeeSettingsViewModel extends BaseViewModel {
     userEmail = prefs.getString('userEmail') ?? '';
 
     businessName = prefs.getString('businessName') ?? '';
+    businessEmail = prefs.getString('businessEmail') ?? '';
+    businessMobile = prefs.getString('businessMobile') ?? '';
+
     rebuildUi();
   }
 }

@@ -187,7 +187,12 @@ Future<void> logout() async {
     mainButtonTitle: 'Log out',
   );
   if (response?.confirmed == true) {
-    await authenticationService.logout();
+    final result = await authenticationService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    } else if (result.tokens != null) {
+      await authenticationService.logout();
+    }
 
     selectedindex = 0;
     // Delete data from the 'expenses' table

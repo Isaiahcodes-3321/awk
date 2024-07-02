@@ -128,7 +128,10 @@ class UpdateServiceView extends StackedView<UpdateServiceViewModel> {
               DropdownButtonFormField(
                 menuMaxHeight: 320,
                 elevation: 4,
-                // padding: EdgeInsets.symmetric(horizontal: 12),
+                hint: Text(
+                  'Select',
+                  style: ktsFormHintText,
+                ),
                 dropdownColor: kcButtonTextColor,
                 validator: (value) {
                   if (value == null || value.isEmpty) {

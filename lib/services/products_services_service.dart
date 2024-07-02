@@ -78,6 +78,7 @@ class ProductsServicesService {
             trackReorderLevel
             reorderLevel
             productUnitId
+            businessProductUnitId
             }
           }
         '''),
@@ -109,6 +110,7 @@ class ProductsServicesService {
           getCombinedProductUnits(businessId: \$businessId){
             id
             unitName
+            description
             }
           }
         '''),
@@ -151,6 +153,7 @@ class ProductsServicesService {
             name
             price
             serviceUnitId
+            businessServiceUnitId
             }
           }
         '''),
@@ -182,6 +185,7 @@ class ProductsServicesService {
           getCombinedServiceUnits(businessId: \$businessId){
             id
             unitName
+            description
             }
           }
         '''),
@@ -307,7 +311,7 @@ class ProductsServicesService {
       variables: {
         'input': {
           'productName': productName,
-          'price': price,
+          'price': price * 100,
           'initialStockLevel': initialStockLevel,
           // 'quantityInStock': quantityInStock,
           'businessId': businessId,
@@ -347,7 +351,9 @@ class ProductsServicesService {
   }
 
   Future<ProductUnitCreationResult> createBusinessProductUnit(
-      {required String unitName, required String businessId}) async {
+      {required String unitName,
+      required String businessId,
+      String? description}) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('access_token');
     final businessId = prefs.getString('businessId');
@@ -374,7 +380,11 @@ class ProductsServicesService {
     final MutationOptions options = MutationOptions(
       document: _createBusinessProductUnitMutation.document,
       variables: {
-        'input': {'unitName': unitName, 'businessId': businessId},
+        'input': {
+          'unitName': unitName,
+          'businessId': businessId,
+          'description': description
+        },
       },
     );
 
@@ -440,7 +450,7 @@ class ProductsServicesService {
         'productId': productId,
         'input': {
           'productName': productName,
-          'price': price,
+          'price': price! * 100,
           'productUnitId': productUnitId,
           // 'quantityInStock': quantityInStock,
           'reorderLevel': reorderLevel,
@@ -514,10 +524,11 @@ class ProductsServicesService {
     final Products productById = Products(
       id: productByIdData['id'],
       productName: productByIdData['productName'],
-      price: productByIdData['price'],
+      price: productByIdData['price'] / 100,
       quantity: 1,
       // reorderLevel: productByIdData['reorderLevel'],
-      productUnitId: productByIdData['productUnitId'],
+      productUnitId: productByIdData['businessProductUnitId'] ??
+          productByIdData['productUnitId'],
       // trackReorderLevel: productByIdData['trackReorderLevel']
     );
 
@@ -679,7 +690,10 @@ class ProductsServicesService {
         productUnitsResult.data?['getCombinedProductUnits'] ?? [];
 
     final List<ProductUnit> productUnits = productUnitsData.map((data) {
-      return ProductUnit(id: data['id'], unitName: data['unitName']);
+      return ProductUnit(
+          id: data['id'],
+          unitName: data['unitName'],
+          description: data['description']);
     }).toList();
 
     return productUnits;
@@ -718,7 +732,7 @@ class ProductsServicesService {
       variables: {
         'input': {
           'name': name,
-          'price': price,
+          'price': price * 100,
           'businessId': businessId,
           'serviceUnitId': serviceUnitId
         },
@@ -756,7 +770,9 @@ class ProductsServicesService {
   }
 
   Future<ServiceUnitCreationResult> createBusinessServiceUnit(
-      {required String unitName, required String businessId}) async {
+      {required String unitName,
+      required String businessId,
+      String? description}) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('access_token');
     final businessId = prefs.getString('businessId');
@@ -783,7 +799,11 @@ class ProductsServicesService {
     final MutationOptions options = MutationOptions(
       document: _createBusinessServiceUnitMutation.document,
       variables: {
-        'input': {'unitName': unitName, 'businessId': businessId},
+        'input': {
+          'unitName': unitName,
+          'businessId': businessId,
+          'description': description
+        },
       },
     );
 
@@ -847,7 +867,7 @@ class ProductsServicesService {
         'serviceId': serviceId,
         'input': {
           'name': name,
-          'price': price,
+          'price': price! * 100,
           'serviceUnitId': serviceUnitId,
         },
       },
@@ -918,8 +938,9 @@ class ProductsServicesService {
     final Services serviceById = Services(
       id: serviceByIdData['id'],
       name: serviceByIdData['name'],
-      price: serviceByIdData['price'],
-      serviceUnitId: serviceByIdData['serviceUnitId'],
+      price: serviceByIdData['price'] / 100,
+      serviceUnitId: serviceByIdData['businessServiceUnitId'] ??
+          serviceByIdData['serviceUnitId'],
     );
 
     return serviceById;
@@ -1039,7 +1060,8 @@ class ProductsServicesService {
     return isDeleted;
   }
 
-  Future<List<ServiceUnit>> getServiceUnits() async {
+  Future<List<ServiceUnit>> getServiceUnits(
+      {required String businessId}) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('access_token');
     final businessId = prefs.getString('businessId');
@@ -1080,7 +1102,10 @@ class ProductsServicesService {
         serviceUnitsResult.data?['getCombinedServiceUnits'] ?? [];
 
     final List<ServiceUnit> serviceUnits = serviceUnitsData.map((data) {
-      return ServiceUnit(id: data['id'], unitName: data['unitName']);
+      return ServiceUnit(
+          id: data['id'],
+          unitName: data['unitName'],
+          description: data['description']);
     }).toList();
 
     return serviceUnits;
@@ -1134,7 +1159,7 @@ class ProductsServicesService {
         id: data['id'],
         title: data['title'],
         type: data['type'],
-        price: data['price'],
+        price: data['price'] / 100,
         productUnitId:
             productData != null ? productData['productUnitId'] : null,
         productName: productData != null ? productData['productName'] : null,
@@ -1227,7 +1252,7 @@ class ProductsServicesService {
       return Products(
           id: data['id'],
           productName: data['productName'],
-          price: data['price'],
+          price: data['price'] / 100,
           quantity: 1
           // reorderLevel: 0,
           // trackReorderLevel: false
@@ -1279,7 +1304,7 @@ class ProductsServicesService {
       return Products(
           id: data['id'],
           productName: data['productName'],
-          price: data['price'],
+          price: data['price'] / 100,
           quantity: 1
           // reorderLevel: 0,
           // trackReorderLevel: false
@@ -1328,7 +1353,8 @@ class ProductsServicesService {
         [];
 
     final List<Services> services = serviceData.map((data) {
-      return Services(id: data['id'], name: data['name'], price: data['price']);
+      return Services(
+          id: data['id'], name: data['name'], price: data['price'] / 100);
     }).toList();
 
     return services;
@@ -1373,7 +1399,8 @@ class ProductsServicesService {
         [];
 
     final List<Services> services = serviceData.map((data) {
-      return Services(id: data['id'], name: data['name'], price: data['price']);
+      return Services(
+          id: data['id'], name: data['name'], price: data['price'] / 100);
     }).toList();
 
     return services;
@@ -1434,15 +1461,20 @@ class Services {
 class ProductUnit {
   final String id;
   final String unitName;
-
-  ProductUnit({required this.id, required this.unitName});
+  String? description;
+  ProductUnit({required this.id, required this.unitName, this.description});
 }
 
 class ServiceUnit {
   final String id;
   final String unitName;
+  String? description;
 
-  ServiceUnit({required this.id, required this.unitName});
+  ServiceUnit({
+    required this.id,
+    required this.unitName,
+    this.description,
+  });
 }
 
 class ProductUnitCreationResult {

@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.dialogs.dart';
 import 'package:verzo/app/app.locator.dart';
 import 'package:verzo/app/app.router.dart';
+import 'package:verzo/services/authentication_service.dart';
 import 'package:verzo/services/business_creation_service.dart';
 import 'package:verzo/services/dashboard_service.dart';
-import 'package:verzo/ui/common/app_colors.dart';
-import 'package:verzo/ui/common/app_styles.dart';
+
 import 'package:verzo/ui/views/add_card/add_card_view.form.dart';
 
 class AddCardViewModel extends FormViewModel {
@@ -17,6 +16,7 @@ class AddCardViewModel extends FormViewModel {
   final DialogService dialogService = locator<DialogService>();
   final dashboardService = locator<DashboardService>();
   final businessService = locator<BusinessCreationService>();
+  final authService = locator<AuthenticationService>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   SudoCardSpendingInterval? selectedInterval;
@@ -49,6 +49,10 @@ class AddCardViewModel extends FormViewModel {
   }
 
   Future<List<User>> getUsersByBusiness() async {
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
     final users = await dashboardService.getUsersByBusiness();
     userdropdownItems = users.map((user) {
       return DropdownMenuItem<String>(
@@ -73,11 +77,10 @@ class AddCardViewModel extends FormViewModel {
         // confirmationTitle: 'Ok',
         );
     if (response?.confirmed == true) {
-      final result = await businessService.viewBusinessAccount(
-          businessId: businessIdValue);
-      if (result == null) {
-        await navigationService.replaceWith(Routes.businessBvnView);
-      } else {
+      final result = await authService.refreshToken();
+      if (result.error != null) {
+        await navigationService.replaceWithLoginView();
+      } else if (result.tokens != null) {
         return dashboardService.createSudoCard(
           businessId: businessIdValue,
           assignedUserId: userIdValue,

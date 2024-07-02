@@ -5,6 +5,8 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.dialogs.dart';
 import 'package:verzo/app/app.locator.dart';
+import 'package:verzo/app/app.router.dart';
+import 'package:verzo/services/authentication_service.dart';
 import 'package:verzo/services/purchase_service.dart';
 import 'package:verzo/ui/common/app_colors.dart';
 import 'package:verzo/ui/common/app_styles.dart';
@@ -14,6 +16,7 @@ class MarkPurchaseItemAsReceivedViewModel extends FormViewModel {
   final navigationService = locator<NavigationService>();
   final _purchaseService = locator<PurchaseService>();
   final DialogService dialogService = locator<DialogService>();
+  final authService = locator<AuthenticationService>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   // List to store form keys for each purchase item
   final List<GlobalKey<FormState>>? purchaseItemFormKeys = [];
@@ -97,6 +100,10 @@ class MarkPurchaseItemAsReceivedViewModel extends FormViewModel {
       String purchaseItemId, int index, BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String businessIdValue = prefs.getString('businessId') ?? '';
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
 
     final PurchaseStatusResult markItemSuccessful =
         await _purchaseService.markPurchaseItemAsReceived(

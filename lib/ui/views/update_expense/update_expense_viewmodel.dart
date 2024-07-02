@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.locator.dart';
+import 'package:verzo/app/app.router.dart';
+import 'package:verzo/services/authentication_service.dart';
 import 'package:verzo/services/expense_service.dart';
 import 'package:verzo/services/merchant_service.dart';
 import 'package:verzo/ui/common/app_colors.dart';
@@ -16,6 +18,7 @@ class UpdateExpenseViewModel extends FormViewModel {
   final _merchantService = locator<MerchantService>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final GlobalKey<FormState> formBottomSheetKey = GlobalKey<FormState>();
+  final authService = locator<AuthenticationService>();
   List<Merchants> merchantList = [];
   String selectedMerchantName = '';
 
@@ -28,6 +31,10 @@ class UpdateExpenseViewModel extends FormViewModel {
   UpdateExpenseViewModel({required this.expenseId});
 
   Future<Expenses> getExpenseById() async {
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
     final expenses = await _expenseService.getExpenseById(expenseId: expenseId);
     expense = expenses;
     rebuildUi();
@@ -179,6 +186,10 @@ class UpdateExpenseViewModel extends FormViewModel {
   }
 
   Future<List<ExpenseCategory>> getExpenseCategoryWithSets() async {
+    // final result = await authService.refreshToken();
+    // if (result.error != null) {
+    //   await navigationService.replaceWithLoginView();
+    // }
     final expenseCategories =
         await _expenseService.getExpenseCategoryWithSets();
     expenseCategorydropdownItems = expenseCategories.map((expenseCategory) {
@@ -193,6 +204,10 @@ class UpdateExpenseViewModel extends FormViewModel {
   Future<List<Merchants>> getMerchantsByBusiness() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String businessIdValue = prefs.getString('id') ?? '';
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
 
 // Retrieve existing expense categories
     final merchants = await _merchantService.getMerchantsByBusiness(
@@ -217,6 +232,10 @@ class UpdateExpenseViewModel extends FormViewModel {
   }
 
   Future<ExpenseUpdateResult> runExpenseUpdate() async {
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
     return _expenseService.updateExpenses(
       expenseId: expenseId,
       description: updateDescriptionController.text,

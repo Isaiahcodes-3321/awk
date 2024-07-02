@@ -65,6 +65,14 @@ TextStyle ktsHeroTextWhiteDashboard1 = const TextStyle(
   fontSize: 20,
   fontWeight: FontWeight.w600,
 );
+
+TextStyle ktsHeroTextWhiteDashboard5 = const TextStyle(
+  fontFamily: 'Satoshi',
+  color: kcButtonTextColor,
+  fontSize: 28,
+  fontWeight: FontWeight.w600,
+);
+
 TextStyle ktsHeroTextWhiteDashboardHeader = const TextStyle(
     fontFamily: 'Satoshi',
     letterSpacing: 0.2,
@@ -208,6 +216,14 @@ TextStyle ktsAddNewText2 = const TextStyle(
   fontSize: 16,
   fontFamily: 'Satoshi',
   fontWeight: FontWeight.w500,
+  height: 0,
+  letterSpacing: 0,
+);
+TextStyle ktsAddNewText3 = const TextStyle(
+  color: kcPrimaryColor,
+  fontSize: 14,
+  fontFamily: 'Satoshi',
+  fontWeight: FontWeight.w700,
   height: 0,
   letterSpacing: 0,
 );

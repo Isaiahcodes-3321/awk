@@ -4,14 +4,18 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.dialogs.dart';
 import 'package:verzo/app/app.locator.dart';
+import 'package:verzo/app/app.router.dart';
+import 'package:verzo/services/authentication_service.dart';
 import 'package:verzo/services/sales_service.dart';
 import 'package:verzo/ui/common/app_colors.dart';
 import 'package:verzo/ui/common/app_styles.dart';
+import 'package:verzo/ui/common/database_helper.dart';
 import 'package:verzo/ui/views/make_sales_payment/make_sales_payment_view.form.dart';
 
 class MakeSalesPaymentViewModel extends FormViewModel {
   final navigationService = locator<NavigationService>();
   final _saleService = locator<SalesService>();
+  final authService = locator<AuthenticationService>();
   final DialogService dialogService = locator<DialogService>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -82,6 +86,10 @@ class MakeSalesPaymentViewModel extends FormViewModel {
   }
 
   Future<SaleStatusResult> makeSalePayment() async {
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
     final SaleStatusResult isPayed = await _saleService.makeSalePayment(
         saleId: sale.id,
         description: paymentDescriptionValue ?? '',
@@ -137,5 +145,13 @@ class MakeSalesPaymentViewModel extends FormViewModel {
     }
   }
 
-  void navigateBack() => navigationService.back();
+  void navigateBack() async {
+    final db = await getSalesDatabase2();
+    final db2 = await getSalesDatabaseList();
+    await db.delete('sales');
+    await db2.delete('sales');
+    rebuildUi();
+    await navigationService.back(result: true);
+    rebuildUi();
+  }
 }

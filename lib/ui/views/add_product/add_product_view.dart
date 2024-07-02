@@ -160,6 +160,10 @@ class AddProductView extends StackedView<AddProductViewModel>
               Text('Product unit', style: ktsFormTitleText),
               verticalSpaceTiny,
               DropdownButtonFormField(
+                hint: Text(
+                  'Select',
+                  style: ktsFormHintText,
+                ),
                 menuMaxHeight: 320,
                 elevation: 4,
                 // padding: EdgeInsets.symmetric(horizontal: 12),
@@ -177,8 +181,8 @@ class AddProductView extends StackedView<AddProductViewModel>
                 style: ktsBodyText,
                 decoration: InputDecoration(
                     contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-                    hintStyle: ktsFormHintText,
-                    hintText: 'Select',
+                    // hintStyle: ktsFormHintText,
+                    // hintText: 'Select',
                     enabledBorder: defaultFormBorder,
                     focusedBorder: defaultFocusedFormBorder,
                     focusedErrorBorder: defaultErrorFormBorder,

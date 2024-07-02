@@ -5,6 +5,7 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.locator.dart';
 import 'package:verzo/app/app.router.dart';
+import 'package:verzo/services/authentication_service.dart';
 import 'package:verzo/services/products_services_service.dart';
 import 'package:verzo/services/sales_service.dart';
 import 'package:verzo/ui/common/app_colors.dart';
@@ -17,6 +18,7 @@ class AddSalesViewModel extends FormViewModel {
   final navigationService = locator<NavigationService>();
   final _saleService = locator<SalesService>();
   final _serviceService = locator<ProductsServicesService>();
+  final authService = locator<AuthenticationService>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final GlobalKey<FormState> formKeyBottomSheet = GlobalKey<FormState>();
   final GlobalKey<FormState> formKeyBottomSheetSaleExpense =
@@ -106,6 +108,10 @@ class AddSalesViewModel extends FormViewModel {
   Future<List<Services>> getServiceByBusiness() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String businessIdValue = prefs.getString('businessId') ?? '';
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
 
     // Retrieve existing products/services
     final services =
@@ -127,6 +133,10 @@ class AddSalesViewModel extends FormViewModel {
   Future<List<Customers>> getCustomersByBusiness() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String businessIdValue = prefs.getString('businessId') ?? '';
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
 
     // Retrieve existing customers
     final customers =
@@ -253,11 +263,16 @@ class AddSalesViewModel extends FormViewModel {
   Future<SaleCreationResult> runSaleCreation() async {
     final prefs = await SharedPreferences.getInstance();
     final businessIdValue = prefs.getString('businessId');
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
     return _saleService.createSales(
       saleExpense: saleExpenseItems.isNotEmpty ? saleExpenseItems : null,
       saleServiceExpense:
           saleServiceExpense.isNotEmpty ? saleServiceExpense : null,
       description: descriptionValue ?? '',
+      note: noteValue ?? '',
       customerId: customerIdValue ?? '',
       businessId: businessIdValue ?? '',
       item: convertItemsToItemDetails(selectedItems),
@@ -316,6 +331,7 @@ class AddSalesViewModel extends FormViewModel {
   void navigateTo2() => navigationService.navigateTo(Routes.addSales2View);
   void openEditBottomSheet(Items item) {
     showModalBottomSheet(
+      backgroundColor: kcButtonTextColor,
       isScrollControlled: true,
       context: navigationService.navigatorKey!.currentContext!,
       builder: (BuildContext context) {
@@ -344,7 +360,7 @@ class AddSalesViewModel extends FormViewModel {
                     verticalSpaceTiny,
                     TextFormField(
                       cursorColor: kcPrimaryColor,
-                      initialValue: item.price.toString(),
+                      initialValue: item.price.toStringAsFixed(0),
                       // Handle price input
                       onChanged: (value) {
                         // Update the item price

@@ -36,19 +36,18 @@ class LoginViewModel extends FormViewModel {
 
     if (result.roleName != 'Owner') {
       await getUserAndBusinessData();
-      navigationService.replaceWith(Routes.employeeHomeView);
+      await navigationService.replaceWith(Routes.employeeHomeView);
     } else {
       await getUserAndBusinessData();
+      // navigate to success route
+      await navigationService.replaceWith(Routes.homeView);
     }
   }
 
   Future<void> getUserAndBusinessData() async {
     final result = await _dashboardService.getUserAndBusinessData();
-    if (result.businesses == []) {
-      navigationService.replaceWith(Routes.businessCreationView);
-    } else {
-      // navigate to success route
-      navigationService.replaceWith(Routes.homeView);
+    if (result.businesses == [] || result.businesses.isEmpty) {
+      await navigationService.replaceWith(Routes.businessCreationView);
     }
     rebuildUi();
   }
@@ -63,8 +62,10 @@ class LoginViewModel extends FormViewModel {
     if (result.tokens != null) {
       if (result.tokens!.verified != true) {
         await navigationService.replaceWith(Routes.verificationView);
+      } else {
+        await getUserAndRoleData();
       }
-      await getUserAndRoleData();
+
       // await getUserAndBusinessData();
     } else if (result.error != null) {
       setValidationMessage(result.error?.message);

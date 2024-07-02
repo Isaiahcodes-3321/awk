@@ -75,6 +75,10 @@ class AddPurchaseView extends StackedView<AddPurchaseViewModel>
                 Text('Merchant', style: ktsFormTitleText),
                 verticalSpaceTiny,
                 DropdownButtonFormField(
+                  hint: Text(
+                    'Select',
+                    style: ktsFormHintText,
+                  ),
                   menuMaxHeight: 320,
                   elevation: 4,
                   // padding: EdgeInsets.symmetric(horizontal: 12),
@@ -93,8 +97,8 @@ class AddPurchaseView extends StackedView<AddPurchaseViewModel>
                   decoration: InputDecoration(
                       contentPadding:
                           const EdgeInsets.symmetric(horizontal: 12),
-                      hintStyle: ktsFormHintText,
-                      hintText: 'Select',
+                      // hintStyle: ktsFormHintText,
+                      // hintText: 'Select',
                       enabledBorder: defaultFormBorder,
                       focusedBorder: defaultFocusedFormBorder,
                       focusedErrorBorder: defaultErrorFormBorder,

@@ -5,6 +5,7 @@ import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.dialogs.dart';
 import 'package:verzo/app/app.locator.dart';
 import 'package:verzo/app/app.router.dart';
+import 'package:verzo/services/authentication_service.dart';
 import 'package:verzo/services/billing_service.dart';
 import 'package:verzo/ui/common/app_colors.dart';
 import 'package:verzo/ui/common/app_styles.dart';
@@ -14,33 +15,34 @@ class BillingViewModel extends FormViewModel {
   final navigationService = locator<NavigationService>();
   final billingService = locator<BillingService>();
   final DialogService dialogService = locator<DialogService>();
+  final authService = locator<AuthenticationService>();
 
   List<Plans> plans = [];
   String currentPlanId = ''; // Track the currently selected plan ID
   String reference = '';
-  // @override
-  // Future<List<Plans>> futureToRun() {
-  //   return getPlans();
-  // }
+  Subscriptions? subs;
 
-  Future<List<Plans>> getPlans() async {
-    plans = await billingService.getPlans();
-
-    if (plans.isNotEmpty) {
-      currentPlanId = plans.last.id;
+  Future<Subscriptions> getCurrentSubscription() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String businessIdValue = prefs.getString('businessId') ?? '';
+    final result1 = await authService.refreshToken();
+    if (result1.error != null) {
+      await navigationService.replaceWithLoginView();
     }
-    rebuildUi();
-    return plans;
-  }
 
-  void setCurrentPlanId(String planId) {
-    currentPlanId = planId;
-    rebuildUi(); // Notify listeners about the change
+    final subscription = await billingService.getCurrentSubscriptionByBusiness(
+        businessId: businessIdValue);
+    subs = subscription;
+    return subscription;
   }
 
   Future<SubscriptionCreationResult> runSubscriptionCreation() async {
     final prefs = await SharedPreferences.getInstance();
     final businessIdValue = prefs.getString('businessId');
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
     return billingService.createSubscriptionNewCardA(
         tax: 0,
         businessId: businessIdValue ?? '',
@@ -50,6 +52,10 @@ class BillingViewModel extends FormViewModel {
   Future<SubscriptionCreationResultB> runSubscriptionCreationB() async {
     final prefs = await SharedPreferences.getInstance();
     final businessIdValue = prefs.getString('businessId');
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
     return billingService.createSubscriptionNewCardB(
         tax: 0,
         reference: reference,
@@ -154,7 +160,7 @@ class BillingViewModel extends FormViewModel {
     rebuildUi();
   }
 
-  void navigateBack() => navigationService.replaceWith(Routes.settingsView);
+  void navigateBack() => navigationService.back();
   void navigateBack2(BuildContext context) async {
     navigationService.replaceWith(Routes.billingView);
     final result = await runSubscriptionCreationB();

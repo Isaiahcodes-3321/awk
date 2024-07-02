@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:stacked/stacked.dart';
 import 'package:verzo/services/dashboard_service.dart';
 import 'package:verzo/ui/common/app_colors.dart';
@@ -69,7 +71,7 @@ class CardTransactionsView extends StackedView<CardTransactionsViewModel> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Text(
-            'View your latest transactions ',
+            'View your transactions ',
             style: ktsSubtitleTextAuthentication,
           ),
         ),
@@ -155,90 +157,89 @@ class CardTransaction extends ViewModelWidget<CardTransactionsViewModel> {
 
   @override
   Widget build(BuildContext context, CardTransactionsViewModel viewModel) {
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
-      title: Text(
-        cardTransactions.type,
-        // '#${purchase.reference}',
-        // expenses.merchantName,
-        // '${expenses.description[0].toUpperCase()}${expenses.description.substring(1)}',
-        style: TextStyle(
-          fontFamily: 'Satoshi',
-          color: kcTextTitleColor.withOpacity(0.9),
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-        ),
-        overflow: TextOverflow.ellipsis,
-        maxLines: 1,
-      ),
-      subtitle: Text(
-        '${cardTransactions.currency}${cardTransactions.amount}',
-        style: TextStyle(
-          fontFamily: 'Satoshi',
-          color: kcTextSubTitleColor,
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-        ),
-        overflow: TextOverflow.ellipsis,
-        maxLines: 1,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
+      child: Column(
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: NumberFormat.currency(
+                                  locale: 'en_NGN', symbol: '₦')
+                              .currencySymbol, // The remaining digits without the symbol
+                          style: GoogleFonts.openSans(
+                            color: kcTextTitleColor.withOpacity(0.8),
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                          ).copyWith(fontFamily: 'Roboto'),
+                        ),
+                        TextSpan(
+                          text: NumberFormat.currency(
+                                  locale: 'en_NGN', symbol: '')
+                              .format(cardTransactions
+                                  .amount), // The remaining digits without the symbol
+                          style: TextStyle(
+                              fontFamily: 'Satoshi',
+                              color: kcTextTitleColor.withOpacity(0.9),
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0.5),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Text(
+                    cardTransactions.createdAt.substring(0, 10),
+                    style: TextStyle(
+                      fontFamily: 'Satoshi',
+                      color: kcTextTitleColor.withOpacity(0.9),
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                ],
+              ),
+              // verticalSpaceTinyt1,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    cardTransactions.type,
+                    style: const TextStyle(
+                      fontFamily: 'Satoshi',
+                      color: kcTextSubTitleColor,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                  Text(
+                    cardTransactions.createdAt.substring(11, 16),
+                    style: const TextStyle(
+                      fontFamily: 'Satoshi',
+                      color: kcTextSubTitleColor,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                ],
+              )
+            ],
+          ),
+        ],
       ),
     );
-    // return Padding(
-    //   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
-    //   child: Column(
-    //     mainAxisAlignment: MainAxisAlignment.start,
-    //     children: [
-    //       Row(
-    //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //         children: [
-    //           Text(
-    //             businessTask.userFullname,
-    //             // '#${purchase.reference}',
-    //             // expenses.merchantName,
-    //             // '${expenses.description[0].toUpperCase()}${expenses.description.substring(1)}',
-    //             style: TextStyle(
-    //               fontFamily: 'Satoshi',
-    //               color: kcTextTitleColor.withOpacity(0.9),
-    //               fontSize: 18,
-    //               fontWeight: FontWeight.w600,
-    //             ),
-    //             overflow: TextOverflow.ellipsis,
-    //             maxLines: 1,
-    //           ),
-    //         ],
-    //       ),
-    //       // verticalSpaceTinyt1,
-    //       Row(
-    //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //         children: [
-    //           Text(
-    //             // expenses.expenseDate,
-    //             businessTask.userEmail,
-    //             style: TextStyle(
-    //               fontFamily: 'Satoshi',
-    //               color: kcTextSubTitleColor,
-    //               fontSize: 14,
-    //               fontWeight: FontWeight.w400,
-    //             ),
-    //             overflow: TextOverflow.ellipsis,
-    //             maxLines: 1,
-    //           ),
-    //           Text(
-    //             // expenses.merchantName,
-    //             businessTask.taskType,
-    //             style: TextStyle(
-    //               fontFamily: 'Satoshi',
-    //               color: kcTextSubTitleColor,
-    //               fontSize: 14,
-    //               fontWeight: FontWeight.w400,
-    //             ),
-    //             overflow: TextOverflow.ellipsis,
-    //             maxLines: 1,
-    //           ),
-    //         ],
-    //       )
-    //     ],
-    //   ),
-    // );
   }
 }

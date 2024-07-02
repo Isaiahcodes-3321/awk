@@ -4,6 +4,8 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.dialogs.dart';
 import 'package:verzo/app/app.locator.dart';
+import 'package:verzo/app/app.router.dart';
+import 'package:verzo/services/authentication_service.dart';
 import 'package:verzo/services/sales_service.dart';
 import 'package:verzo/ui/common/app_colors.dart';
 import 'package:verzo/ui/common/app_styles.dart';
@@ -13,6 +15,7 @@ class RecordSaleExpenseViewModel extends FormViewModel {
   final navigationService = locator<NavigationService>();
   final _saleService = locator<SalesService>();
   final DialogService dialogService = locator<DialogService>();
+  final authService = locator<AuthenticationService>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final List<GlobalKey<FormState>>? saleExpenseFormKeys = [];
   final List<GlobalKey<FormState>>? saleServiceExpenseFormKeys = [];
@@ -102,6 +105,10 @@ class RecordSaleExpenseViewModel extends FormViewModel {
 
   Future<SaleStatusResult> effectSaleExpenseSaleExpense(
       String expenseId, int index, BuildContext context) async {
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
     final SaleStatusResult effectSaleExpenseSuccessful =
         await _saleService.effectSaleExpense(
             expenseId: expenseId,
@@ -151,6 +158,10 @@ class RecordSaleExpenseViewModel extends FormViewModel {
 
   Future<SaleStatusResult> effectSaleExpenseSaleServiceExpense(
       String expenseId, int index, BuildContext context) async {
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
     final SaleStatusResult effectSaleExpenseSuccessful =
         await _saleService.effectSaleExpense(
             expenseId: expenseId,

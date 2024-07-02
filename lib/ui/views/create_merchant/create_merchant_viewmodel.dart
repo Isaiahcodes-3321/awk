@@ -3,6 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.locator.dart';
+import 'package:verzo/app/app.router.dart';
+import 'package:verzo/services/authentication_service.dart';
 import 'package:verzo/services/merchant_service.dart';
 import 'package:verzo/ui/common/app_colors.dart';
 import 'package:verzo/ui/common/app_styles.dart';
@@ -11,11 +13,16 @@ import 'package:verzo/ui/views/create_merchant/create_merchant_view.form.dart';
 class CreateMerchantViewModel extends FormViewModel {
   final navigationService = locator<NavigationService>();
   final _createMerchantService = locator<MerchantService>();
+  final authService = locator<AuthenticationService>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   Future<MerchantCreationResult> runMerchantCreation() async {
     final prefs = await SharedPreferences.getInstance();
-    final businessIdValue = prefs.getString('id');
+    final businessIdValue = prefs.getString('businessId');
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
     return _createMerchantService.createMerchant(
         name: nameValue ?? '',
         businessId: businessIdValue ?? '',

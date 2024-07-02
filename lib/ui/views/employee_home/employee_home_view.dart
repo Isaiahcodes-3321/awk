@@ -210,8 +210,12 @@ class _NewViewState extends State<EmployeeNewView>
                                 height: 200,
                                 width: MediaQuery.of(context).size.width * 0.9,
                                 decoration: BoxDecoration(
+                                  border: Border.all(
+                                      strokeAlign: BorderSide.strokeAlignInside,
+                                      width: 2,
+                                      color: kcCardBorderColor),
                                   color: kcCardColor.withOpacity(0.3),
-                                  borderRadius: BorderRadius.circular(20),
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Column(
                                     mainAxisSize: MainAxisSize.min,
@@ -227,12 +231,12 @@ class _NewViewState extends State<EmployeeNewView>
                                           Text(viewModel.userName,
                                               style:
                                                   ktsHeroTextWhiteDashboard1),
-                                          SvgPicture.asset(
-                                            'assets/images/eye.svg',
-                                            width: 22,
-                                            height: 22,
-                                            color: Colors.white,
-                                          ),
+                                          // SvgPicture.asset(
+                                          //   'assets/images/eye.svg',
+                                          //   width: 22,
+                                          //   height: 22,
+                                          //   color: Colors.white,
+                                          // ),
                                         ],
                                       ),
                                       Column(
@@ -268,36 +272,28 @@ class _NewViewState extends State<EmployeeNewView>
                                                     ),
                                                     verticalSpaceTinyt1,
                                                     Text(
-                                                      'XX/XX',
+                                                      'XX / XX',
                                                       style:
-                                                          ktsHeroTextWhiteDashboard2,
+                                                          ktsHeroTextWhiteDashboard1,
                                                     )
                                                   ],
                                                 ),
-                                                horizontalSpaceRegular,
-                                                Column(
-                                                  children: [
-                                                    Text(
-                                                      'CVV',
-                                                      style: ktsButtonText2,
-                                                    ),
-                                                    verticalSpaceTinyt1,
-                                                    Text(
-                                                      'XXX',
-                                                      style:
-                                                          ktsHeroTextWhiteDashboard2,
-                                                    )
-                                                  ],
-                                                )
                                               ],
                                             ),
                                             SvgPicture.asset(
-                                              'assets/images/MasterCard.svg',
-                                              // width: 20,
-                                              // height: 20,
+                                              'assets/images/verve.svg',
+                                              width: 28,
+                                              height: 28,
                                             ),
                                           ]),
                                     ]),
+                              ),
+                              verticalSpaceTiny,
+                              Center(
+                                child: Text(
+                                  'You have no card',
+                                  style: ktsButtonText,
+                                ),
                               ),
                               verticalSpaceSmall,
                               Container(
@@ -325,7 +321,7 @@ class _NewViewState extends State<EmployeeNewView>
                                           ),
                                           verticalSpaceTiny,
                                           Text(
-                                            'Request card',
+                                            'Request',
                                             style: GoogleFonts.dmSans(
                                               color: kcButtonTextColor,
                                               fontSize: 18,
@@ -344,7 +340,7 @@ class _NewViewState extends State<EmployeeNewView>
                         return Material(
                           color: Colors.transparent,
                           child: ListView.separated(
-                            padding: const EdgeInsets.symmetric(vertical: 6),
+                            padding: const EdgeInsets.symmetric(vertical: 0),
                             physics: const NeverScrollableScrollPhysics(),
                             primary: false,
                             shrinkWrap: true,
@@ -511,8 +507,12 @@ class Cards extends ViewModelWidget<EmployeeHomeViewModel> {
           height: 200,
           width: MediaQuery.of(context).size.width * 0.9,
           decoration: BoxDecoration(
+            border: Border.all(
+                strokeAlign: BorderSide.strokeAlignInside,
+                width: 2,
+                color: kcCardBorderColor),
             color: kcCardColor.withOpacity(0.3),
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(12),
           ),
           child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -575,7 +575,7 @@ class Cards extends ViewModelWidget<EmployeeHomeViewModel> {
                               ),
                               verticalSpaceTinyt1,
                               Text(
-                                'XXX',
+                                '333',
                                 style: ktsHeroTextWhiteDashboard2,
                               )
                             ],
@@ -583,9 +583,9 @@ class Cards extends ViewModelWidget<EmployeeHomeViewModel> {
                         ],
                       ),
                       SvgPicture.asset(
-                        'assets/images/MasterCard.svg',
-                        // width: 20,
-                        // height: 20,
+                        'assets/images/verve.svg',
+                        width: 28,
+                        height: 28,
                       ),
                     ]),
               ]),
@@ -640,7 +640,7 @@ class Cards extends ViewModelWidget<EmployeeHomeViewModel> {
                     ),
                     verticalSpaceTiny,
                     Text(
-                      'Request card',
+                      'Request',
                       style: GoogleFonts.dmSans(
                         color: kcButtonTextColor,
                         fontSize: 18,
@@ -650,6 +650,34 @@ class Cards extends ViewModelWidget<EmployeeHomeViewModel> {
                   ],
                 ),
               ),
+              // GestureDetector(
+              //   onTap: () {
+              //     // viewModel.navigationService.navigateTo(Routes.addCardView);
+              //     // viewModel.createSudoCard();
+              //   },
+              //   child: Column(
+              //     children: [
+              //       CircleAvatar(
+              //         radius: 20,
+              //         backgroundColor: kcPrimaryColor.withOpacity(0.6),
+              //         child: const Icon(
+              //           Icons.visibility,
+              //           color: kcButtonTextColor,
+              //           size: 24,
+              //         ),
+              //       ),
+              //       verticalSpaceTiny,
+              //       Text(
+              //         'View',
+              //         style: GoogleFonts.dmSans(
+              //           color: kcButtonTextColor,
+              //           fontSize: 18,
+              //           fontWeight: FontWeight.w300,
+              //         ),
+              //       )
+              //     ],
+              //   ),
+              // ),
               GestureDetector(
                 onTap: () {
                   viewModel.navigationService.navigateTo(
@@ -723,7 +751,10 @@ class ExpenseCard extends ViewModelWidget<EmployeeHomeViewModel> {
                   Text(
                     // '#${purchase.reference}',
                     // expenses.merchantName,
-                    '${expenses.description[0].toUpperCase()}${expenses.description.substring(1)}',
+                    // '${expenses.description[0].toUpperCase()}${expenses.description.substring(1)}',
+                    expenses.description.length <= 15
+                        ? '${expenses.description[0].toUpperCase()}${expenses.description.substring(1)}'
+                        : '${expenses.description[0].toUpperCase()}${expenses.description.substring(1, 15)}...',
                     style: TextStyle(
                       fontFamily: 'Satoshi',
                       color: kcTextTitleColor.withOpacity(0.9),

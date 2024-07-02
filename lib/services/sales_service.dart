@@ -65,6 +65,7 @@ class SalesService {
             dueDate
             transactionDate
             description
+            note
             paid
             reference
             saleAmount
@@ -318,18 +319,18 @@ class SalesService {
 
 //Invoice
 
-  Future<SaleCreationResult> createSales({
-    required String customerId,
-    required String businessId,
-    required List<ItemDetail> item,
-    List<SaleExpenses>? saleExpense,
-    List<SaleServiceExpenseEntry>? saleServiceExpense,
-    required double vat,
-    // double? discount,
-    required String dueDate,
-    required String dateOfIssue,
-    required String description,
-  }) async {
+  Future<SaleCreationResult> createSales(
+      {required String customerId,
+      required String businessId,
+      required List<ItemDetail> item,
+      List<SaleExpenses>? saleExpense,
+      List<SaleServiceExpenseEntry>? saleServiceExpense,
+      required double vat,
+      // double? discount,
+      required String dueDate,
+      required String dateOfIssue,
+      required String description,
+      String? note}) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('access_token');
     final businessId = prefs.getString('businessId');
@@ -367,24 +368,25 @@ class SalesService {
                 .map((itemDetail) => {
                       'id': itemDetail.id,
                       'type': itemDetail.type,
-                      'price': itemDetail.price,
+                      'price': itemDetail.price * 100,
                       'quantity': itemDetail.quantity,
                       'index': itemDetail.index,
                     })
                 .toList(),
           },
           'description': description,
+          'note': note,
           'saleExpense': saleExpense
               ?.map((saleExpenseItem) => {
                     'description': saleExpenseItem.description,
-                    'amount': saleExpenseItem.amount,
+                    'amount': saleExpenseItem.amount * 100,
                     'index': saleExpenseItem.index
                   })
               .toList(), // Populate this list if applicable
           'saleServiceExpense': saleServiceExpense
               ?.map((saleServiceExpenseEntry) => {
-                    'serviceId': saleServiceExpenseEntry.id,
-                    'amount': saleServiceExpenseEntry.amount,
+                    'serviceId': saleServiceExpenseEntry.serviceId,
+                    'amount': saleServiceExpenseEntry.amount * 100,
                     'index': saleServiceExpenseEntry.index,
                     'description': saleServiceExpenseEntry.description,
                   })
@@ -428,6 +430,7 @@ class SalesService {
     String? customerId,
     String? dueDate,
     String? dateOfIssue,
+    String? note,
     // double? discount,
     double? vat,
     List<SaleExpenses>? saleExpense,
@@ -461,6 +464,7 @@ class SalesService {
         'saleId': saleId,
         'input': {
           'description': description,
+          'note': note,
           'updateInvoiceInput': {
             'dateOfIssue': dateOfIssue,
             'customerId': customerId,
@@ -471,7 +475,7 @@ class SalesService {
                 ?.map((itemDetail) => {
                       'id': itemDetail.id,
                       'type': itemDetail.type,
-                      'price': itemDetail.price,
+                      'price': itemDetail.price * 100,
                       'quantity': itemDetail.quantity,
                       'index': itemDetail.index,
                     })
@@ -480,14 +484,14 @@ class SalesService {
           'saleExpense': saleExpense
               ?.map((saleExpenseItem) => {
                     'description': saleExpenseItem.description,
-                    'amount': saleExpenseItem.amount,
+                    'amount': saleExpenseItem.amount * 100,
                     'index': saleExpenseItem.index
                   })
               .toList(),
           'saleServiceExpense': saleServiceExpense
               ?.map((saleServiceExpenseEntry) => {
                     'serviceId': saleServiceExpenseEntry.serviceId,
-                    'amount': saleServiceExpenseEntry.amount,
+                    'amount': saleServiceExpenseEntry.amount * 100,
                     'index': saleServiceExpenseEntry.index,
                     'description': saleServiceExpenseEntry.description
                   })
@@ -570,7 +574,7 @@ class SalesService {
           serviceName: expenseData['service']['name'],
           serviceId: expenseData['service']['id'],
           id: expenseData['id'],
-          amount: expenseData['amount'],
+          amount: expenseData['amount'] / 100,
           description: expenseData['description'],
           index: expenseData['index'],
           effected: expenseData['effected']);
@@ -579,7 +583,7 @@ class SalesService {
     final List<SaleExpenses> saleExpenses = saleExpenseData.map((expenseData) {
       return SaleExpenses(
           id: expenseData['id'],
-          amount: expenseData['amount'],
+          amount: expenseData['amount'] / 100,
           description: expenseData['description'],
           index: expenseData['index'],
           effected: expenseData['effected']);
@@ -599,7 +603,7 @@ class SalesService {
       return ItemDetail(
         id: detailData['product']?['id'] ?? detailData['service']?['id'],
         index: invoiceData['index'],
-        price: detailData['unitPrice'],
+        price: detailData['unitPrice'] / 100,
         quantity: detailData['quantity'],
         name: detailData['product']?['productName'] ??
             detailData['service']?['name'],
@@ -615,6 +619,7 @@ class SalesService {
       id: saleByIdData['id'],
       invoiceId: invoiceId,
       description: saleByIdData['description'],
+      note: saleByIdData['note'],
       paid: saleByIdData['paid'] ?? false,
       // overdue: invoiceData['overdue'],
       invoiceDetails: invoiceDetails,
@@ -626,9 +631,9 @@ class SalesService {
       customerId: customerData['id'],
       customerName: customerData['name'],
       customerEmail: customerData['email'],
-      totalAmount: saleByIdData['saleAmount'],
+      totalAmount: saleByIdData['saleAmount'] / 100,
       VAT: invoiceData['VAT'],
-      subtotal: invoiceData['subtotal'],
+      subtotal: invoiceData['subtotal'] / 100,
       // discount: invoiceData['discount'],
       saleStatusId: saleByIdData['saleStatusId'],
     );
@@ -692,7 +697,7 @@ class SalesService {
           reference: data['reference'],
           customerId: '',
           customerName: customerData['name'],
-          totalAmount: data['saleAmount'],
+          totalAmount: data['saleAmount'] / 100,
           VAT: 0,
           subtotal: 0,
           discount: 0,
@@ -760,7 +765,7 @@ class SalesService {
           reference: data['reference'],
           customerId: '',
           customerName: customerData['name'],
-          totalAmount: data['saleAmount'],
+          totalAmount: data['saleAmount'] / 100,
           VAT: 0,
           subtotal: 0,
           discount: 0,
@@ -1071,7 +1076,12 @@ class SalesService {
     );
 
     final QueryResult result = await newClient.mutate(options);
-    bool isSent = result.data?['sendInvoiceB'];
+    if (result.hasException) {
+      GraphQLSaleError(
+        message: result.exception?.graphqlErrors.first.message.toString(),
+      );
+    }
+    bool isSent = result.data?['sendInvoiceB'] ?? false;
     if (result.hasException) {
       // Handle any errors that may have occurred during the log out process
       isSent = false;
@@ -1617,6 +1627,7 @@ class GraphQLSaleError {
 class Sales {
   final String id;
   final String description;
+  final String? note;
   String reference;
   bool paid;
   final String customerName;
@@ -1639,6 +1650,7 @@ class Sales {
   Sales(
       {required this.id,
       required this.description,
+      this.note,
       required this.reference,
       required this.paid,
       required this.customerName,

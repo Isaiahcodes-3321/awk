@@ -1,3 +1,4 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked/stacked_annotations.dart';
@@ -73,6 +74,7 @@ class AddServiceView extends StackedView<AddServiceViewModel>
                   }),
                 ),
                 verticalSpaceSmall,
+
                 Text('Price', style: ktsFormTitleText),
                 verticalSpaceTiny,
                 TextFormField(
@@ -88,7 +90,6 @@ class AddServiceView extends StackedView<AddServiceViewModel>
                       focusedErrorBorder: defaultErrorFormBorder,
                       errorStyle: ktsErrorText,
                       errorBorder: defaultErrorFormBorder),
-                  // textCapitalization: TextCapitalization.words,
                   style: ktsBodyText,
                   controller: priceController,
                   keyboardType: TextInputType.number,
@@ -114,10 +115,13 @@ class AddServiceView extends StackedView<AddServiceViewModel>
                         style: ktsSubtitleTextAuthentication),
                     GestureDetector(
                       onTap: () async {
-                        // Navigate to the create customer view
-                        await viewModel.navigationService
+                        // Navigate to the create service view
+                        final result = await viewModel.navigationService
                             .navigateTo(Routes.createServiceUnitView);
-                        await viewModel.getServiceUnits();
+                        if (result == true) {
+                          await viewModel.getServiceUnits();
+                        }
+                        // await viewModel.getServiceUnits();
                       },
                       child: Text(
                         '+ Add unit',
@@ -130,9 +134,12 @@ class AddServiceView extends StackedView<AddServiceViewModel>
                 Text('Service unit', style: ktsFormTitleText),
                 verticalSpaceTiny,
                 DropdownButtonFormField(
+                  hint: Text(
+                    'Select',
+                    style: ktsFormHintText,
+                  ),
                   menuMaxHeight: 320,
                   elevation: 4,
-                  // padding: EdgeInsets.symmetric(horizontal: 12),
                   dropdownColor: kcButtonTextColor,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -148,8 +155,8 @@ class AddServiceView extends StackedView<AddServiceViewModel>
                   decoration: InputDecoration(
                       contentPadding:
                           const EdgeInsets.symmetric(horizontal: 12),
-                      hintStyle: ktsFormHintText,
-                      hintText: 'Select',
+                      // hintStyle: ktsFormHintText,
+                      // hintText: 'Select',
                       enabledBorder: defaultFormBorder,
                       focusedBorder: defaultFocusedFormBorder,
                       focusedErrorBorder: defaultErrorFormBorder,
@@ -166,6 +173,59 @@ class AddServiceView extends StackedView<AddServiceViewModel>
                     serviceUnitIdController.text = value.toString();
                   },
                 ),
+                // Text('Service unit', style: ktsFormTitleText),
+                // verticalSpaceTiny,
+                // DropdownButtonHideUnderline(
+                //   child: DropdownButtonFormField2<String>(
+                //     isExpanded: true,
+                //     decoration: InputDecoration(
+                //         contentPadding: EdgeInsets.zero,
+                //         enabledBorder: defaultFormBorder,
+                //         focusedBorder: defaultFocusedFormBorder,
+                //         focusedErrorBorder: defaultErrorFormBorder,
+                //         errorStyle: ktsErrorText,
+                //         errorBorder: defaultErrorFormBorder
+                //         // labelStyle: ktsFormText,
+                //         // border: defaultFormBorder
+                //         ),
+                //     hint: Text(
+                //       'Select',
+                //       style: ktsFormHintText,
+                //     ),
+
+                //     items: viewModel.addDividersAfterItems(
+                //         viewModel.serviceUnitdropdownItems),
+                //     value: serviceUnitIdController.text.isEmpty
+                //         ? null
+                //         : serviceUnitIdController.text,
+                //     onChanged: (value) {
+                //       serviceUnitIdController.text = value.toString();
+                //     },
+
+                //     buttonStyleData: ButtonStyleData(
+                //         padding: EdgeInsets.symmetric(horizontal: 12),
+                //         height: 40,
+                //         decoration: BoxDecoration()
+                //         // width: 140,
+                //         ),
+                //     dropdownStyleData: const DropdownStyleData(
+                //       padding: EdgeInsets.zero,
+                //       maxHeight: 300,
+                //       elevation: 4,
+
+                //       // dropdownColor: kcButtonTextColor,
+                //     ),
+                //     menuItemStyleData: MenuItemStyleData(
+                //       padding: const EdgeInsets.symmetric(horizontal: 12),
+                //       customHeights: viewModel.getCustomItemsHeights(
+                //           viewModel.serviceUnitdropdownItems.length),
+                //     ),
+                //     // iconStyleData: const IconStyleData(
+                //     //   openMenuIcon: Icon(Icons.expand_more),
+                //     //   iconSize: 20,
+                //     // ),
+                //   ),
+                // ),
               ],
             ),
           ),

@@ -5,14 +5,18 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.dialogs.dart';
 import 'package:verzo/app/app.locator.dart';
+import 'package:verzo/app/app.router.dart';
+import 'package:verzo/services/authentication_service.dart';
 import 'package:verzo/services/expense_service.dart';
 import 'package:verzo/ui/common/app_colors.dart';
 import 'package:verzo/ui/common/app_styles.dart';
+import 'package:verzo/ui/common/database_helper.dart';
 import 'package:verzo/ui/views/make_sales_payment/make_sales_payment_view.form.dart';
 
 class MakeExpensePaymentViewModel extends FormViewModel {
   final navigationService = locator<NavigationService>();
   final _expenseService = locator<ExpenseService>();
+  final authService = locator<AuthenticationService>();
   final DialogService dialogService = locator<DialogService>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -85,7 +89,10 @@ class MakeExpensePaymentViewModel extends FormViewModel {
   Future<ExpenseStatusResult> makeExpensePayment() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String businessIdValue = prefs.getString('businessId') ?? '';
-
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
     final ExpenseStatusResult isPayed =
         await _expenseService.makeExpensePayment(
             expenseId: expense.id,
@@ -144,5 +151,14 @@ class MakeExpensePaymentViewModel extends FormViewModel {
     }
   }
 
-  void navigateBack() => navigationService.back();
+  void navigateBack() async {
+    final db = await getExpenseDatabase();
+    final db2 = await getExpenseDatabaseList();
+
+    await db.delete('expenses');
+    await db2.delete('expenses');
+    rebuildUi();
+    await navigationService.back(result: true);
+    rebuildUi();
+  }
 }

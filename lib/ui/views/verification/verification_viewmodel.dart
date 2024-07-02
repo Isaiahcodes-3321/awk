@@ -6,6 +6,7 @@ import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.dialogs.dart';
 import 'package:verzo/app/app.locator.dart';
 import 'package:verzo/app/app.router.dart';
+import 'package:verzo/services/authentication_service.dart';
 import 'package:verzo/services/verification_service.dart';
 import 'package:verzo/ui/common/app_colors.dart';
 import 'package:verzo/ui/common/app_styles.dart';
@@ -19,6 +20,7 @@ class VerificationViewModel extends FormViewModel {
   final FocusNode digit4FocusNode = FocusNode();
   final NavigationService navigationService = locator<NavigationService>();
   final DialogService dialogService = locator<DialogService>();
+  final authService = locator<AuthenticationService>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   int resendCounter = 0;
@@ -67,6 +69,12 @@ class VerificationViewModel extends FormViewModel {
           resendCounter = 0;
           rebuildUi(); // Update the UI after cooldown
         });
+        final result = await authService.refreshToken();
+        if (result.error != null) {
+          await navigationService.replaceWithLoginView();
+        }
+        final bool verificationResent =
+            await _otpVerificationService.resendVerification();
 
         await dialogService.showCustomDialog(
             variant: DialogType.info,
@@ -75,8 +83,6 @@ class VerificationViewModel extends FormViewModel {
             barrierDismissible: true,
             mainButtonTitle: 'Ok');
 
-        bool verificationResent =
-            await _otpVerificationService.resendVerification();
         return verificationResent;
       } else {
         // Resend button is on cooldown
@@ -92,6 +98,12 @@ class VerificationViewModel extends FormViewModel {
     } else {
       // Increment the resend counter and resend the verification code
       resendCounter++;
+      final result = await authService.refreshToken();
+      if (result.error != null) {
+        await navigationService.replaceWithLoginView();
+      }
+      bool verificationResent =
+          await _otpVerificationService.resendVerification();
 
       await dialogService.showCustomDialog(
           variant: DialogType.info,
@@ -100,13 +112,15 @@ class VerificationViewModel extends FormViewModel {
           barrierDismissible: true,
           mainButtonTitle: 'Ok');
 
-      bool verificationResent =
-          await _otpVerificationService.resendVerification();
       return verificationResent;
     }
   }
 
-  Future<VerificationResult> runVerification() {
+  Future<VerificationResult> runVerification() async {
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
     final otpValue =
         '${otp1Value ?? ''}${otp2Value ?? ''}${otp3Value ?? ''}${otp4Value ?? ''}';
     final otpCode = int.tryParse(otpValue) ?? 0.0;

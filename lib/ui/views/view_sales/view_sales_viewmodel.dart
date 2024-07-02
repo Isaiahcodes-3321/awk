@@ -3,12 +3,17 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.dialogs.dart';
 import 'package:verzo/app/app.locator.dart';
+import 'package:verzo/app/app.router.dart';
+import 'package:verzo/services/authentication_service.dart';
 import 'package:verzo/services/sales_service.dart';
+import 'package:verzo/ui/common/app_colors.dart';
+import 'package:verzo/ui/common/app_styles.dart';
 import 'package:verzo/ui/common/database_helper.dart';
 
 class ViewSalesViewModel extends FormViewModel {
   final navigationService = locator<NavigationService>();
   final _saleService = locator<SalesService>();
+  final authService = locator<AuthenticationService>();
   final DialogService dialogService = locator<DialogService>();
 
   Sales? sale;
@@ -16,7 +21,18 @@ class ViewSalesViewModel extends FormViewModel {
 
   ViewSalesViewModel({required this.saleId});
 
+  num get totalSaleExpensesAmount {
+    if (sale?.saleExpenses == null) {
+      return 0;
+    }
+    return sale!.saleExpenses!.fold(0, (sum, item) => sum + item.amount);
+  }
+
   Future<Sales> getSaleById() async {
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
     final sales = await _saleService.getSaleById(saleId: saleId);
     sale = sales;
 
@@ -42,29 +58,35 @@ class ViewSalesViewModel extends FormViewModel {
         );
 
     if (response?.confirmed == true) {
-      final bool isDeleted = await _saleService.deleteSale(saleId: saleId);
-      if (isDeleted) {
-        await dialogService.showCustomDialog(
-          variant: DialogType.deleteSuccess,
-          title: 'Deleted!',
-          description: 'Your invoice has been successfully deleted.',
-          barrierDismissible: true,
-          mainButtonTitle: 'Ok',
-        );
-        await db.delete('sales');
-        await db2.delete('sales');
-        await dbWeeklyInvoices.delete('weekly_invoices');
-        await dbMonthlyInvoices.delete('monthly_invoices');
+      final result = await authService.refreshToken();
+      if (result.error != null) {
+        await navigationService.replaceWithLoginView();
+      } else if (result.tokens != null) {
+        final bool isDeleted = await _saleService.deleteSale(saleId: saleId);
+        if (isDeleted) {
+          await dialogService.showCustomDialog(
+            variant: DialogType.deleteSuccess,
+            title: 'Deleted!',
+            description: 'Your invoice has been successfully deleted.',
+            barrierDismissible: true,
+            mainButtonTitle: 'Ok',
+          );
+          await db.delete('sales');
+          await db2.delete('sales');
+          await dbWeeklyInvoices.delete('weekly_invoices');
+          await dbMonthlyInvoices.delete('monthly_invoices');
+        }
+
+        navigationService.back(result: true);
+        rebuildUi();
+
+        return isDeleted;
       }
-
-      navigationService.back(result: true);
-      rebuildUi();
-
-      return isDeleted;
     } else {
       // User canceled the action
       return false;
     }
+    return false;
   }
 
   Future<bool> archiveSale(BuildContext context) async {
@@ -85,32 +107,38 @@ class ViewSalesViewModel extends FormViewModel {
         );
 
     if (response?.confirmed == true) {
-      final bool isArchived = await _saleService.archiveSale(saleId: saleId);
-      if (isArchived) {
-        await dialogService.showCustomDialog(
-          variant: DialogType.archiveSuccess,
-          title: 'Archived!',
-          description: 'Your invoice has been successfully archived.',
-          barrierDismissible: true,
-          mainButtonTitle: 'Ok',
-        );
-        await db.delete('sales');
-        await db2.delete('sales');
-        await dbWeeklyInvoices.delete('weekly_invoices');
-        await dbMonthlyInvoices.delete('monthly_invoices');
+      final result = await authService.refreshToken();
+      if (result.error != null) {
+        await navigationService.replaceWithLoginView();
+      } else if (result.tokens != null) {
+        final bool isArchived = await _saleService.archiveSale(saleId: saleId);
+        if (isArchived) {
+          await dialogService.showCustomDialog(
+            variant: DialogType.archiveSuccess,
+            title: 'Archived!',
+            description: 'Your invoice has been successfully archived.',
+            barrierDismissible: true,
+            mainButtonTitle: 'Ok',
+          );
+          await db.delete('sales');
+          await db2.delete('sales');
+          await dbWeeklyInvoices.delete('weekly_invoices');
+          await dbMonthlyInvoices.delete('monthly_invoices');
+        }
+
+        navigationService.back(result: true);
+        rebuildUi();
+
+        return isArchived;
       }
-
-      navigationService.back(result: true);
-      rebuildUi();
-
-      return isArchived;
     } else {
       // User canceled the action
       return false;
     }
+    return false;
   }
 
-  Future<bool> sendInvoice() async {
+  Future<bool> sendInvoice(BuildContext context) async {
     final DialogResponse? response = await dialogService.showCustomDialog(
         variant: DialogType.send,
         title: 'Send Invoice',
@@ -122,22 +150,50 @@ class ViewSalesViewModel extends FormViewModel {
         // confirmationTitle: 'Ok',
         );
     if (response?.confirmed == true) {
-      final bool invoiceSent = await _saleService.sendInvoice(
-          invoiceId: sale!.invoiceId, copy: true);
-      if (invoiceSent) {
-        await dialogService.showCustomDialog(
-          variant: DialogType.sendSuccess,
-          title: 'Sent!',
-          description: 'Your invoice has been successfully sent.',
-          barrierDismissible: true,
-          mainButtonTitle: 'Ok',
-        );
+      final result = await authService.refreshToken();
+      if (result.error != null) {
+        await navigationService.replaceWithLoginView();
+      } else if (result.tokens != null) {
+        final bool invoiceSent = await _saleService.sendInvoice(
+            invoiceId: sale!.invoiceId, copy: true);
+        if (invoiceSent) {
+          await dialogService.showCustomDialog(
+            variant: DialogType.sendSuccess,
+            title: 'Sent!',
+            description: 'Your invoice has been successfully sent.',
+            barrierDismissible: true,
+            mainButtonTitle: 'Ok',
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'Access denied: Business has no valid subscription',
+                textAlign: TextAlign.start,
+                style: ktsSubtitleTileText2,
+              ),
+              elevation: 2,
+              duration: const Duration(seconds: 3), // Adjust as needed
+              backgroundColor: kcErrorColor,
+              dismissDirection: DismissDirection.up,
+              behavior: SnackBarBehavior.fixed,
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(4),
+                      bottomRight: Radius.circular(4))),
+              padding: const EdgeInsets.all(12),
+              // margin:
+              //     EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.9),
+            ),
+          );
+        }
+        return invoiceSent;
       }
-      return invoiceSent;
     } else {
       // User canceled the action
       return false;
     }
+    return false;
   }
 
   void reloadView() async {

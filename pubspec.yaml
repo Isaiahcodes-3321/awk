@@ -27,6 +27,7 @@ dependencies:
   responsive_sizer: ^3.3.1
   webview_flutter: ^3.0.1
   dropdown_button2: ^2.3.9
+  provider: ^6.0.3
 
 
 dev_dependencies:
@@ -129,6 +130,7 @@ flutter:
         - assets/images/MasterCard.svg
         - assets/images/card.svg
         - assets/images/Rectangle-331.svg
+        - assets/images/verve.svg
 
 
   fonts:

@@ -4,12 +4,15 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.dialogs.dart';
 import 'package:verzo/app/app.locator.dart';
+import 'package:verzo/app/app.router.dart';
+import 'package:verzo/services/authentication_service.dart';
 import 'package:verzo/services/sales_service.dart';
 import 'package:verzo/ui/common/database_helper.dart';
 
 class ArchivedSaleViewModel extends FutureViewModel<List<Sales>> {
   final navigationService = locator<NavigationService>();
   final _saleService = locator<SalesService>();
+  final authService = locator<AuthenticationService>();
   final DialogService dialogService = locator<DialogService>();
 
   List<Sales> sales = [];
@@ -20,10 +23,14 @@ class ArchivedSaleViewModel extends FutureViewModel<List<Sales>> {
   Future<List<Sales>> getArchivedSaleByBusiness() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String businessIdValue = prefs.getString('businessId') ?? '';
-
-    // Retrieve existing expense categories
-    sales = await _saleService.getArchivedSaleByBusiness(
-        businessId: businessIdValue);
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    } else if (result.tokens != null) {
+      sales = await _saleService.getArchivedSaleByBusiness(
+          businessId: businessIdValue);
+      rebuildUi();
+    }
     rebuildUi();
     return sales;
   }
@@ -46,28 +53,34 @@ class ArchivedSaleViewModel extends FutureViewModel<List<Sales>> {
         );
 
     if (response?.confirmed == true) {
-      final bool isDeleted = await _saleService.deleteSale(saleId: saleId);
-      if (isDeleted) {
-        await dialogService.showCustomDialog(
-          variant: DialogType.deleteSuccess,
-          title: 'Deleted!',
-          description: 'Your invoice has been successfully deleted.',
-          barrierDismissible: true,
-          mainButtonTitle: 'Ok',
-        );
-        await db.delete('sales');
-        await db2.delete('sales');
-        await dbWeeklyInvoices.delete('weekly_invoices');
-        await dbMonthlyInvoices.delete('monthly_invoices');
+      final result = await authService.refreshToken();
+      if (result.error != null) {
+        await navigationService.replaceWithLoginView();
+      } else if (result.tokens != null) {
+        final bool isDeleted = await _saleService.deleteSale(saleId: saleId);
+        if (isDeleted) {
+          await dialogService.showCustomDialog(
+            variant: DialogType.deleteSuccess,
+            title: 'Deleted!',
+            description: 'Your invoice has been successfully deleted.',
+            barrierDismissible: true,
+            mainButtonTitle: 'Ok',
+          );
+          await db.delete('sales');
+          await db2.delete('sales');
+          await dbWeeklyInvoices.delete('weekly_invoices');
+          await dbMonthlyInvoices.delete('monthly_invoices');
+        }
+
+        reloadSale();
+
+        return isDeleted;
       }
-
-      reloadSale();
-
-      return isDeleted;
     } else {
       // User canceled the action
       return false;
     }
+    return false;
   }
 
   Future<bool> unArchiveSale(String saleId) async {
@@ -88,29 +101,35 @@ class ArchivedSaleViewModel extends FutureViewModel<List<Sales>> {
         );
 
     if (response?.confirmed == true) {
-      final bool isUnArchived =
-          await _saleService.unarchiveSale(saleId: saleId);
-      if (isUnArchived) {
-        await dialogService.showCustomDialog(
-          variant: DialogType.archiveSuccess,
-          title: 'Unarchived!',
-          description: 'Your invoice has been successfully unarchived.',
-          barrierDismissible: true,
-          mainButtonTitle: 'Ok',
-        );
-        await db.delete('sales');
-        await db2.delete('sales');
-        await dbWeeklyInvoices.delete('weekly_invoices');
-        await dbMonthlyInvoices.delete('monthly_invoices');
+      final result = await authService.refreshToken();
+      if (result.error != null) {
+        await navigationService.replaceWithLoginView();
+      } else if (result.tokens != null) {
+        final bool isUnArchived =
+            await _saleService.unarchiveSale(saleId: saleId);
+        if (isUnArchived) {
+          await dialogService.showCustomDialog(
+            variant: DialogType.archiveSuccess,
+            title: 'Unarchived!',
+            description: 'Your invoice has been successfully unarchived.',
+            barrierDismissible: true,
+            mainButtonTitle: 'Ok',
+          );
+          await db.delete('sales');
+          await db2.delete('sales');
+          await dbWeeklyInvoices.delete('weekly_invoices');
+          await dbMonthlyInvoices.delete('monthly_invoices');
+        }
+
+        reloadSale();
+
+        return isUnArchived;
       }
-
-      reloadSale();
-
-      return isUnArchived;
     } else {
       // User canceled the action
       return false;
     }
+    return false;
   }
 
   void reloadSale() async {

@@ -4,6 +4,7 @@ import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.dialogs.dart';
 import 'package:verzo/app/app.locator.dart';
 import 'package:verzo/app/app.router.dart';
+import 'package:verzo/services/authentication_service.dart';
 import 'package:verzo/services/business_creation_service.dart';
 import 'package:verzo/ui/common/app_colors.dart';
 import 'package:verzo/ui/common/app_styles.dart';
@@ -13,11 +14,16 @@ class BusinessCreationViewModel extends FormViewModel {
   final navigationService = locator<NavigationService>();
   final DialogService dialogService = locator<DialogService>();
   final _businessCreationService = locator<BusinessCreationService>();
+  final authService = locator<AuthenticationService>();
   List<DropdownMenuItem<String>> businessCategorydropdownItems = [];
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   Future<List<BusinessCategory>> getBusinessCategories() async {
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
     final businessCategories =
         await _businessCreationService.getBusinessCategories();
     businessCategorydropdownItems = businessCategories.map((businessCategory) {
@@ -29,12 +35,17 @@ class BusinessCreationViewModel extends FormViewModel {
     return businessCategories;
   }
 
-  Future<BusinessCreationResult> runBusinessCreation() =>
-      _businessCreationService.createBusinessProfile(
-          businessName: businessNameValue ?? '',
-          businessEmail: businessEmailValue ?? '',
-          businessMobile: businessMobileValue ?? '',
-          businessCategoryId: businessCategoryIdValue ?? '');
+  Future<BusinessCreationResult> runBusinessCreation() async {
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
+    return _businessCreationService.createBusinessProfile(
+        businessName: businessNameValue ?? '',
+        businessEmail: businessEmailValue ?? '',
+        businessMobile: businessMobileValue ?? '',
+        businessCategoryId: businessCategoryIdValue ?? '');
+  }
 
   Future saveBusinessData(BuildContext context) async {
     final result = await runBusyFuture(runBusinessCreation());

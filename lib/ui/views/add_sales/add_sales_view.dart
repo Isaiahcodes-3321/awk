@@ -16,6 +16,7 @@ import 'add_sales_viewmodel.dart';
 
 @FormView(fields: [
   FormTextField(name: 'description'),
+  FormTextField(name: 'note'),
   FormTextField(name: 'customerId'),
   FormTextField(name: 'dueDate'),
   FormTextField(name: 'dateOfIssue'),
@@ -82,6 +83,10 @@ class AddSalesView extends StackedView<AddSalesViewModel> with $AddSalesView {
               Text('Customer', style: ktsFormTitleText),
               verticalSpaceTiny,
               DropdownButtonFormField(
+                hint: Text(
+                  'Select',
+                  style: ktsFormHintText,
+                ),
                 menuMaxHeight: 320,
                 elevation: 4,
                 // padding: EdgeInsets.symmetric(horizontal: 12),
@@ -99,8 +104,8 @@ class AddSalesView extends StackedView<AddSalesViewModel> with $AddSalesView {
                 style: ktsBodyText,
                 decoration: InputDecoration(
                     contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-                    hintStyle: ktsFormHintText,
-                    hintText: 'Select',
+                    // hintStyle: ktsFormHintText,
+                    // hintText: 'Select',
                     enabledBorder: defaultFormBorder,
                     focusedBorder: defaultFocusedFormBorder,
                     focusedErrorBorder: defaultErrorFormBorder,
@@ -234,7 +239,8 @@ class AddSalesView extends StackedView<AddSalesViewModel> with $AddSalesView {
                 },
               ),
               verticalSpaceIntermitent,
-              Text('Description', style: ktsSubtitleTextAuthentication),
+              verticalSpaceSmall,
+              Text('Description', style: ktsFormTitleText),
               verticalSpaceTiny,
               TextFormField(
                 maxLines: 3,
@@ -251,10 +257,51 @@ class AddSalesView extends StackedView<AddSalesViewModel> with $AddSalesView {
                 textCapitalization: TextCapitalization.sentences,
                 style: ktsBodyText,
                 controller: descriptionController,
-                keyboardType: TextInputType.name,
+                keyboardType: TextInputType.text,
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
                     return 'Please enter a description';
+                  }
+
+                  return null;
+                },
+                inputFormatters: [
+                  TextInputFormatter.withFunction((oldValue, newValue) {
+                    // Ensure the first letter of the input is capitalized
+                    if (newValue.text.isNotEmpty) {
+                      return TextEditingValue(
+                        text: newValue.text[0].toUpperCase() +
+                            newValue.text.substring(1),
+                        selection: newValue.selection,
+                      );
+                    }
+                    return newValue;
+                  }),
+                ],
+              ),
+              verticalSpaceSmall,
+              Text('Note', style: ktsFormTitleText),
+              verticalSpaceTiny,
+              TextFormField(
+                // maxLines: 3,
+                cursorColor: kcPrimaryColor,
+                decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                    hintText: 'Add notes / payment details',
+                    hintStyle: ktsFormHintText,
+                    // border: defaultFormBorder,
+                    enabledBorder: defaultFormBorder,
+                    focusedBorder: defaultFocusedFormBorder,
+                    focusedErrorBorder: defaultErrorFormBorder,
+                    errorStyle: ktsErrorText,
+                    errorBorder: defaultErrorFormBorder),
+                textCapitalization: TextCapitalization.sentences,
+                style: ktsBodyText,
+                controller: noteController,
+                keyboardType: TextInputType.text,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Please enter a sales note';
                   }
 
                   return null;
@@ -290,7 +337,7 @@ class AddSalesView extends StackedView<AddSalesViewModel> with $AddSalesView {
   void onViewModelReady(AddSalesViewModel viewModel) async {
     syncFormWithViewModel(viewModel);
     await viewModel.getCustomersByBusiness();
-    await viewModel.getServiceByBusiness();
+    // await viewModel.getServiceByBusiness();
   }
 
   @override

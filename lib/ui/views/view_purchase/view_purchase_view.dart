@@ -259,23 +259,25 @@ class ViewPurchaseView extends StackedView<ViewPurchaseViewModel> {
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Description',
-                        style: ktsFormHintText,
-                      ),
-                      verticalSpaceTinyt,
-                      Text(
-                        viewModel.purchase!.description,
-                        style: ktsTextAuthentication3,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      ),
-                    ],
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Description',
+                          style: ktsFormHintText,
+                        ),
+                        verticalSpaceTinyt,
+                        Text(
+                          viewModel.purchase!.description,
+                          style: ktsTextAuthentication3,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      ],
+                    ),
                   ),
                   Column(
                     mainAxisSize: MainAxisSize.min,
@@ -393,7 +395,7 @@ class ViewPurchaseView extends StackedView<ViewPurchaseViewModel> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      viewModel.sendPurchase();
+                      viewModel.sendPurchase(context);
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -458,6 +460,7 @@ class ViewPurchaseView extends StackedView<ViewPurchaseViewModel> {
                     onTap: viewModel.purchase!.purchaseStatusId == 1
                         ? () {
                             showModalBottomSheet(
+                              backgroundColor: kcButtonTextColor,
                               context: context,
                               isScrollControlled: true,
                               builder: (BuildContext context) {
@@ -508,6 +511,7 @@ class ViewPurchaseView extends StackedView<ViewPurchaseViewModel> {
                     onTap: viewModel.purchase!.purchaseStatusId == 2
                         ? () {
                             showModalBottomSheet(
+                              backgroundColor: kcButtonTextColor,
                               context: context,
                               isScrollControlled: true,
                               builder: (BuildContext context) {
@@ -563,6 +567,7 @@ class ViewPurchaseView extends StackedView<ViewPurchaseViewModel> {
                             // Navigator.of(context).pop();
                             // Handle the action
                             showModalBottomSheet(
+                              backgroundColor: kcButtonTextColor,
                               context: context,
                               isScrollControlled: true,
                               builder: (BuildContext context) {

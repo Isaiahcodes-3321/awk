@@ -290,191 +290,55 @@ class ViewSalesView extends StackedView<ViewSalesViewModel> {
                   )
                 ],
               ),
-              // Container(
-              //   clipBehavior: Clip.antiAlias,
-              //   padding: EdgeInsets.zero,
-              //   width: double.infinity,
-              //   decoration: BoxDecoration(
-              //     // color: kcButtonTextColor,
-              //     borderRadius: BorderRadius.circular(12),
-              //     border: Border.all(width: 1, color: kcBorderColor),
-              //   ),
-              //   child: Column(mainAxisSize: MainAxisSize.min, children: [
-              //     Padding(
-              //       padding: const EdgeInsets.symmetric(
-              //           horizontal: 14, vertical: 20),
-              //       child: Row(
-              //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //         children: [
-              //           Row(
-              //             children: [
-              //               SvgPicture.asset(
-              //                 'assets/images/calendar-03.svg',
-              //                 width: 20,
-              //                 height: 20,
-              //               ),
-              //               horizontalSpaceTiny,
-              //               Text(
-              //                 'Transaction date',
-              //                 style: ktsFormTitleText,
-              //               ),
-              //             ],
-              //           ),
-              //           Text(
-              //             viewModel.sale!.transactionDate,
-              //             style: ktsFormHintText,
-              //           ),
-              //         ],
-              //       ),
-              //     ),
-              //     const Divider(
-              //       color: kcBorderColor,
-              //     ),
-              //     Padding(
-              //       padding: const EdgeInsets.symmetric(
-              //           horizontal: 14, vertical: 20),
-              //       child: Row(
-              //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //         children: [
-              //           Row(
-              //             children: [
-              //               SvgPicture.asset(
-              //                 'assets/images/calendar-03.svg',
-              //                 width: 20,
-              //                 height: 20,
-              //               ),
-              //               horizontalSpaceTiny,
-              //               Text(
-              //                 'Due date',
-              //                 style: ktsFormTitleText,
-              //               ),
-              //             ],
-              //           ),
-              //           Text(
-              //             viewModel.sale!.dueDate,
-              //             style: ktsFormHintText,
-              //           ),
-              //         ],
-              //       ),
-              //     ),
-              //     const Divider(
-              //       color: kcBorderColor,
-              //     ),
-              //     Padding(
-              //       padding: const EdgeInsets.symmetric(
-              //           horizontal: 14, vertical: 14),
-              //       child: Row(
-              //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //         children: [
-              //           Row(
-              //             children: [
-              //               SvgPicture.asset(
-              //                 'assets/images/check-broken.svg',
-              //                 width: 20,
-              //                 height: 20,
-              //               ),
-              //               horizontalSpaceTiny,
-              //               Text(
-              //                 'Status',
-              //                 style: ktsFormTitleText,
-              //               ),
-              //             ],
-              //           ),
-              //           if (viewModel.sale!.paid == true)
-              //             Container(
-              //               padding: const EdgeInsets.symmetric(
-              //                   horizontal: 12, vertical: 6),
-              //               decoration: BoxDecoration(
-              //                 color: kcSuccessColor,
-              //                 borderRadius: BorderRadius.circular(20),
-              //               ),
-              //               child: Text('Paid',
-              //                   style:
-              //                       ktsSubtitleTileText2 // Set your text style
-              //                   ),
-              //             )
-              //           else
-              //             Container(
-              //               padding: const EdgeInsets.symmetric(
-              //                   horizontal: 12, vertical: 6),
-              //               decoration: BoxDecoration(
-              //                 color: kcArchiveColor,
-              //                 borderRadius: BorderRadius.circular(20),
-              //               ),
-              //               child: Text('Pending',
-              //                   style:
-              //                       ktsSubtitleTileText // Set your text style
-              //                   ),
-              //             )
-              //         ],
-              //       ),
-              //     ),
-              //     const Divider(
-              //       color: kcBorderColor,
-              //     ),
-              //     Padding(
-              //       padding: const EdgeInsets.symmetric(
-              //           horizontal: 14, vertical: 20),
-              //       child: Row(
-              //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //         children: [
-              //           Row(
-              //             children: [
-              //               SvgPicture.asset(
-              //                 'assets/images/user-profile-02.svg',
-              //                 width: 20,
-              //                 height: 20,
-              //               ),
-              //               horizontalSpaceTiny,
-              //               Text(
-              //                 'Customer',
-              //                 style: ktsFormTitleText,
-              //               ),
-              //             ],
-              //           ),
-              //           Text(
-              //             viewModel.sale!.customerName,
-              //             style: ktsFormHintText,
-              //           ),
-              //         ],
-              //       ),
-              //     ),
-              //     const Divider(
-              //       color: kcBorderColor,
-              //     ),
-              //     Padding(
-              //       padding: const EdgeInsets.symmetric(
-              //           horizontal: 14, vertical: 20),
-              //       child: Row(
-              //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //         children: [
-              //           Row(
-              //             children: [
-              //               SvgPicture.asset(
-              //                 'assets/images/email.svg',
-              //                 width: 20,
-              //                 height: 20,
-              //               ),
-              //               horizontalSpaceTiny,
-              //               Text(
-              //                 'Email',
-              //                 style: ktsFormTitleText,
-              //               ),
-              //             ],
-              //           ),
-              //           Text(
-              //             viewModel.sale!.customerEmail!,
-              //             style: ktsFormHintText,
-              //           ),
-              //         ],
-              //       ),
-              //     ),
-              //   ]),
-              // ),
+
+              verticalSpaceTiny,
+              Divider(
+                color: kcBorderColor,
+              ),
+              verticalSpaceTiny,
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Description',
+                    style: ktsFormHintText,
+                  ),
+                  verticalSpaceTinyt,
+                  Text(
+                    viewModel.sale!.description,
+                    style: ktsTextAuthentication3,
+                  ),
+                ],
+              ),
+              if (viewModel.sale!.note!.isNotEmpty) verticalSpaceTiny,
+              if (viewModel.sale!.note!.isNotEmpty)
+                Divider(
+                  color: kcBorderColor,
+                ),
+              if (viewModel.sale!.note!.isNotEmpty) verticalSpaceTiny,
+              if (viewModel.sale!.note!.isNotEmpty)
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Notes / Terms',
+                      style: ktsFormHintText,
+                    ),
+                    verticalSpaceTinyt,
+                    Text(
+                      viewModel.sale!.note!,
+                      style: ktsTextAuthentication3,
+                    ),
+                  ],
+                ),
               verticalSpaceIntermitent,
               Text(
                 'Invoice details',
-                style: ktsTextAuthentication,
+                style: ktsFormTitleText3,
               ),
               if (viewModel.sale!.invoiceDetails.isNotEmpty) verticalSpaceTiny,
               if (viewModel.sale!.invoiceDetails.isNotEmpty)
@@ -547,6 +411,55 @@ class ViewSalesView extends StackedView<ViewSalesViewModel> {
                   ),
                 ],
               ),
+              verticalSpaceTiny,
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'VAT',
+                    style: ktsBorderText,
+                  ),
+                  Text(
+                    '+7.5%',
+                    style: ktsBorderText2,
+                  ),
+                ],
+              ),
+              if (viewModel.sale!.saleExpenses!.isNotEmpty) verticalSpaceTiny,
+              if (viewModel.sale!.saleExpenses!.isNotEmpty)
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Sale expenses',
+                      style: ktsBorderText,
+                    ),
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: NumberFormat.currency(
+                                    locale: 'en_NGN', symbol: '₦')
+                                .currencySymbol,
+                            style:
+                                ktsBorderText2.copyWith(fontFamily: 'Roboto'),
+                          ),
+                          TextSpan(
+                            text: NumberFormat.currency(
+                              locale: 'en_NGN',
+                              symbol: '',
+                            ).format(viewModel.totalSaleExpensesAmount),
+                            style: ktsBorderText2,
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               const Divider(
                 color: kcBorderColor,
               ),
@@ -557,7 +470,7 @@ class ViewSalesView extends StackedView<ViewSalesViewModel> {
                 children: [
                   Text(
                     'Amount due',
-                    style: ktsBorderText,
+                    style: ktsTextAuthentication,
                   ),
                   RichText(
                     text: TextSpan(
@@ -580,8 +493,54 @@ class ViewSalesView extends StackedView<ViewSalesViewModel> {
                   ),
                 ],
               ),
-
-              verticalSpaceIntermitent,
+              if (viewModel.sale!.saleExpenses!.isNotEmpty) verticalSpaceSmall,
+              if (viewModel.sale!.saleExpenses!.isNotEmpty)
+                const Divider(
+                  color: kcBorderColor,
+                ),
+              if (viewModel.sale!.saleExpenses!.isNotEmpty)
+                Text(
+                  'Sale expenses',
+                  style: ktsFormTitleText3,
+                ),
+              if (viewModel.sale!.saleExpenses!.isNotEmpty)
+                ...viewModel.sale!.saleExpenses!.map(
+                  (saleExpense) => ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 2,
+                    ),
+                    minVerticalPadding: 0,
+                    title: Text(saleExpense.description),
+                    titleTextStyle: ktsBorderText,
+                    trailing: RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: NumberFormat.currency(
+                                    locale: 'en_NGN', symbol: '₦')
+                                .currencySymbol, // The remaining digits without the symbol
+                            style:
+                                ktsBorderText2.copyWith(fontFamily: 'Roboto'),
+                          ),
+                          TextSpan(
+                            text: NumberFormat.currency(
+                                    locale: 'en_NGN', symbol: '')
+                                .format(saleExpense
+                                    .amount), // The remaining digits without the symbol
+                            style: ktsBorderText2,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              if (viewModel.sale!.saleExpenses!.isNotEmpty)
+                const Divider(
+                  color: kcBorderColor,
+                ),
+              if (viewModel.sale!.saleExpenses!.isNotEmpty) verticalSpaceSmall,
+              if (viewModel.sale!.saleExpenses!.isEmpty)
+                verticalSpaceIntermitent,
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -601,7 +560,7 @@ class ViewSalesView extends StackedView<ViewSalesViewModel> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      viewModel.sendInvoice();
+                      viewModel.sendInvoice(context);
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -668,6 +627,7 @@ class ViewSalesView extends StackedView<ViewSalesViewModel> {
                     onTap: viewModel.sale!.saleStatusId == 1
                         ? () {
                             showModalBottomSheet(
+                              backgroundColor: kcButtonTextColor,
                               context: context,
                               isScrollControlled: true,
                               builder: (BuildContext context) {
@@ -724,6 +684,7 @@ class ViewSalesView extends StackedView<ViewSalesViewModel> {
                             // Navigator.of(context).pop();
                             // Handle the action
                             showModalBottomSheet(
+                              backgroundColor: kcButtonTextColor,
                               context: context,
                               isScrollControlled: true,
                               builder: (BuildContext context) {

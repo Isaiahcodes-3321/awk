@@ -50,6 +50,10 @@ class AddCardView extends StackedView<AddCardViewModel> with $AddCardView {
                 Text('Assigned User', style: ktsFormTitleText),
                 verticalSpaceTiny,
                 DropdownButtonFormField(
+                  hint: Text(
+                    'Select',
+                    style: ktsFormHintText,
+                  ),
                   menuMaxHeight: 320,
                   elevation: 4,
                   // padding: EdgeInsets.symmetric(horizontal: 12),
@@ -68,8 +72,8 @@ class AddCardView extends StackedView<AddCardViewModel> with $AddCardView {
                   decoration: InputDecoration(
                       contentPadding:
                           const EdgeInsets.symmetric(horizontal: 12),
-                      hintStyle: ktsFormHintText,
-                      hintText: 'Select',
+                      // hintStyle: ktsFormHintText,
+                      // hintText: 'Select',
                       enabledBorder: defaultFormBorder,
                       focusedBorder: defaultFocusedFormBorder,
                       focusedErrorBorder: defaultErrorFormBorder,
@@ -87,8 +91,7 @@ class AddCardView extends StackedView<AddCardViewModel> with $AddCardView {
                   },
                 ),
                 verticalSpaceIntermitent,
-                Text('Spending limit (optional)',
-                    style: ktsSubtitleTextAuthentication),
+                Text('Spending limit', style: ktsSubtitleTextAuthentication),
                 verticalSpaceSmallMid,
                 Text('Amount', style: ktsFormTitleText),
                 verticalSpaceTiny,
@@ -127,6 +130,10 @@ class AddCardView extends StackedView<AddCardViewModel> with $AddCardView {
                 Text('Interval', style: ktsFormTitleText),
                 verticalSpaceTiny,
                 DropdownButtonFormField(
+                  hint: Text(
+                    'Select',
+                    style: ktsFormHintText,
+                  ),
                   menuMaxHeight: 320,
                   elevation: 4,
                   // padding: EdgeInsets.symmetric(horizontal: 12),
@@ -149,8 +156,8 @@ class AddCardView extends StackedView<AddCardViewModel> with $AddCardView {
                   decoration: InputDecoration(
                       contentPadding:
                           const EdgeInsets.symmetric(horizontal: 12),
-                      hintStyle: ktsFormHintText,
-                      hintText: 'Select',
+                      // hintStyle: ktsFormHintText,
+                      // hintText: 'Select',
                       enabledBorder: defaultFormBorder,
                       focusedBorder: defaultFocusedFormBorder,
                       focusedErrorBorder: defaultErrorFormBorder,

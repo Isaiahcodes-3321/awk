@@ -76,6 +76,14 @@ class UpdateSalesView extends StackedView<UpdateSalesViewModel> {
                     Text('Customer', style: ktsFormTitleText),
                     verticalSpaceTiny,
                     DropdownButtonFormField(
+                      hint: Text(
+                        'Select',
+                        style: ktsFormHintText,
+                      ),
+                      menuMaxHeight: 320,
+                      elevation: 4,
+                      // padding: EdgeInsets.symmetric(horizontal: 12),
+                      dropdownColor: kcButtonTextColor,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please select a customer';
@@ -276,6 +284,48 @@ class UpdateSalesView extends StackedView<UpdateSalesViewModel> {
                         }),
                       ],
                     ),
+                    verticalSpaceSmall,
+                    Text('Note', style: ktsFormTitleText),
+                    verticalSpaceTiny,
+                    TextFormField(
+                      // maxLines: 3,
+                      cursorColor: kcPrimaryColor,
+                      decoration: InputDecoration(
+                          contentPadding:
+                              const EdgeInsets.symmetric(horizontal: 12),
+                          hintText: 'Add notes / payment details',
+                          hintStyle: ktsFormHintText,
+                          // border: defaultFormBorder,
+                          enabledBorder: defaultFormBorder,
+                          focusedBorder: defaultFocusedFormBorder,
+                          focusedErrorBorder: defaultErrorFormBorder,
+                          errorStyle: ktsErrorText,
+                          errorBorder: defaultErrorFormBorder),
+                      textCapitalization: TextCapitalization.sentences,
+                      style: ktsBodyText,
+                      controller: viewModel.updateNoteController,
+                      keyboardType: TextInputType.text,
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Please enter a sales note';
+                        }
+
+                        return null;
+                      },
+                      inputFormatters: [
+                        TextInputFormatter.withFunction((oldValue, newValue) {
+                          // Ensure the first letter of the input is capitalized
+                          if (newValue.text.isNotEmpty) {
+                            return TextEditingValue(
+                              text: newValue.text[0].toUpperCase() +
+                                  newValue.text.substring(1),
+                              selection: newValue.selection,
+                            );
+                          }
+                          return newValue;
+                        }),
+                      ],
+                    ),
                     verticalSpaceIntermitent,
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -404,7 +454,7 @@ class UpdateSalesView extends StackedView<UpdateSalesViewModel> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Tax',
+                            'VAT',
                             style: ktsBorderText,
                           ),
                           Text(
@@ -499,6 +549,7 @@ class UpdateSalesView extends StackedView<UpdateSalesViewModel> {
                         GestureDetector(
                           onTap: () async {
                             SaleExpenses? result = await showModalBottomSheet(
+                              backgroundColor: kcButtonTextColor,
                               context: context,
                               isScrollControlled: true,
                               builder: (BuildContext context) {
@@ -596,6 +647,7 @@ class UpdateSalesView extends StackedView<UpdateSalesViewModel> {
                           onTap: () async {
                             SaleServiceExpenseEntry? result =
                                 await showModalBottomSheet(
+                              backgroundColor: kcButtonTextColor,
                               context: context,
                               isScrollControlled: true,
                               builder: (BuildContext context) {

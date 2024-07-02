@@ -364,7 +364,10 @@ class PurchaseOrderCard extends ViewModelWidget<PurchaseViewModel> {
                 children: [
                   Text(
                     // '#${purchase.reference}',
-                    purchase.merchantName,
+                    // purchase.merchantName,
+                    purchase.merchantName.length <= 15
+                        ? '${purchase.merchantName[0].toUpperCase()}${purchase.merchantName.substring(1)}'
+                        : '${purchase.merchantName[0].toUpperCase()}${purchase.merchantName.substring(1, 15)}...',
                     // '${purchase.description[0].toUpperCase()}${purchase.description.substring(1)}',
                     style: TextStyle(
                       fontFamily: 'Satoshi',

@@ -11,6 +11,7 @@ class DashboardService {
   final MutationOptions _resetPasswordMutation;
   final MutationOptions _createSudoCardMutation;
   final MutationOptions _userRequestCardMutation;
+  final MutationOptions _generateCardTokenMutation;
 
   final QueryOptions _getCardsByBusinessQuery;
   final QueryOptions _getUserCardsByBusinessQuery;
@@ -22,9 +23,15 @@ class DashboardService {
   final QueryOptions _getExpensesForWeekQuery;
   final QueryOptions _getPurchasesForWeekQuery;
   final QueryOptions _getExpensesForMonthQuery;
+  final QueryOptions _getExpensesForQuarterQuery;
+  final QueryOptions _getExpensesForYearQuery;
   final QueryOptions _getPurchasesForMonthQuery;
+  final QueryOptions _getPurchasesForQuarterQuery;
+  final QueryOptions _getPurchasesForYearQuery;
   final QueryOptions _totalWeeklyInvoicesAmountQuery;
   final QueryOptions _totalMonthlyInvoicesAmountQuery;
+  final QueryOptions _totalQuarterlyInvoicesAmountQuery;
+  final QueryOptions _totalYearlyInvoicesAmountQuery;
 
   DashboardService()
       : client = ValueNotifier(GraphQLClient(
@@ -106,6 +113,13 @@ class DashboardService {
             }
             '''),
         ),
+        _generateCardTokenMutation = MutationOptions(
+          document: gql('''
+        mutation GenerateCardToken(\$input: GetCardToken!){
+          generateCardToken (input: \$input)
+            }
+            '''),
+        ),
         _getCardsByBusinessQuery = QueryOptions(
           document: gql('''
         query GetCardsByBusiness (\$businessId: String!){
@@ -139,6 +153,7 @@ class DashboardService {
             amount
             currency
             type 
+            createdAt
             }
             }
             '''),
@@ -186,6 +201,26 @@ class DashboardService {
             }
             '''),
         ),
+        _getExpensesForQuarterQuery = QueryOptions(
+          document: gql('''
+        query GetExpensesForQuarter(\$businessId: String!,\$quarterly: Boolean) {
+          getExpensesForQuarter (businessId: \$businessId, quarterly: \$quarterly){
+            totalExpenseAmountThisQuarter
+            percentageIncreaseInExpenseThisQuarter
+            }
+            }
+            '''),
+        ),
+        _getExpensesForYearQuery = QueryOptions(
+          document: gql('''
+        query GetExpensesForYear(\$businessId: String!,\$yearly: Boolean) {
+          getExpensesForYear (businessId: \$businessId, yearly: \$monthly){
+            totalExpenseAmountThisYear
+            percentageIncreaseInExpenseThisYear
+            }
+            }
+            '''),
+        ),
         _getPurchasesForMonthQuery = QueryOptions(
           document: gql('''
         query GetPurchaseForMonth(\$businessId: String!,\$monthly: Boolean) {
@@ -193,6 +228,26 @@ class DashboardService {
             totalPurchaseAmountThisMonth
             percentageIncreaseInPurchaseThisMonth
             totalPendingPurchaseAmountThisMonth
+            }
+            }
+            '''),
+        ),
+        _getPurchasesForQuarterQuery = QueryOptions(
+          document: gql('''
+        query GetPurchaseForQuarter(\$businessId: String!,\$quarterly: Boolean) {
+          getPurchaseForQuarter (businessId: \$businessId, quarterly: \$quarterly){
+            totalPurchaseAmountThisQuarter
+            percentageIncreaseInPurchaseThisQuarter
+            }
+            }
+            '''),
+        ),
+        _getPurchasesForYearQuery = QueryOptions(
+          document: gql('''
+        query GetPurchaseForYear(\$businessId: String!,\$yearly: Boolean) {
+          getPurchaseForYear (businessId: \$businessId, yearly: \$yearly){
+            totalPurchaseAmountThisYear
+            percentageIncreaseInPurchaseThisYear
             }
             }
             '''),
@@ -221,6 +276,34 @@ class DashboardService {
             percentageIncreaseInPendingInvoiceThisMonth
             totalOverdueInvoiceAmountThisMonth
             percentageIncreaseInOverdueInvoicesThisMonth
+            }
+            }
+            '''),
+        ),
+        _totalQuarterlyInvoicesAmountQuery = QueryOptions(
+          document: gql('''
+        query TotalQuarterlyInvoicesAmount (\$businessId: String!,\$quarterly: Boolean) {
+          totalQuarterlyInvoicesAmount (businessId: \$businessId, quarterly: \$quarterly) {
+            totalInvoiceAmountForQuarter
+            percentageIncreaseInInvoicesThisQuarter
+            totalPendingInvoiceAmountThisQuarter
+            percentageIncreaseInPendingInvoiceThisQuarter
+            totalOverdueInvoiceAmountThisQuarter
+            percentageIncreaseInOverdueInvoiceThisQuarter
+            }
+            }
+            '''),
+        ),
+        _totalYearlyInvoicesAmountQuery = QueryOptions(
+          document: gql('''
+        query TotalYearlyInvoicesAmount (\$businessId: String!,\$yearly: Boolean) {
+          totalYearlyInvoicesAmount (businessId: \$businessId,yearly: \$yearly) {
+            totalInvoiceAmountForYear
+            percentageIncreaseInInvoiceThisYear
+            totalPendingInvoiceAmountThisYear
+            percentageIncreaseInPendingInvoiceThisYear
+            totalOverdueInvoiceAmountThisYear
+            percentageIncreaseInOverdueInvoicesThisYear
             }
             }
             '''),
@@ -272,6 +355,45 @@ class DashboardService {
     }).toList();
 
     return users;
+  }
+
+  Future<String> generateCardToken(
+      {required String cardId, required String businessId}) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('access_token');
+    final businessId = prefs.getString('businessId');
+
+    if (token == null) {
+      GraphQLCardError(
+        message: "Access token not found",
+      );
+    }
+
+    // Use the token to create an authlink
+    final authLink = AuthLink(
+      getToken: () => 'Bearer $token',
+    );
+
+    // Create a new GraphQLClient with the authlink
+    final newClient = GraphQLClient(
+      cache: GraphQLCache(),
+      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+    );
+
+    final MutationOptions options = MutationOptions(
+      document: _generateCardTokenMutation.document,
+      variables: {
+        'input': {'businessId': businessId, 'cardId': cardId},
+      },
+    );
+
+    final QueryResult result = await newClient.mutate(options);
+
+    if (result.hasException) {}
+
+    String cardToken = result.data?['generateCardToken'];
+
+    return cardToken;
   }
 
   Future<List<BusinessCard>> getCardsByBusiness({
@@ -492,11 +614,11 @@ class DashboardService {
     final List<CardTransactions> cardTransactions =
         cardTransactionData.map((data) {
       return CardTransactions(
-        id: data['id'],
-        amount: data['amount'],
-        type: data['type'],
-        currency: data['currency'],
-      );
+          id: data['id'],
+          amount: data['amount'],
+          type: data['type'],
+          currency: data['currency'],
+          createdAt: data['createdAt']);
     }).toList();
 
     return cardTransactions;
@@ -726,10 +848,11 @@ class DashboardService {
     );
 
     final QueryResult result = await newClient.mutate(options);
+    bool isReset = result.data?['resetPassword'] ?? false;
 
     if (result.hasException) {
       // Handle any errors that may have occurred during the log out process
-      throw Exception(result.exception);
+      isReset = false;
     }
 
     // if (result.data == null || result.data!['updateUser'] == null) {
@@ -739,8 +862,6 @@ class DashboardService {
     //     ),
     //   );
     // }
-
-    bool isReset = result.data?['resetPassword'] ?? false;
 
     // Password update was successful
     return isReset;
@@ -904,7 +1025,7 @@ class DashboardService {
         .data?['getExpensesForWeek']['percentageIncreaseInExpenseThisWeek'];
 
     var expensesForTheWeek = ExpensesForWeek(
-      totalExpenseAmountThisWeek: totalExpenseAmountThisWeek,
+      totalExpenseAmountThisWeek: totalExpenseAmountThisWeek / 100,
       // percentageOfExpenseToInvoiceThisWeek:
       //     percentageOfExpenseToInvoiceThisWeek,
       percentageIncreaseInExpenseThisWeek: percentageIncreaseInExpenseThisWeek,
@@ -958,8 +1079,9 @@ class DashboardService {
     var purchasesForTheWeek = PurchasesForWeek(
       percentageIncreaseInPurchaseThisWeek:
           percentageIncreaseInPurchaseThisWeek,
-      totalPurchaseAmountThisWeek: totalPurchaseAmountThisWeek,
-      totalPendingPurchaseAmountThisWeek: totalPendingPurchaseAmountThisWeek,
+      totalPurchaseAmountThisWeek: totalPurchaseAmountThisWeek / 100,
+      totalPendingPurchaseAmountThisWeek:
+          totalPendingPurchaseAmountThisWeek / 100,
     );
 
     return purchasesForTheWeek;
@@ -1008,7 +1130,7 @@ class DashboardService {
         .data?['getExpensesForMonth']['percentageIncreaseInExpenseThisMonth'];
 
     var expensesForTheMonth = ExpensesForMonth(
-      totalExpenseAmountThisMonth: totalExpenseAmountThisMonth,
+      totalExpenseAmountThisMonth: totalExpenseAmountThisMonth / 100,
       // percentageOfExpenseToInvoiceThisMonth:
       //     percentageOfExpenseToInvoiceThisMonth,
       percentageIncreaseInExpenseThisMonth:
@@ -1063,8 +1185,9 @@ class DashboardService {
     var purchasesForTheMonth = PurchasesForMonth(
       percentageIncreaseInPurchaseThisMonth:
           percentageIncreaseInPurchaseThisMonth,
-      totalPurchaseAmountThisMonth: totalPurchaseAmountThisMonth,
-      totalPendingPurchaseAmountThisMonth: totalPendingPurchaseAmountThisMonth,
+      totalPurchaseAmountThisMonth: totalPurchaseAmountThisMonth / 100,
+      totalPendingPurchaseAmountThisMonth:
+          totalPendingPurchaseAmountThisMonth / 100,
     );
 
     return purchasesForTheMonth;
@@ -1126,14 +1249,16 @@ class DashboardService {
             ['percentageIncreaseInOverdueInvoicesThisWeek'];
 
     var weeklyInvoices = WeeklyInvoices(
-      totalInvoiceAmountForWeek: totalInvoiceAmountForWeek,
+      totalInvoiceAmountForWeek: totalInvoiceAmountForWeek / 100,
       percentageOfIncreaseInInvoicesThisWeek:
           percentageOfIncreaseInInvoicesThisWeek,
       // percentageOfPaidInvoices: percentageOfPaidInvoices,
-      totalPendingInvoiceAmountThisWeek: totalPendingInvoiceAmountThisWeek,
+      totalPendingInvoiceAmountThisWeek:
+          totalPendingInvoiceAmountThisWeek / 100,
       percentageIncreaseInPendingInvoiceThisWeek:
           percentageIncreaseInPendingInvoiceThisWeek,
-      totalOverDueInvoiceAmountThisWeek: totalOverDueInvoiceAmountThisWeek,
+      totalOverDueInvoiceAmountThisWeek:
+          totalOverDueInvoiceAmountThisWeek / 100,
       percentageIncreaseInOverdueInvoicesThisWeek:
           percentageIncreaseInOverdueInvoicesThisWeek,
     );
@@ -1198,14 +1323,16 @@ class DashboardService {
             ['percentageIncreaseInOverdueInvoicesThisMonth'];
 
     var monthlyInvoices = MonthlyInvoices(
-      totalInvoiceAmountForMonth: totalInvoiceAmountForMonth,
+      totalInvoiceAmountForMonth: totalInvoiceAmountForMonth / 100,
       percentageIncreaseInInvoicesThisMonth:
           percentageIncreaseInInvoicesThisMonth,
       // percentageOfPaidInvoicesForMonth: percentageOfPaidInvoicesForMonth,
-      totalPendingInvoiceAmountThisMonth: totalPendingInvoiceAmountThisMonth,
+      totalPendingInvoiceAmountThisMonth:
+          totalPendingInvoiceAmountThisMonth / 100,
       percentageIncreaseInPendingInvoiceThisMonth:
           percentageIncreaseInPendingInvoiceThisMonth,
-      totalOverDueInvoiceAmountThisMonth: totalOverDueInvoiceAmountThisMonth,
+      totalOverDueInvoiceAmountThisMonth:
+          totalOverDueInvoiceAmountThisMonth / 100,
       percentageIncreaseInOverdueInvoicesThisMonth:
           percentageIncreaseInOverdueInvoicesThisMonth,
     );
@@ -1453,12 +1580,14 @@ class CardTransactions {
   late final String id;
   late final String type;
   late final String currency;
+  late final String createdAt;
 
   CardTransactions({
     required this.amount,
     required this.id,
     required this.type,
     required this.currency,
+    required this.createdAt,
   });
 }
 

@@ -93,11 +93,8 @@ class _ProductViewState extends State<ProductView> {
                                   onTap: () {
                                     viewModel.toggleSearch();
                                   },
-                                  child: const Icon(
-                                    Icons.search,
-                                    size: 20,
-                                    color: Color(0XFF2A5DC8),
-                                  ),
+                                  child: const Icon(Icons.search,
+                                      size: 20, color: kcButtonTextColor),
                                 ),
                               ],
                             ),

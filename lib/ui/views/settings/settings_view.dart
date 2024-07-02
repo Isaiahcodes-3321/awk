@@ -252,31 +252,31 @@ class _SettingsViewState extends State<SettingsView> {
                                 color: kcTextSubTitleColor,
                               ),
                             ),
-                            // ListTile(
-                            //   contentPadding: EdgeInsetsDirectional.zero,
-                            //   leading: SvgPicture.asset(
-                            //     'assets/images/Frame_43540-5.svg',
-                            //     width: 36,
-                            //     height: 36,
-                            //   ),
-                            //   title: Text(
-                            //     'Business account',
-                            //     style: ktsTextAuthentication,
-                            //   ),
-                            //   subtitle: Text(
-                            //     'View your business account',
-                            //     style: ktsFormHintText,
-                            //   ),
-                            //   trailing: IconButton(
-                            //     onPressed: () {
-                            //       viewModel.navigationService
-                            //           .navigateTo(Routes.businessAccountView);
-                            //     },
-                            //     icon: const Icon(Icons.arrow_forward),
-                            //     iconSize: 20,
-                            //     color: kcTextSubTitleColor,
-                            //   ),
-                            // ),
+                            ListTile(
+                              contentPadding: EdgeInsetsDirectional.zero,
+                              leading: SvgPicture.asset(
+                                'assets/images/Frame_43540-4.svg',
+                                width: 36,
+                                height: 36,
+                              ),
+                              title: Text(
+                                'Verzo account',
+                                style: ktsTextAuthentication,
+                              ),
+                              subtitle: Text(
+                                'BVN, Account no, Account...',
+                                style: ktsFormHintText,
+                              ),
+                              trailing: IconButton(
+                                onPressed: () {
+                                  viewModel.navigationService.navigateTo(
+                                      Routes.viewBusinessAccountView);
+                                },
+                                icon: const Icon(Icons.arrow_forward),
+                                iconSize: 24,
+                                color: kcTextSubTitleColor,
+                              ),
+                            ),
                             // ListTile(
                             //   contentPadding: EdgeInsetsDirectional.zero,
                             //   leading: SvgPicture.asset(
@@ -314,11 +314,14 @@ class _SettingsViewState extends State<SettingsView> {
                                 style: ktsTextAuthentication,
                               ),
                               subtitle: Text(
-                                'Coming soon...',
+                                'Manage your transactions',
                                 style: ktsFormHintText,
                               ),
                               trailing: IconButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    viewModel.navigationService.navigateTo(
+                                        Routes.reportTransactionsView);
+                                  },
                                   icon: const Icon(Icons.arrow_forward),
                                   iconSize: 24,
                                   color: kcTextSubTitleColor),
@@ -336,11 +339,11 @@ class _SettingsViewState extends State<SettingsView> {
                                 height: 36,
                               ),
                               title: Text(
-                                'Billings',
+                                'Pricing',
                                 style: ktsTextAuthentication,
                               ),
                               subtitle: Text(
-                                'Update your verzo plan',
+                                'View all verzo plans',
                                 style: ktsFormHintText,
                               ),
                               trailing: IconButton(

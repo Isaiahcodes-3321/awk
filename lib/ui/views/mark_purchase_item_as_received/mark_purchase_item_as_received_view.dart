@@ -116,8 +116,18 @@ class MarkPurchaseItemAsReceivedView
                           children: [
                             verticalSpaceSmall,
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
+                                Text(
+                                  '${purchaseItem.quantityRecieved} items received',
+                                  style: const TextStyle(
+                                    fontStyle: FontStyle.italic,
+                                    fontSize:
+                                        14, // Adjust the font size as needed
+                                    fontWeight: FontWeight
+                                        .w300, // Adjust the font weight as needed
+                                  ),
+                                ),
                                 GestureDetector(
                                   onTap: () async {
                                     viewModel.rebuildUi();
@@ -145,7 +155,7 @@ class MarkPurchaseItemAsReceivedView
                                             purchaseItem.quantityRecieved
                                         ? '✓ Item Received'
                                         : '✓ Mark item as received',
-                                    style: ktsAddNewText,
+                                    style: ktsAddNewText3,
                                   ),
                                 ),
                               ],

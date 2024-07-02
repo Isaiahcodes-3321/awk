@@ -1,12 +1,15 @@
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.locator.dart';
+import 'package:verzo/app/app.router.dart';
+import 'package:verzo/services/authentication_service.dart';
 import 'package:verzo/services/dashboard_service.dart';
 
 class CardTransactionsViewModel
     extends FutureViewModel<List<CardTransactions>> {
   final navigationService = locator<NavigationService>();
   final dashboardService = locator<DashboardService>();
+  final authService = locator<AuthenticationService>();
   List<CardTransactions> cardTransactions = [];
 
   late final String cardId;
@@ -17,9 +20,13 @@ class CardTransactionsViewModel
   Future<List<CardTransactions>> futureToRun() => viewCardTransactions();
 
   Future<List<CardTransactions>> viewCardTransactions() async {
-    // Retrieve existing expense categories
-    cardTransactions =
-        await dashboardService.viewCardTransactions(cardId: cardId);
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    } else if (result.tokens != null) {
+      cardTransactions =
+          await dashboardService.viewCardTransactions(cardId: cardId);
+    }
 
     rebuildUi();
     return cardTransactions;

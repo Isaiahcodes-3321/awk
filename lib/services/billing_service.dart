@@ -12,7 +12,8 @@ class BillingService {
   final MutationOptions _createSubscriptionNewCardBMutation;
 
   final QueryOptions _getPlansQuery;
-
+  final QueryOptions _getCurrentSubscriptionByBusinessQuery;
+  final QueryOptions _subscriptionCheckerForFrontendQuery;
   BillingService()
       : client = ValueNotifier(GraphQLClient(
           cache: GraphQLCache(),
@@ -52,7 +53,112 @@ class BillingService {
             }
             }
             '''),
+        ),
+        _getCurrentSubscriptionByBusinessQuery = QueryOptions(
+          document: gql('''
+        query getCurrentSubscriptionByBusiness(\$businessId: String!){
+          getCurrentSubscriptionByBusiness(businessId: \$businessId) {
+            plan{
+              planName
+              currentPrice
+             }
+            validTo
+            }
+            }
+            '''),
+        ),
+        _subscriptionCheckerForFrontendQuery = QueryOptions(
+          document: gql('''
+        query subscriptionCheckerForFrontend{
+          subscriptionCheckerForFrontend{
+            }
+            }
+            '''),
         );
+
+  Future<bool> isSubscriptionValid() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('access_token');
+
+    if (token == null) {
+      GraphQLSubscriptionError(
+        message: "Access token not found",
+      );
+    }
+
+    // Use the token to create an authlink
+    final authLink = AuthLink(
+      getToken: () => 'Bearer $token',
+    );
+
+    // Create a new GraphQLClient with the authlink
+    final newClient = GraphQLClient(
+      cache: GraphQLCache(),
+      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+    );
+
+    final QueryOptions options = QueryOptions(
+      document: _subscriptionCheckerForFrontendQuery.document,
+    );
+
+    final QueryResult result = await newClient.query(options);
+    bool isValid = result.data?['subscriptionCheckerForFrontend'];
+
+    if (result.hasException) {
+      // Handle any errors that may have occurred during the log out process
+      // throw Exception(result.exception);
+      isValid = false;
+    }
+    return isValid;
+  }
+
+  Future<Subscriptions> getCurrentSubscriptionByBusiness({
+    required String businessId,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('access_token');
+    final businessId = prefs.getString('businessId');
+
+    if (token == null) {
+      GraphQLSubscriptionError(
+        message: "Access token not found",
+      );
+    }
+
+    // Use the token to create an authlink
+    final authLink = AuthLink(
+      getToken: () => 'Bearer $token',
+    );
+
+    // Create a new GraphQLClient with the authlink
+    final newClient = GraphQLClient(
+      cache: GraphQLCache(),
+      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+    );
+
+    final QueryOptions options = QueryOptions(
+        document: _getCurrentSubscriptionByBusinessQuery.document,
+        variables: {'businessId': businessId});
+
+    final QueryResult result = await newClient.query(options);
+
+    if (result.hasException) {
+      GraphQLSubscriptionError(
+        message: result.exception?.graphqlErrors.first.message.toString(),
+      );
+    }
+
+    final subscriptionData = result.data?['getCurrentSubscriptionByBusiness'];
+    final planData = subscriptionData['plan'];
+
+    final Subscriptions subscriptions = Subscriptions(
+      planName: planData['planName'],
+      validTo: subscriptionData['validTo'],
+      currentPrice: planData['currentPrice'],
+    );
+
+    return subscriptions;
+  }
 
   Future<SubscriptionCreationResult> createSubscriptionNewCardA(
       {required String businessId,
@@ -209,6 +315,18 @@ class Plans {
       required this.planName,
       required this.currentPrice,
       required this.isActive});
+}
+
+class Subscriptions {
+  final String planName;
+  final String validTo;
+  final num currentPrice;
+
+  Subscriptions({
+    required this.planName,
+    required this.validTo,
+    required this.currentPrice,
+  });
 }
 
 class SubscriptionCreationResult {

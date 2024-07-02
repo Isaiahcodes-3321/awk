@@ -4,6 +4,8 @@ import 'package:sqflite/sqflite.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.locator.dart';
+import 'package:verzo/app/app.router.dart';
+import 'package:verzo/services/authentication_service.dart';
 import 'package:verzo/services/sales_service.dart';
 import 'package:verzo/ui/common/database_helper.dart';
 
@@ -13,6 +15,7 @@ class CustomerViewModel extends FutureViewModel<List<Customers>> {
   final navigationService = locator<NavigationService>();
   final _saleService = locator<SalesService>();
   final DialogService dialogService = locator<DialogService>();
+  final authService = locator<AuthenticationService>();
   final TextEditingController searchController = TextEditingController();
 
   List<Customers> customers = []; // Original list of expenses
@@ -74,10 +77,14 @@ class CustomerViewModel extends FutureViewModel<List<Customers>> {
   Future<List<Customers>> getCustomersByBusiness() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String businessIdValue = prefs.getString('businessId') ?? '';
-
-    // Retrieve existing customers
-    customers =
-        await _saleService.getCustomerByBusiness(businessId: businessIdValue);
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    } else if (result.tokens != null) {
+      // Retrieve existing customers
+      customers =
+          await _saleService.getCustomerByBusiness(businessId: businessIdValue);
+    }
 
     rebuildUi();
 

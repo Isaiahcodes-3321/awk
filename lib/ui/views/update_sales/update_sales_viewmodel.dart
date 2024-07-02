@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.locator.dart';
+import 'package:verzo/app/app.router.dart';
+import 'package:verzo/services/authentication_service.dart';
 import 'package:verzo/services/products_services_service.dart';
 import 'package:verzo/services/sales_service.dart';
 import 'package:verzo/ui/common/app_colors.dart';
@@ -14,6 +16,7 @@ import 'package:verzo/ui/common/ui_helpers.dart';
 class UpdateSalesViewModel extends FormViewModel {
   final navigationService = locator<NavigationService>();
   final _saleService = locator<SalesService>();
+  final authService = locator<AuthenticationService>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final GlobalKey<FormState> formKeyBottomSheet = GlobalKey<FormState>();
   List<Customers> customerList = [];
@@ -95,6 +98,10 @@ class UpdateSalesViewModel extends FormViewModel {
   }
 
   Future<Sales> getSaleById() async {
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
     final sales = await _saleService.getSaleById(saleId: saleId);
     sale = sales;
 
@@ -116,6 +123,7 @@ class UpdateSalesViewModel extends FormViewModel {
     updateDueDateController.text = sale.dueDate;
     updateDateOfIssueController.text = sale.transactionDate;
     updateDescriptionController.text = sale.description;
+    updateNoteController.text = sale.note!;
     updateCustomerIdController.text = sale.customerId;
     updateCustomerEmailController.text = sale.customerEmail!;
 
@@ -130,6 +138,7 @@ class UpdateSalesViewModel extends FormViewModel {
   TextEditingController updateDueDateController = TextEditingController();
   TextEditingController updateDateOfIssueController = TextEditingController();
   TextEditingController updateDescriptionController = TextEditingController();
+  TextEditingController updateNoteController = TextEditingController();
 
   TextEditingController updateCustomerIdController = TextEditingController();
   TextEditingController updateCustomerEmailController = TextEditingController();
@@ -138,6 +147,10 @@ class UpdateSalesViewModel extends FormViewModel {
   Future<List<Customers>> getCustomersByBusiness() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String businessIdValue = prefs.getString('businessId') ?? '';
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
 
     // Retrieve existing customers
     final customers =
@@ -193,12 +206,14 @@ class UpdateSalesViewModel extends FormViewModel {
       }
     }
     calculateSubtotal();
+    calculateTotal();
     rebuildUi();
   }
 
   void removeItem(ItemDetail items) {
     selectedItems.remove(items);
     calculateSubtotal();
+    calculateTotal();
     rebuildUi();
   }
 
@@ -285,9 +300,14 @@ class UpdateSalesViewModel extends FormViewModel {
   }
 
   Future<SaleUpdateResult> runSalesUpdate() async {
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
     return _saleService.updateSales(
         saleId: sale.id,
         description: updateDescriptionController.text,
+        note: updateNoteController.text,
         saleExpense: saleExpenseItems.isNotEmpty ? saleExpenseItems : null,
         saleServiceExpense:
             saleServiceExpense.isNotEmpty ? saleServiceExpense : null,
@@ -347,6 +367,7 @@ class UpdateSalesViewModel extends FormViewModel {
 
   void openEditBottomSheet(ItemDetail item) {
     showModalBottomSheet(
+      backgroundColor: kcButtonTextColor,
       isScrollControlled: true,
       context: navigationService.navigatorKey!.currentContext!,
       builder: (BuildContext context) {
@@ -375,7 +396,7 @@ class UpdateSalesViewModel extends FormViewModel {
                     verticalSpaceTiny,
                     TextFormField(
                       cursorColor: kcPrimaryColor,
-                      initialValue: item.price.toString(),
+                      initialValue: item.price.toStringAsFixed(0),
                       // Handle price input
                       onChanged: (value) {
                         // Update the item price

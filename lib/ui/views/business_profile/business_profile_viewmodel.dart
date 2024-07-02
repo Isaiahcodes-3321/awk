@@ -5,6 +5,7 @@ import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.dialogs.dart';
 import 'package:verzo/app/app.locator.dart';
 import 'package:verzo/app/app.router.dart';
+import 'package:verzo/services/authentication_service.dart';
 import 'package:verzo/services/business_creation_service.dart';
 import 'package:verzo/services/dashboard_service.dart';
 import 'package:verzo/ui/common/app_colors.dart';
@@ -15,6 +16,7 @@ class BusinessProfileViewModel extends FormViewModel {
   final dashboardService = locator<DashboardService>();
   final businessCreationService = locator<BusinessCreationService>();
   final DialogService dialogService = locator<DialogService>();
+  final authService = locator<AuthenticationService>();
   List<DropdownMenuItem<String>> businessCategorydropdownItems = [];
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -35,6 +37,10 @@ class BusinessProfileViewModel extends FormViewModel {
   // late Business businesses1;
 
   Future<void> getUserAndBusinessData() async {
+    final resultToken = await authService.refreshToken();
+    if (resultToken.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
     final result = await dashboardService.getUserAndBusinessData();
     businesses = result.businesses;
 
@@ -60,6 +66,10 @@ class BusinessProfileViewModel extends FormViewModel {
   Future<BusinessUpdateResult> runBusinessUpdate() async {
     final prefs = await SharedPreferences.getInstance();
     final businessId = prefs.getString('businessId');
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
     return businessCreationService.updateBusiness(
         businessId: businessId!,
         businessName: updateBusinessNameController.text,

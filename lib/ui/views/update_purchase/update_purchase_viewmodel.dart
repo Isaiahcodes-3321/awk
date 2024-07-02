@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.locator.dart';
+import 'package:verzo/app/app.router.dart';
+import 'package:verzo/services/authentication_service.dart';
 import 'package:verzo/services/merchant_service.dart';
 import 'package:verzo/services/products_services_service.dart';
 import 'package:verzo/services/purchase_service.dart';
@@ -18,6 +20,7 @@ class UpdatePurchaseViewModel extends FormViewModel {
   final _merchantService = locator<MerchantService>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final GlobalKey<FormState> formKeyBottomSheet = GlobalKey<FormState>();
+  final authService = locator<AuthenticationService>();
 
   String selectedMerchantName = '';
 
@@ -29,6 +32,10 @@ class UpdatePurchaseViewModel extends FormViewModel {
   UpdatePurchaseViewModel({required this.purchaseId});
 
   Future<Purchases> getPurchaseById() async {
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
     final purchases =
         await _purchaseService.getPurchaseById(purchaseId: purchaseId);
     purchase = purchases;
@@ -182,6 +189,7 @@ class UpdatePurchaseViewModel extends FormViewModel {
 
   void openEditBottomSheet(PurchaseItemDetail purchaseItem) {
     showModalBottomSheet(
+      backgroundColor: kcButtonTextColor,
       isScrollControlled: true,
       context: navigationService.navigatorKey!.currentContext!,
       builder: (BuildContext context) {
@@ -210,7 +218,7 @@ class UpdatePurchaseViewModel extends FormViewModel {
                     verticalSpaceTiny,
                     TextFormField(
                       cursorColor: kcPrimaryColor,
-                      initialValue: purchaseItem.unitPrice.toString(),
+                      initialValue: purchaseItem.unitPrice.toStringAsFixed(0),
                       // Handle price input
                       onChanged: (value) {
                         // Update the item price
@@ -331,6 +339,10 @@ class UpdatePurchaseViewModel extends FormViewModel {
   Future<List<Merchants>> getMerchantsByBusiness() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String businessIdValue = prefs.getString('id') ?? '';
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
 
 // Retrieve existing expense categories
     final merchants = await _merchantService.getMerchantsByBusiness(
@@ -349,6 +361,10 @@ class UpdatePurchaseViewModel extends FormViewModel {
   }
 
   Future<PurchaseUpdateResult> runPurchaseUpdate() async {
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
     return _purchaseService.updatePurchases(
       purchaseId: purchaseId,
       description: updateDescriptionController.text,

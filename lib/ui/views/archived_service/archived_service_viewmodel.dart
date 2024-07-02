@@ -4,12 +4,15 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.dialogs.dart';
 import 'package:verzo/app/app.locator.dart';
+import 'package:verzo/app/app.router.dart';
+import 'package:verzo/services/authentication_service.dart';
 import 'package:verzo/services/products_services_service.dart';
 import 'package:verzo/ui/common/database_helper.dart';
 
 class ArchivedServiceViewModel extends FutureViewModel<List<Services>> {
   final navigationService = locator<NavigationService>();
   final _productservicesService = locator<ProductsServicesService>();
+  final authService = locator<AuthenticationService>();
   final DialogService dialogService = locator<DialogService>();
 
   List<Services> services = [];
@@ -18,10 +21,14 @@ class ArchivedServiceViewModel extends FutureViewModel<List<Services>> {
   Future<List<Services>> getArchivedServiceByBusiness() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String businessIdValue = prefs.getString('businessId') ?? '';
-
-    // Retrieve existing products/services
-    services = await _productservicesService.getArchivedServiceByBusiness(
-        businessId: businessIdValue);
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    } else if (result.tokens != null) {
+      // Retrieve existing products/services
+      services = await _productservicesService.getArchivedServiceByBusiness(
+          businessId: businessIdValue);
+    }
 
     rebuildUi();
     return services;
@@ -41,28 +48,34 @@ class ArchivedServiceViewModel extends FutureViewModel<List<Services>> {
 
     // Check if the user confirmed the action
     if (response?.confirmed == true) {
-      // Proceed with archiving if confirmed
-      final bool isUnArchived =
-          await _productservicesService.unArchiveService(serviceId: serviceId);
+      final result = await authService.refreshToken();
+      if (result.error != null) {
+        await navigationService.replaceWithLoginView();
+      } else if (result.tokens != null) {
+        // Proceed with archiving if confirmed
+        final bool isUnArchived = await _productservicesService
+            .unArchiveService(serviceId: serviceId);
 
-      if (isUnArchived) {
-        await dialogService.showCustomDialog(
-          variant: DialogType.archiveSuccess,
-          title: 'Unarchived!',
-          description: 'Your service has been successfully unarchived.',
-          barrierDismissible: true,
-          mainButtonTitle: 'Ok',
-        );
-        await db.delete('services');
+        if (isUnArchived) {
+          await dialogService.showCustomDialog(
+            variant: DialogType.archiveSuccess,
+            title: 'Unarchived!',
+            description: 'Your service has been successfully unarchived.',
+            barrierDismissible: true,
+            mainButtonTitle: 'Ok',
+          );
+          await db.delete('services');
+        }
+
+        reloadService();
+
+        return isUnArchived;
       }
-
-      reloadService();
-
-      return isUnArchived;
     } else {
       // User canceled the action
       return false;
     }
+    return false;
   }
 
   Future<bool> deleteService(String serviceId) async {
@@ -78,27 +91,33 @@ class ArchivedServiceViewModel extends FutureViewModel<List<Services>> {
 
     // Check if the user confirmed the action
     if (response?.confirmed == true) {
-      // Proceed with deleting if confirmed
-      final bool isDeleted =
-          await _productservicesService.deleteService(serviceId: serviceId);
+      final result = await authService.refreshToken();
+      if (result.error != null) {
+        await navigationService.replaceWithLoginView();
+      } else if (result.tokens != null) {
+        // Proceed with deleting if confirmed
+        final bool isDeleted =
+            await _productservicesService.deleteService(serviceId: serviceId);
 
-      if (isDeleted) {
-        await dialogService.showCustomDialog(
-          variant: DialogType.deleteSuccess,
-          title: 'Deleted!',
-          description: 'Your service has been successfully deleted.',
-          barrierDismissible: true,
-          mainButtonTitle: 'Ok',
-        );
+        if (isDeleted) {
+          await dialogService.showCustomDialog(
+            variant: DialogType.deleteSuccess,
+            title: 'Deleted!',
+            description: 'Your service has been successfully deleted.',
+            barrierDismissible: true,
+            mainButtonTitle: 'Ok',
+          );
+        }
+
+        reloadService();
+
+        return isDeleted;
       }
-
-      reloadService();
-
-      return isDeleted;
     } else {
       // User canceled the action
       return false;
     }
+    return false;
   }
 
   void reloadService() async {

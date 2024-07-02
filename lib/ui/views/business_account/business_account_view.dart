@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked/stacked_annotations.dart';
@@ -61,6 +62,10 @@ class BusinessAccountView extends StackedView<BusinessAccountViewModel>
                 //   ],
                 // ),
                 // verticalSpaceTiny1,
+                Center(
+                  child: SvgPicture.asset('assets/images/Rectangle-331.svg'),
+                ),
+                verticalSpaceSmallMid,
                 Text('BVN OTP', style: ktsFormTitleText),
                 verticalSpaceTiny,
                 TextFormField(

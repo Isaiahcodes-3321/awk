@@ -4,6 +4,7 @@ import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.dialogs.dart';
 import 'package:verzo/app/app.locator.dart';
 import 'package:verzo/app/app.router.dart';
+import 'package:verzo/services/authentication_service.dart';
 import 'package:verzo/services/dashboard_service.dart';
 import 'package:verzo/ui/common/app_colors.dart';
 import 'package:verzo/ui/common/app_styles.dart';
@@ -12,12 +13,17 @@ class ProfileViewModel extends FormViewModel {
   final navigationService = locator<NavigationService>();
   final dashboardService = locator<DashboardService>();
   final DialogService dialogService = locator<DialogService>();
+  final authService = locator<AuthenticationService>();
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   late User user;
 
   Future<void> getUserAndBusinessData() async {
+    final resultToken = await authService.refreshToken();
+    if (resultToken.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
     final result = await dashboardService.getUserAndBusinessData();
     user = result.user;
 
@@ -34,6 +40,10 @@ class ProfileViewModel extends FormViewModel {
   TextEditingController updateUserEmailController = TextEditingController();
 
   Future<UserUpdateResult> runUserUpdate() async {
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
     return dashboardService.updateUser(
       fullname: updateUserNameController.text,
       email: updateUserEmailController.text,

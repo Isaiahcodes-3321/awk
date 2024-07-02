@@ -147,7 +147,7 @@ class RecordSaleExpenseView extends StackedView<RecordSaleExpenseViewModel>
                                         saleExpenses?.effected == true
                                             ? '✓ Expense Effected'
                                             : '✓ Effect Sale Expense',
-                                        style: ktsAddNewText,
+                                        style: ktsAddNewText3,
                                       ),
                                     ),
                                   ],
@@ -314,7 +314,7 @@ class RecordSaleExpenseView extends StackedView<RecordSaleExpenseViewModel>
                                         saleServiceExpenses?.effected == true
                                             ? '✓ Expense Effected'
                                             : '✓ Effect Sale Expense',
-                                        style: ktsAddNewText,
+                                        style: ktsAddNewText3,
                                       ),
                                     ),
                                   ],

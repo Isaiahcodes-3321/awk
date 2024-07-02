@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.locator.dart';
+import 'package:verzo/app/app.router.dart';
+import 'package:verzo/services/authentication_service.dart';
 import 'package:verzo/services/purchase_service.dart';
 import 'package:verzo/ui/common/app_colors.dart';
 import 'package:verzo/ui/common/app_styles.dart';
@@ -13,6 +15,7 @@ class MerchantInvoiceToPurchaseViewModel extends FormViewModel {
   final navigationService = locator<NavigationService>();
   final _purchaseService = locator<PurchaseService>();
   final DialogService dialogService = locator<DialogService>();
+  final authService = locator<AuthenticationService>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   DateTime? pickedDate = DateTime.now();
@@ -93,6 +96,10 @@ class MerchantInvoiceToPurchaseViewModel extends FormViewModel {
   Future<PurchaseStatusResult> uploadMerchantInvoiceToPurchase() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String businessIdValue = prefs.getString('businessId') ?? '';
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
 
     final PurchaseStatusResult isUploaded =
         await _purchaseService.uploadMerchantInvoiceToPurchase(

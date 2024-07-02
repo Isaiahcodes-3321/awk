@@ -12,6 +12,7 @@ import 'package:stacked/stacked.dart';
 const bool _autoTextFieldValidation = true;
 
 const String DescriptionValueKey = 'description';
+const String NoteValueKey = 'note';
 const String CustomerIdValueKey = 'customerId';
 const String DueDateValueKey = 'dueDate';
 const String DateOfIssueValueKey = 'dateOfIssue';
@@ -28,6 +29,7 @@ final Map<String, FocusNode> _AddSalesViewFocusNodes = {};
 
 final Map<String, String? Function(String?)?> _AddSalesViewTextValidations = {
   DescriptionValueKey: null,
+  NoteValueKey: null,
   CustomerIdValueKey: null,
   DueDateValueKey: null,
   DateOfIssueValueKey: null,
@@ -41,6 +43,8 @@ final Map<String, String? Function(String?)?> _AddSalesViewTextValidations = {
 mixin $AddSalesView {
   TextEditingController get descriptionController =>
       _getFormTextEditingController(DescriptionValueKey);
+  TextEditingController get noteController =>
+      _getFormTextEditingController(NoteValueKey);
   TextEditingController get customerIdController =>
       _getFormTextEditingController(CustomerIdValueKey);
   TextEditingController get dueDateController =>
@@ -59,6 +63,7 @@ mixin $AddSalesView {
       _getFormTextEditingController(SaleExpenseItemAmountValueKey);
 
   FocusNode get descriptionFocusNode => _getFormFocusNode(DescriptionValueKey);
+  FocusNode get noteFocusNode => _getFormFocusNode(NoteValueKey);
   FocusNode get customerIdFocusNode => _getFormFocusNode(CustomerIdValueKey);
   FocusNode get dueDateFocusNode => _getFormFocusNode(DueDateValueKey);
   FocusNode get dateOfIssueFocusNode => _getFormFocusNode(DateOfIssueValueKey);
@@ -97,6 +102,7 @@ mixin $AddSalesView {
   /// with the latest textController values
   void syncFormWithViewModel(FormStateHelper model) {
     descriptionController.addListener(() => _updateFormData(model));
+    noteController.addListener(() => _updateFormData(model));
     customerIdController.addListener(() => _updateFormData(model));
     dueDateController.addListener(() => _updateFormData(model));
     dateOfIssueController.addListener(() => _updateFormData(model));
@@ -119,6 +125,7 @@ mixin $AddSalesView {
   )
   void listenToFormUpdated(FormViewModel model) {
     descriptionController.addListener(() => _updateFormData(model));
+    noteController.addListener(() => _updateFormData(model));
     customerIdController.addListener(() => _updateFormData(model));
     dueDateController.addListener(() => _updateFormData(model));
     dateOfIssueController.addListener(() => _updateFormData(model));
@@ -139,6 +146,7 @@ mixin $AddSalesView {
       model.formValueMap
         ..addAll({
           DescriptionValueKey: descriptionController.text,
+          NoteValueKey: noteController.text,
           CustomerIdValueKey: customerIdController.text,
           DueDateValueKey: dueDateController.text,
           DateOfIssueValueKey: dateOfIssueController.text,
@@ -192,6 +200,7 @@ extension ValueProperties on FormStateHelper {
 
   String? get descriptionValue =>
       this.formValueMap[DescriptionValueKey] as String?;
+  String? get noteValue => this.formValueMap[NoteValueKey] as String?;
   String? get customerIdValue =>
       this.formValueMap[CustomerIdValueKey] as String?;
   String? get dueDateValue => this.formValueMap[DueDateValueKey] as String?;
@@ -215,6 +224,16 @@ extension ValueProperties on FormStateHelper {
     if (_AddSalesViewTextEditingControllers.containsKey(DescriptionValueKey)) {
       _AddSalesViewTextEditingControllers[DescriptionValueKey]?.text =
           value ?? '';
+    }
+  }
+
+  set noteValue(String? value) {
+    this.setData(
+      this.formValueMap..addAll({NoteValueKey: value}),
+    );
+
+    if (_AddSalesViewTextEditingControllers.containsKey(NoteValueKey)) {
+      _AddSalesViewTextEditingControllers[NoteValueKey]?.text = value ?? '';
     }
   }
 
@@ -312,6 +331,9 @@ extension ValueProperties on FormStateHelper {
   bool get hasDescription =>
       this.formValueMap.containsKey(DescriptionValueKey) &&
       (descriptionValue?.isNotEmpty ?? false);
+  bool get hasNote =>
+      this.formValueMap.containsKey(NoteValueKey) &&
+      (noteValue?.isNotEmpty ?? false);
   bool get hasCustomerId =>
       this.formValueMap.containsKey(CustomerIdValueKey) &&
       (customerIdValue?.isNotEmpty ?? false);
@@ -339,6 +361,8 @@ extension ValueProperties on FormStateHelper {
 
   bool get hasDescriptionValidationMessage =>
       this.fieldsValidationMessages[DescriptionValueKey]?.isNotEmpty ?? false;
+  bool get hasNoteValidationMessage =>
+      this.fieldsValidationMessages[NoteValueKey]?.isNotEmpty ?? false;
   bool get hasCustomerIdValidationMessage =>
       this.fieldsValidationMessages[CustomerIdValueKey]?.isNotEmpty ?? false;
   bool get hasDueDateValidationMessage =>
@@ -368,6 +392,8 @@ extension ValueProperties on FormStateHelper {
 
   String? get descriptionValidationMessage =>
       this.fieldsValidationMessages[DescriptionValueKey];
+  String? get noteValidationMessage =>
+      this.fieldsValidationMessages[NoteValueKey];
   String? get customerIdValidationMessage =>
       this.fieldsValidationMessages[CustomerIdValueKey];
   String? get dueDateValidationMessage =>
@@ -389,6 +415,8 @@ extension ValueProperties on FormStateHelper {
 extension Methods on FormStateHelper {
   setDescriptionValidationMessage(String? validationMessage) =>
       this.fieldsValidationMessages[DescriptionValueKey] = validationMessage;
+  setNoteValidationMessage(String? validationMessage) =>
+      this.fieldsValidationMessages[NoteValueKey] = validationMessage;
   setCustomerIdValidationMessage(String? validationMessage) =>
       this.fieldsValidationMessages[CustomerIdValueKey] = validationMessage;
   setDueDateValidationMessage(String? validationMessage) =>
@@ -413,6 +441,7 @@ extension Methods on FormStateHelper {
   /// Clears text input fields on the Form
   void clearForm() {
     descriptionValue = '';
+    noteValue = '';
     customerIdValue = '';
     dueDateValue = '';
     dateOfIssueValue = '';
@@ -427,6 +456,7 @@ extension Methods on FormStateHelper {
   void validateForm() {
     this.setValidationMessages({
       DescriptionValueKey: getValidationMessage(DescriptionValueKey),
+      NoteValueKey: getValidationMessage(NoteValueKey),
       CustomerIdValueKey: getValidationMessage(CustomerIdValueKey),
       DueDateValueKey: getValidationMessage(DueDateValueKey),
       DateOfIssueValueKey: getValidationMessage(DateOfIssueValueKey),
@@ -459,6 +489,7 @@ String? getValidationMessage(String key) {
 void updateValidationData(FormStateHelper model) =>
     model.setValidationMessages({
       DescriptionValueKey: getValidationMessage(DescriptionValueKey),
+      NoteValueKey: getValidationMessage(NoteValueKey),
       CustomerIdValueKey: getValidationMessage(CustomerIdValueKey),
       DueDateValueKey: getValidationMessage(DueDateValueKey),
       DateOfIssueValueKey: getValidationMessage(DateOfIssueValueKey),

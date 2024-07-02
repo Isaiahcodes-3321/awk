@@ -26,7 +26,7 @@ class PasswordView extends StackedView<PasswordViewModel> with $PasswordView {
       backgroundColor: kcButtonTextColor,
       body: AuthenticationLayout(
         onBackPressed: viewModel.navigateBack,
-        validationMessage: viewModel.validationMessage,
+        // validationMessage: viewModel.validationMessage,
         busy: viewModel.isBusy,
         onMainButtonTapped: () {
           if (viewModel.formKey.currentState!.validate()) {

@@ -102,6 +102,12 @@ class BusinessCreationService {
             accountName
             accountType
             accountNumber
+            accountBalance
+            customer{
+              billingAddressLine1
+              billingAddressCity
+              billingAddressState
+              }
             }
             }
             '''),
@@ -111,8 +117,11 @@ class BusinessCreationService {
         query ViewBusinessAccountStatement(\$input: ViewAccountStatement!){
           viewBusinessAccountStatement(input: \$input){
             id
-            narration
+            paymentReference
             amount
+            type
+            narration
+            transactionDate
             }
             }
             '''),
@@ -152,10 +161,16 @@ class BusinessCreationService {
       final businessAccountData =
           businessAccountResult.data?['viewBusinessAccount'];
 
+      final customerData = businessAccountData['customer'];
+
       final BusinessAccount businessAccount = BusinessAccount(
         id: businessAccountData['id'],
         accountName: businessAccountData['accountName'],
         accountNumber: businessAccountData['accountNumber'],
+        accountBalance: businessAccountData['accountBalance'],
+        accountbillingAddressLine1: customerData['billingAddressLine1'],
+        accountbillingAddressCity: customerData['billingAddressCity'],
+        accountbillingAddressState: customerData['billingAddressState'],
         accountType: businessAccountData['accountType'],
         bvn: businessAccountData['bvn'],
       );
@@ -484,6 +499,67 @@ class BusinessCreationService {
 
     return businessTasks;
   }
+
+  Future<List<BusinessAccountStatement>> viewBusinessAccountStatement({
+    required String businessId,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('access_token');
+    final businessId = prefs.getString('businessId');
+
+    if (token == null) {
+      throw GraphQLBusinessError(
+        message: "Access token not found",
+      );
+    }
+    final authLink = AuthLink(
+      getToken: () => 'Bearer $token',
+    );
+
+    // Create a new GraphQLClient with the authlink
+    final newClient = GraphQLClient(
+      cache: GraphQLCache(),
+      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+    );
+
+    final QueryOptions options = QueryOptions(
+      document: _viewBusinessAccountStatementQuery.document,
+      variables: {
+        'input': {
+          'businessId': businessId,
+        }
+      },
+    );
+
+    final QueryResult businessStatementResult = await newClient.query(options);
+
+    // if (userAndBusinessResult.hasException) {
+    //   return UserAndBusinessResult.error(
+    //     error: GraphQLAuthError(
+    //       message: userAndBusinessResult.exception?.graphqlErrors.first.message
+    //           .toString(),
+    //     ),
+    //   );
+    // }
+
+    final List businessStatementData =
+        businessStatementResult.data?['viewBusinessAccountStatement'] ?? [];
+
+    // Process the retrieved business card data
+    final List<BusinessAccountStatement> businessStatement =
+        businessStatementData.map((data) {
+      return BusinessAccountStatement(
+        id: data['id'],
+        amount: data['amount'],
+        type: data['type'],
+        paymentReference: data['paymentReference'],
+        narration: data['narration'],
+        transactionDate: data['transactionDate'],
+      );
+    }).toList();
+
+    return businessStatement;
+  }
 }
 
 class BusinessCategory {
@@ -610,6 +686,10 @@ class GraphQLBusinessError {
 class BusinessAccount {
   late final String id;
   late final String accountName;
+  late final num accountBalance;
+  late final String accountbillingAddressLine1;
+  late final String accountbillingAddressState;
+  late final String accountbillingAddressCity;
 
   late final String accountNumber;
   late final String accountType;
@@ -619,8 +699,30 @@ class BusinessAccount {
       {required this.accountName,
       required this.id,
       required this.accountNumber,
+      required this.accountBalance,
+      required this.accountbillingAddressLine1,
+      required this.accountbillingAddressState,
+      required this.accountbillingAddressCity,
       required this.accountType,
       required this.bvn});
+}
+
+class BusinessAccountStatement {
+  late final String id;
+  late final String paymentReference;
+  late final num amount;
+
+  late final String type;
+  late final String narration;
+  late final String transactionDate;
+
+  BusinessAccountStatement(
+      {required this.paymentReference,
+      required this.id,
+      required this.amount,
+      required this.type,
+      required this.narration,
+      required this.transactionDate});
 }
 
 class OTPresponse {

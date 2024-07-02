@@ -4,6 +4,7 @@ import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.dialogs.dart';
 import 'package:verzo/app/app.locator.dart';
 import 'package:verzo/app/app.router.dart';
+import 'package:verzo/services/authentication_service.dart';
 import 'package:verzo/services/products_services_service.dart';
 import 'package:verzo/ui/common/app_colors.dart';
 import 'package:verzo/ui/common/app_styles.dart';
@@ -13,6 +14,7 @@ class UpdateProductViewModel extends FormViewModel {
   final navigationService = locator<NavigationService>();
   final productService = locator<ProductsServicesService>();
   final DialogService dialogService = locator<DialogService>();
+  final authService = locator<AuthenticationService>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   List<DropdownMenuItem<String>> productUnitdropdownItems = [];
@@ -23,11 +25,21 @@ class UpdateProductViewModel extends FormViewModel {
   UpdateProductViewModel({required this.productId});
 
   Future<List<ProductUnit>> getProductUnits() async {
-    final productUnits = await productService.getProductUnits();
+    final unfilteredproductUnits = await productService.getProductUnits();
+    // Filter out the product unit with the name 'others'
+    final productUnits = unfilteredproductUnits
+        .where((productUnit) => productUnit.unitName.toLowerCase() != 'other')
+        .toList();
+
     productUnitdropdownItems = productUnits.map((productUnit) {
+      String displayText = productUnit.unitName;
+      if (productUnit.description != null &&
+          productUnit.description!.isNotEmpty) {
+        displayText += ' - ${productUnit.description}';
+      }
       return DropdownMenuItem<String>(
         value: productUnit.id.toString(),
-        child: Text(productUnit.unitName),
+        child: Text(displayText),
       );
     }).toList();
     return productUnits;
@@ -39,6 +51,10 @@ class UpdateProductViewModel extends FormViewModel {
   }
 
   Future<Products> getProductsById() async {
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
     final products = await productService.getProductById(productId: productId);
     product = products;
     rebuildUi();
@@ -65,7 +81,7 @@ class UpdateProductViewModel extends FormViewModel {
   void setSelectedProduct() {
     // Set the form field values based on the selected expense properties
     updateproductNameController.text = product.productName;
-    updatepriceController.text = product.price.toString();
+    updatepriceController.text = product.price.toStringAsFixed(0);
     updateProductUnitIdController.text = product.productUnitId!;
     rebuildUi();
   }
@@ -75,6 +91,10 @@ class UpdateProductViewModel extends FormViewModel {
   TextEditingController updateProductUnitIdController = TextEditingController();
 
   Future<ProductUpdateResult> runProductUpdate() async {
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
     if (trackReorderLevel && reorderLevelController.text.isNotEmpty) {
       reorderLevel = num.parse(reorderLevelController.text);
     }
@@ -138,28 +158,34 @@ class UpdateProductViewModel extends FormViewModel {
 
     // Check if the user confirmed the action
     if (response?.confirmed == true) {
-      // Proceed with archiving if confirmed
-      final bool isArchived =
-          await productService.archiveProduct(productId: productId);
+      final result = await authService.refreshToken();
+      if (result.error != null) {
+        await navigationService.replaceWithLoginView();
+      } else if (result.tokens != null) {
+        final bool isArchived =
+            await productService.archiveProduct(productId: productId);
 
-      if (isArchived) {
-        await dialogService.showCustomDialog(
-            variant: DialogType.archiveSuccess,
-            title: 'Archived!',
-            description: 'Your product has been successfully archived.',
-            barrierDismissible: true,
-            mainButtonTitle: 'Ok');
-        await db.delete('products');
+        if (isArchived) {
+          await dialogService.showCustomDialog(
+              variant: DialogType.archiveSuccess,
+              title: 'Archived!',
+              description: 'Your product has been successfully archived.',
+              barrierDismissible: true,
+              mainButtonTitle: 'Ok');
+          await db.delete('products');
+        }
+
+        // Navigate to the product view
+        navigationService.replaceWith(Routes.productView);
+
+        return isArchived;
       }
-
-      // Navigate to the product view
-      navigationService.replaceWith(Routes.productView);
-
-      return isArchived;
+      // Proceed with archiving if confirmed
     } else {
       // User canceled the action
       return false;
     }
+    return false;
   }
 
   Future<bool> deleteProduct() async {
@@ -176,29 +202,35 @@ class UpdateProductViewModel extends FormViewModel {
 
     // Check if the user confirmed the action
     if (response?.confirmed == true) {
-      // Proceed with deleting if confirmed
-      final bool isDeleted =
-          await productService.deleteProduct(productId: productId);
+      final result = await authService.refreshToken();
+      if (result.error != null) {
+        await navigationService.replaceWithLoginView();
+      } else if (result.tokens != null) {
+        // Proceed with deleting if confirmed
+        final bool isDeleted =
+            await productService.deleteProduct(productId: productId);
 
-      if (isDeleted) {
-        await dialogService.showCustomDialog(
-          variant: DialogType.deleteSuccess,
-          title: 'Deleted!',
-          description: 'Your product has been successfully deleted.',
-          barrierDismissible: true,
-          mainButtonTitle: 'Ok',
-        );
-        await db.delete('products');
+        if (isDeleted) {
+          await dialogService.showCustomDialog(
+            variant: DialogType.deleteSuccess,
+            title: 'Deleted!',
+            description: 'Your product has been successfully deleted.',
+            barrierDismissible: true,
+            mainButtonTitle: 'Ok',
+          );
+          await db.delete('products');
+        }
+
+        // Navigate to the product view
+        navigationService.replaceWith(Routes.productView);
+
+        return isDeleted;
       }
-
-      // Navigate to the product view
-      navigationService.replaceWith(Routes.productView);
-
-      return isDeleted;
     } else {
       // User canceled the action
       return false;
     }
+    return false;
   }
 
   @override

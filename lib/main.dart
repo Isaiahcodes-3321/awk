@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:verzo/app/app.bottomsheets.dart';
 import 'package:verzo/app/app.dialogs.dart';
@@ -45,6 +46,22 @@ class MainApp extends StatelessWidget {
     //       StackedService.routeObserver,
     //     ],
     //   );
+  }
+}
+
+class VgsShowService {
+  static const platform = MethodChannel('com.verzo.vgsShow');
+
+  Future<void> revealData(String path, Map<String, dynamic> payload) async {
+    try {
+      final result = await platform.invokeMethod('revealData', {
+        'path': path,
+        'payload': payload,
+      });
+      print('Reveal data response: $result');
+    } on PlatformException catch (e) {
+      print("Failed to reveal data: '${e.message}'.");
+    }
   }
 }
 

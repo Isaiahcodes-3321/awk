@@ -3,6 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.locator.dart';
+import 'package:verzo/app/app.router.dart';
+import 'package:verzo/services/authentication_service.dart';
 import 'package:verzo/services/products_services_service.dart';
 import 'package:verzo/ui/common/app_colors.dart';
 import 'package:verzo/ui/common/app_styles.dart';
@@ -11,11 +13,16 @@ import 'package:verzo/ui/views/create_service_unit/create_service_unit_view.form
 class CreateServiceUnitViewModel extends FormViewModel {
   final navigationService = locator<NavigationService>();
   final productServiceService = locator<ProductsServicesService>();
+  final authService = locator<AuthenticationService>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   Future<ServiceUnitCreationResult> runServiceUnitCreation() async {
     final prefs = await SharedPreferences.getInstance();
-    final businessIdValue = prefs.getString('id');
+    final businessIdValue = prefs.getString('businessId');
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
     return productServiceService.createBusinessServiceUnit(
         businessId: businessIdValue ?? '', unitName: unitNameValue ?? '');
   }
@@ -26,7 +33,8 @@ class CreateServiceUnitViewModel extends FormViewModel {
     if (result.serviceUnit != null) {
       // navigate to success route
 
-      navigationService.back();
+      navigationService.back(result: true);
+      rebuildUi();
     } else if (result.error != null) {
       setValidationMessage(result.error?.message);
 

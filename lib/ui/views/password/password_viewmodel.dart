@@ -4,12 +4,14 @@ import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.dialogs.dart';
 import 'package:verzo/app/app.locator.dart';
 import 'package:verzo/app/app.router.dart';
+import 'package:verzo/services/authentication_service.dart';
 import 'package:verzo/services/dashboard_service.dart';
 import 'package:verzo/ui/views/password/password_view.form.dart';
 
 class PasswordViewModel extends FormViewModel {
   final navigationService = locator<NavigationService>();
   final dashboardService = locator<DashboardService>();
+  final authService = locator<AuthenticationService>();
   final DialogService dialogService = locator<DialogService>();
   bool isPasswordVisible1 = false;
   bool isPasswordVisible2 = false;
@@ -17,6 +19,10 @@ class PasswordViewModel extends FormViewModel {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   Future<bool> runPasswordReset() async {
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
     final bool isReset = await dashboardService.resetPassword(
         oldPassword: oldPasswordValue ?? '',
         newPassword: newPasswordValue ?? '');
@@ -26,7 +32,7 @@ class PasswordViewModel extends FormViewModel {
   Future resetPasswordData() async {
     final result = await runBusyFuture(runPasswordReset());
 
-    if (result != null) {
+    if (result == true) {
       // navigate to success route
       await dialogService.showCustomDialog(
           variant: DialogType.info,
@@ -36,13 +42,14 @@ class PasswordViewModel extends FormViewModel {
           mainButtonTitle: 'Ok');
 
       await navigationService.replaceWith(Routes.settingsView);
+    } else if (result == false) {
+      await dialogService.showCustomDialog(
+          variant: DialogType.info,
+          title: 'Unsucessful!',
+          description: 'Ensure current password is correct',
+          barrierDismissible: true,
+          mainButtonTitle: 'Ok');
     }
-
-    // else if (result.error != null) {
-    //   setValidationMessage(result.error?.message);
-    // } else {
-    //   // handle other errors
-    // }
   }
 
   void togglePasswordVisibility1() {

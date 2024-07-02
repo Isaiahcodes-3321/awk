@@ -4,15 +4,19 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.locator.dart';
+import 'package:verzo/app/app.router.dart';
 import 'package:verzo/services/expense_service.dart';
 import 'package:verzo/ui/common/app_colors.dart';
 import 'package:verzo/ui/common/app_styles.dart';
 import 'package:verzo/ui/views/merchant_invoice/merchant_invoice_view.form.dart';
 
+import '../../../services/authentication_service.dart';
+
 class MerchantInvoiceViewModel extends FormViewModel {
   final navigationService = locator<NavigationService>();
   final _expenseService = locator<ExpenseService>();
   final DialogService dialogService = locator<DialogService>();
+  final authService = locator<AuthenticationService>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   DateTime? pickedDate = DateTime.now();
 
@@ -92,6 +96,10 @@ class MerchantInvoiceViewModel extends FormViewModel {
   Future<ExpenseStatusResult> uploadMerchantInvoiceToExpense() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String businessIdValue = prefs.getString('businessId') ?? '';
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
 
     final ExpenseStatusResult isUploaded =
         await _expenseService.uploadMerchantInvoiceToExpense(

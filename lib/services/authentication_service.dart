@@ -157,8 +157,8 @@ class AuthenticationService {
       );
     }
 
-    var accessToken = result.data?['refreshToken']['access_token'];
-    var refreshToken = result.data?['refreshToken']['refresh_token'];
+    var accessToken = result.data?['refreshToken']['access_token'] ?? '';
+    var refreshToken = result.data?['refreshToken']['refresh_token'] ?? '';
 
     prefs.setString('access_token', accessToken);
     prefs.setString('refresh_token', refreshToken);

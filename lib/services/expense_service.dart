@@ -265,7 +265,7 @@ class ExpenseService {
               .map((expenseDetail) => {
                     'creditAccountId': expenseDetail.creditAccountId,
                     'description': expenseDetail.description,
-                    'unitPrice': expenseDetail.unitPrice,
+                    'unitPrice': expenseDetail.unitPrice * 100,
                     'quantity': expenseDetail.quantity,
                     'index': expenseDetail.index,
                   })
@@ -347,7 +347,7 @@ class ExpenseService {
         id: itemData['id'],
         description: itemData['description'],
         index: itemData['index'],
-        unitPrice: itemData['unitPrice'],
+        unitPrice: itemData['unitPrice'] / 100,
         quantity: itemData['quantity'],
         quantityRecieved: itemData['quantityReceived'],
         creditAccountId: creditAccountId,
@@ -364,7 +364,7 @@ class ExpenseService {
         merchantId: expenseByIdData['merchantId'],
         merchantName: expenseByIdData['merchant']['name'],
         merchantEmail: expenseByIdData['merchant']['email'],
-        amount: expenseByIdData['amount'],
+        amount: expenseByIdData['amount'] / 100,
         expenseStatusId: expenseByIdData['expenseStatusId'],
         expenseItems: expenseItems);
 
@@ -413,7 +413,7 @@ class ExpenseService {
               ?.map((expenseDetail) => {
                     'creditAccountId': expenseDetail.creditAccountId,
                     'description': expenseDetail.description,
-                    'unitPrice': expenseDetail.unitPrice,
+                    'unitPrice': expenseDetail.unitPrice * 100,
                     'quantity': expenseDetail.quantity,
                     'index': expenseDetail.index,
                   })
@@ -498,7 +498,7 @@ class ExpenseService {
       return Expenses(
         id: data['id'],
         description: data['description'],
-        amount: data['amount'],
+        amount: data['amount'] / 100,
         expenseDate: data['expenseDate'],
         reference: data['reference'],
         merchantId: '',
@@ -562,7 +562,7 @@ class ExpenseService {
       return Expenses(
         id: data['id'],
         description: data['description'],
-        amount: data['amount'],
+        amount: data['amount'] / 100,
         expenseDate: data['expenseDate'],
         reference: data['reference'],
         merchantId: '',

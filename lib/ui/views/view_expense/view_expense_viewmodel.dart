@@ -3,6 +3,8 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.dialogs.dart';
 import 'package:verzo/app/app.locator.dart';
+import 'package:verzo/app/app.router.dart';
+import 'package:verzo/services/authentication_service.dart';
 
 import 'package:verzo/services/expense_service.dart';
 import 'package:verzo/ui/common/database_helper.dart';
@@ -10,6 +12,7 @@ import 'package:verzo/ui/common/database_helper.dart';
 class ViewExpenseViewModel extends BaseViewModel {
   final navigationService = locator<NavigationService>();
   final _expenseService = locator<ExpenseService>();
+  final authService = locator<AuthenticationService>();
   final DialogService dialogService = locator<DialogService>();
 
   Expenses? expense;
@@ -19,6 +22,10 @@ class ViewExpenseViewModel extends BaseViewModel {
   ViewExpenseViewModel({required this.expenseId});
 
   Future<Expenses> getExpenseById() async {
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
     final expenses = await _expenseService.getExpenseById(expenseId: expenseId);
     expense = expenses;
     rebuildUi();
@@ -41,38 +48,44 @@ class ViewExpenseViewModel extends BaseViewModel {
         // confirmationTitle: 'Ok',
         );
     if (response?.confirmed == true) {
-      final bool isDeleted =
-          await _expenseService.deleteExpense(expenseId: expenseId);
+      final result = await authService.refreshToken();
+      if (result.error != null) {
+        await navigationService.replaceWithLoginView();
+      } else if (result.tokens != null) {
+        final bool isDeleted =
+            await _expenseService.deleteExpense(expenseId: expenseId);
 
-      if (isDeleted == true) {
-        // await futureToRun();
-        await dialogService.showCustomDialog(
-          variant: DialogType.deleteSuccess,
-          title: 'Deleted!',
-          description: 'Your expense has been successfully deleted.',
-          barrierDismissible: true,
-          mainButtonTitle: 'Ok',
-        );
-        await db.delete('expenses');
-        await db2.delete('expenses');
-        await dbExpenseWeek.delete('expenses_for_week');
-        await dbExpenseMonth.delete('expenses_for_month');
-        navigationService.back(result: true);
-      } else {
-        await dialogService.showCustomDialog(
+        if (isDeleted == true) {
+          // await futureToRun();
+          await dialogService.showCustomDialog(
             variant: DialogType.deleteSuccess,
-            title: 'Unauthorized!',
-            description: "Your expense can't be deleted.",
+            title: 'Deleted!',
+            description: 'Your expense has been successfully deleted.',
             barrierDismissible: true,
-            mainButtonTitle: 'Ok');
-      }
+            mainButtonTitle: 'Ok',
+          );
+          await db.delete('expenses');
+          await db2.delete('expenses');
+          await dbExpenseWeek.delete('expenses_for_week');
+          await dbExpenseMonth.delete('expenses_for_month');
+          navigationService.back(result: true);
+        } else {
+          await dialogService.showCustomDialog(
+              variant: DialogType.deleteSuccess,
+              title: 'Unauthorized!',
+              description: "Your expense can't be deleted.",
+              barrierDismissible: true,
+              mainButtonTitle: 'Ok');
+        }
 
-      rebuildUi();
-      return isDeleted;
+        rebuildUi();
+        return isDeleted;
+      }
     } else {
       // User canceled the action
       return false;
     }
+    return false;
   }
 
   Future<bool> archiveExpense(BuildContext context) async {
@@ -93,37 +106,43 @@ class ViewExpenseViewModel extends BaseViewModel {
         );
 
     if (response?.confirmed == true) {
-      final bool isArchived =
-          await _expenseService.archiveExpense(expenseId: expenseId);
+      final result = await authService.refreshToken();
+      if (result.error != null) {
+        await navigationService.replaceWithLoginView();
+      } else if (result.tokens != null) {
+        final bool isArchived =
+            await _expenseService.archiveExpense(expenseId: expenseId);
 
-      if (isArchived == true) {
-        await dialogService.showCustomDialog(
-            variant: DialogType.archiveSuccess,
-            title: 'Archived!',
-            description: 'Your expense has been successfully archived.',
-            barrierDismissible: true,
-            mainButtonTitle: 'Ok');
+        if (isArchived == true) {
+          await dialogService.showCustomDialog(
+              variant: DialogType.archiveSuccess,
+              title: 'Archived!',
+              description: 'Your expense has been successfully archived.',
+              barrierDismissible: true,
+              mainButtonTitle: 'Ok');
 
-        await db.delete('expenses');
-        await db2.delete('expenses');
-        await dbExpenseWeek.delete('expenses_for_week');
-        await dbExpenseMonth.delete('expenses_for_month');
-        navigationService.back(result: true);
-      } else {
-        await dialogService.showCustomDialog(
-            variant: DialogType.archiveSuccess,
-            title: 'Unauthorized!',
-            description: "Your expense can't be archived.",
-            barrierDismissible: true,
-            mainButtonTitle: 'Ok');
+          await db.delete('expenses');
+          await db2.delete('expenses');
+          await dbExpenseWeek.delete('expenses_for_week');
+          await dbExpenseMonth.delete('expenses_for_month');
+          navigationService.back(result: true);
+        } else {
+          await dialogService.showCustomDialog(
+              variant: DialogType.archiveSuccess,
+              title: 'Unauthorized!',
+              description: "Your expense can't be archived.",
+              barrierDismissible: true,
+              mainButtonTitle: 'Ok');
+        }
+
+        rebuildUi();
+        return isArchived;
       }
-
-      rebuildUi();
-      return isArchived;
     } else {
       // User canceled the action
       return false;
     }
+    return false;
   }
 
   void reloadView() async {

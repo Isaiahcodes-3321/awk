@@ -4,12 +4,15 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.dialogs.dart';
 import 'package:verzo/app/app.locator.dart';
+import 'package:verzo/app/app.router.dart';
+import 'package:verzo/services/authentication_service.dart';
 import 'package:verzo/services/products_services_service.dart';
 import 'package:verzo/ui/common/database_helper.dart';
 
 class ArchivedProductViewModel extends FutureViewModel<List<Products>> {
   final navigationService = locator<NavigationService>();
   final _productservicesService = locator<ProductsServicesService>();
+  final authService = locator<AuthenticationService>();
   final DialogService dialogService = locator<DialogService>();
 
   List<Products> products = [];
@@ -19,10 +22,14 @@ class ArchivedProductViewModel extends FutureViewModel<List<Products>> {
   Future<List<Products>> getArchivedProductByBusiness() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String businessIdValue = prefs.getString('businessId') ?? '';
-
-    // Retrieve existing products/services
-    products = await _productservicesService.getArchivedProductsByBusiness(
-        businessId: businessIdValue);
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    } else if (result.tokens != null) {
+      // Retrieve existing products/services
+      products = await _productservicesService.getArchivedProductsByBusiness(
+          businessId: businessIdValue);
+    }
 
     rebuildUi();
 
@@ -43,27 +50,33 @@ class ArchivedProductViewModel extends FutureViewModel<List<Products>> {
 
     // Check if the user confirmed the action
     if (response?.confirmed == true) {
-      // Proceed with archiving if confirmed
-      final bool isUnArchived =
-          await _productservicesService.unArchiveProduct(productId: productId);
+      final result = await authService.refreshToken();
+      if (result.error != null) {
+        await navigationService.replaceWithLoginView();
+      } else if (result.tokens != null) {
+        // Proceed with archiving if confirmed
+        final bool isUnArchived = await _productservicesService
+            .unArchiveProduct(productId: productId);
 
-      if (isUnArchived) {
-        await dialogService.showCustomDialog(
-            variant: DialogType.archiveSuccess,
-            title: 'Unarchived!',
-            description: 'Your product has been successfully unarchived.',
-            barrierDismissible: true,
-            mainButtonTitle: 'Ok');
-        await db.delete('products');
+        if (isUnArchived) {
+          await dialogService.showCustomDialog(
+              variant: DialogType.archiveSuccess,
+              title: 'Unarchived!',
+              description: 'Your product has been successfully unarchived.',
+              barrierDismissible: true,
+              mainButtonTitle: 'Ok');
+          await db.delete('products');
+        }
+
+        reloadProduct();
+
+        return isUnArchived;
       }
-
-      reloadProduct();
-
-      return isUnArchived;
     } else {
       // User canceled the action
       return false;
     }
+    return false;
   }
 
   Future<bool> deleteProduct(String productId) async {
@@ -80,28 +93,33 @@ class ArchivedProductViewModel extends FutureViewModel<List<Products>> {
 
     // Check if the user confirmed the action
     if (response?.confirmed == true) {
-      // Proceed with deleting if confirmed
-      final bool isDeleted =
-          await _productservicesService.deleteProduct(productId: productId);
+      final result = await authService.refreshToken();
+      if (result.error != null) {
+        await navigationService.replaceWithLoginView();
+      } else if (result.tokens != null) {
+        // Proceed with deleting if confirmed
+        final bool isDeleted =
+            await _productservicesService.deleteProduct(productId: productId);
 
-      if (isDeleted) {
-        await dialogService.showCustomDialog(
-          variant: DialogType.deleteSuccess,
-          title: 'Deleted!',
-          description: 'Your product has been successfully deleted.',
-          barrierDismissible: true,
-          mainButtonTitle: 'Ok',
-        );
-        await db.delete('products');
+        if (isDeleted) {
+          await dialogService.showCustomDialog(
+            variant: DialogType.deleteSuccess,
+            title: 'Deleted!',
+            description: 'Your product has been successfully deleted.',
+            barrierDismissible: true,
+            mainButtonTitle: 'Ok',
+          );
+          await db.delete('products');
+        }
+
+        reloadProduct();
+        return isDeleted;
       }
-
-      reloadProduct();
-
-      return isDeleted;
     } else {
       // User canceled the action
       return false;
     }
+    return false;
   }
 
   void reloadProduct() async {

@@ -158,7 +158,7 @@ class AddSales2View extends StackedView<AddSalesViewModel> with $AddSalesView {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Tax',
+                    'VAT',
                     style: ktsBorderText,
                   ),
                   Text(
@@ -250,6 +250,7 @@ class AddSales2View extends StackedView<AddSalesViewModel> with $AddSalesView {
                 GestureDetector(
                   onTap: () async {
                     SaleExpenses? result = await showModalBottomSheet(
+                      backgroundColor: kcButtonTextColor,
                       context: context,
                       isScrollControlled: true,
                       builder: (BuildContext context) {
@@ -332,6 +333,7 @@ class AddSales2View extends StackedView<AddSalesViewModel> with $AddSalesView {
                   onTap: () async {
                     SaleServiceExpenseEntry? result =
                         await showModalBottomSheet(
+                      backgroundColor: kcButtonTextColor,
                       context: context,
                       isScrollControlled: true,
                       builder: (BuildContext context) {
@@ -591,6 +593,10 @@ class AddServiceExpenseItemBottomSheet extends StackedView<AddSalesViewModel>
             Text('Service', style: ktsFormTitleText),
             verticalSpaceTiny,
             DropdownButtonFormField(
+              hint: Text(
+                'Select',
+                style: ktsFormHintText,
+              ),
               menuMaxHeight: 320,
               elevation: 4,
               // padding: EdgeInsets.symmetric(horizontal: 12),
@@ -604,12 +610,13 @@ class AddServiceExpenseItemBottomSheet extends StackedView<AddSalesViewModel>
               icon: const Icon(Icons.expand_more),
               iconSize: 20,
               isExpanded: true,
+
               focusColor: kcPrimaryColor,
               style: ktsBodyText,
               decoration: InputDecoration(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-                  hintStyle: ktsFormHintText,
-                  hintText: 'Select',
+                  // hintStyle: ktsFormHintText,
+                  // hintText: 'Select',
                   enabledBorder: defaultFormBorder,
                   focusedBorder: defaultFocusedFormBorder,
                   focusedErrorBorder: defaultErrorFormBorder,

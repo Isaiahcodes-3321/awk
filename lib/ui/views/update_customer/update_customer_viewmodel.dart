@@ -4,6 +4,7 @@ import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.dialogs.dart';
 import 'package:verzo/app/app.locator.dart';
 import 'package:verzo/app/app.router.dart';
+import 'package:verzo/services/authentication_service.dart';
 import 'package:verzo/services/sales_service.dart';
 import 'package:verzo/ui/common/app_colors.dart';
 import 'package:verzo/ui/common/app_styles.dart';
@@ -13,6 +14,7 @@ class UpdateCustomerViewModel extends FormViewModel {
   final navigationService = locator<NavigationService>();
   final _saleService = locator<SalesService>();
   final DialogService dialogService = locator<DialogService>();
+  final authService = locator<AuthenticationService>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   late Customers customer;
@@ -25,6 +27,10 @@ class UpdateCustomerViewModel extends FormViewModel {
   }
 
   Future<Customers> getCustomerById() async {
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
     final customers =
         await _saleService.getCustomerById(customerId: customerId);
     customer = customers;
@@ -49,28 +55,34 @@ class UpdateCustomerViewModel extends FormViewModel {
 
     // Check if the user confirmed the action
     if (response?.confirmed == true) {
-      // Proceed with archiving if confirmed
-      final bool isArchived =
-          await _saleService.archiveCustomer(customerId: customerId);
+      final result = await authService.refreshToken();
+      if (result.error != null) {
+        await navigationService.replaceWithLoginView();
+      } else if (result.tokens != null) {
+        // Proceed with archiving if confirmed
+        final bool isArchived =
+            await _saleService.archiveCustomer(customerId: customerId);
 
-      if (isArchived) {
-        await dialogService.showCustomDialog(
-            variant: DialogType.archiveSuccess,
-            title: 'Archived!',
-            description: 'Your customer has been successfully archived.',
-            barrierDismissible: true,
-            mainButtonTitle: 'Ok');
-        await db.delete('customers');
+        if (isArchived) {
+          await dialogService.showCustomDialog(
+              variant: DialogType.archiveSuccess,
+              title: 'Archived!',
+              description: 'Your customer has been successfully archived.',
+              barrierDismissible: true,
+              mainButtonTitle: 'Ok');
+          await db.delete('customers');
+        }
+
+        // Navigate to the customer view
+        navigationService.replaceWith(Routes.customerView);
+
+        return isArchived;
       }
-
-      // Navigate to the customer view
-      navigationService.replaceWith(Routes.customerView);
-
-      return isArchived;
     } else {
       // User canceled the action
       return false;
     }
+    return false;
   }
 
   Future<bool> deleteCustomer() async {
@@ -87,28 +99,34 @@ class UpdateCustomerViewModel extends FormViewModel {
 
     // Check if the user confirmed the action
     if (response?.confirmed == true) {
-      // Proceed with deleting if confirmed
-      final bool isDeleted =
-          await _saleService.deleteCustomer(customerId: customerId);
+      final result = await authService.refreshToken();
+      if (result.error != null) {
+        await navigationService.replaceWithLoginView();
+      } else if (result.tokens != null) {
+        // Proceed with deleting if confirmed
+        final bool isDeleted =
+            await _saleService.deleteCustomer(customerId: customerId);
 
-      if (isDeleted) {
-        await dialogService.showCustomDialog(
-            variant: DialogType.deleteSuccess,
-            title: 'Deleted!',
-            description: 'Your customer has been successfully deleted.',
-            barrierDismissible: true,
-            mainButtonTitle: 'Ok');
-        await db.delete('customers');
+        if (isDeleted) {
+          await dialogService.showCustomDialog(
+              variant: DialogType.deleteSuccess,
+              title: 'Deleted!',
+              description: 'Your customer has been successfully deleted.',
+              barrierDismissible: true,
+              mainButtonTitle: 'Ok');
+          await db.delete('customers');
+        }
+
+        // Navigate to the customer view
+        navigationService.replaceWith(Routes.customerView);
+
+        return isDeleted;
       }
-
-      // Navigate to the customer view
-      navigationService.replaceWith(Routes.customerView);
-
-      return isDeleted;
     } else {
       // User canceled the action
       return false;
     }
+    return false;
   }
 
   void setSelectedCustomer() {
@@ -128,6 +146,10 @@ class UpdateCustomerViewModel extends FormViewModel {
       TextEditingController();
 
   Future<CustomerUpdateResult> runCustomerUpdate() async {
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
     return _saleService.updateCustomers(
         customerId: customerId,
         name: updateCustomerNameController.text,

@@ -380,7 +380,10 @@ class SalesCard extends ViewModelWidget<SalesViewModel> {
                 children: [
                   Text(
                     // '#${purchase.reference}',
-                    sales.customerName,
+                    // sales.customerName,
+                    sales.customerName.length <= 15
+                        ? '${sales.customerName[0].toUpperCase()}${sales.customerName.substring(1)}'
+                        : '${sales.customerName[0].toUpperCase()}${sales.customerName.substring(1, 15)}...',
                     // '${purchase.description[0].toUpperCase()}${purchase.description.substring(1)}',
                     style: TextStyle(
                       fontFamily: 'Satoshi',

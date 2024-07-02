@@ -68,6 +68,10 @@ class UpdateExpenseView extends StackedView<UpdateExpenseViewModel> {
                 Text('Category', style: ktsFormTitleText),
                 verticalSpaceTiny,
                 DropdownButtonFormField(
+                  hint: Text(
+                    'Select',
+                    style: ktsFormHintText,
+                  ),
                   menuMaxHeight: 320,
                   elevation: 4,
                   // padding: EdgeInsets.symmetric(horizontal: 12),
@@ -86,8 +90,8 @@ class UpdateExpenseView extends StackedView<UpdateExpenseViewModel> {
                   decoration: InputDecoration(
                       contentPadding:
                           const EdgeInsets.symmetric(horizontal: 12),
-                      hintStyle: ktsFormHintText,
-                      hintText: 'Select',
+                      // hintStyle: ktsFormHintText,
+                      // hintText: 'Select',
                       enabledBorder: defaultFormBorder,
                       focusedBorder: defaultFocusedFormBorder,
                       focusedErrorBorder: defaultErrorFormBorder,
@@ -173,6 +177,10 @@ class UpdateExpenseView extends StackedView<UpdateExpenseViewModel> {
                 Text('Merchant', style: ktsFormTitleText),
                 verticalSpaceTiny,
                 DropdownButtonFormField(
+                  hint: Text(
+                    'Select',
+                    style: ktsFormHintText,
+                  ),
                   menuMaxHeight: 320,
                   elevation: 4,
                   // padding: EdgeInsets.symmetric(horizontal: 12),
@@ -192,8 +200,8 @@ class UpdateExpenseView extends StackedView<UpdateExpenseViewModel> {
                   decoration: InputDecoration(
                       contentPadding:
                           const EdgeInsets.symmetric(horizontal: 12),
-                      hintStyle: ktsFormHintText,
-                      hintText: 'Select',
+                      // hintStyle: ktsFormHintText,
+                      // hintText: 'Select',
                       enabledBorder: defaultFormBorder,
                       focusedBorder: defaultFocusedFormBorder,
                       focusedErrorBorder: defaultErrorFormBorder,
@@ -294,6 +302,7 @@ class UpdateExpenseView extends StackedView<UpdateExpenseViewModel> {
                     GestureDetector(
                       onTap: () async {
                         ExpenseDetail? result = await showModalBottomSheet(
+                          backgroundColor: kcButtonTextColor,
                           context: context,
                           isScrollControlled: true,
                           builder: (BuildContext context) {

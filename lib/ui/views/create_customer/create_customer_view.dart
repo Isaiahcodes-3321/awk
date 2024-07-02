@@ -29,7 +29,7 @@ class CreateCustomerView extends StackedView<CreateCustomerViewModel>
       backgroundColor: kcButtonTextColor,
       body: AuthenticationLayout(
         busy: viewModel.isBusy,
-        validationMessage: viewModel.validationMessage,
+        // validationMessage: viewModel.validationMessage,
         onBackPressed: viewModel.navigateBack,
         onMainButtonTapped: () {
           if (viewModel.formKey.currentState!.validate()) {

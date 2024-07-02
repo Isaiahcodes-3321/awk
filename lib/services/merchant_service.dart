@@ -132,7 +132,7 @@ class MerchantService {
         await newClient.query(options);
 
     if (merchantsByBusinessResult.hasException) {
-      throw GraphQLMerchantError(
+      GraphQLMerchantError(
         message: merchantsByBusinessResult
             .exception?.graphqlErrors.first.message
             .toString(),

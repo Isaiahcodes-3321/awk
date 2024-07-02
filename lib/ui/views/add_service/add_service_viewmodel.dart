@@ -4,6 +4,7 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.locator.dart';
 import 'package:verzo/app/app.router.dart';
+import 'package:verzo/services/authentication_service.dart';
 import 'package:verzo/services/products_services_service.dart';
 import 'package:verzo/ui/common/app_colors.dart';
 import 'package:verzo/ui/common/app_styles.dart';
@@ -13,25 +14,78 @@ import 'package:verzo/ui/views/add_service/add_service_view.form.dart';
 class AddServiceViewModel extends FormViewModel {
   final navigationService = locator<NavigationService>();
   final _productxService = locator<ProductsServicesService>();
-
+  final authService = locator<AuthenticationService>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   List<DropdownMenuItem<String>> serviceUnitdropdownItems = [];
 
   Future<List<ServiceUnit>> getServiceUnits() async {
-    final serviceUnits = await _productxService.getServiceUnits();
+    final prefs = await SharedPreferences.getInstance();
+    final businessIdValue = prefs.getString('businessId');
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
+    final unfilteredserviceUnits = await _productxService.getServiceUnits(
+        businessId: businessIdValue ?? '');
+
+    // Filter out the service unit with the name 'others'
+    final serviceUnits = unfilteredserviceUnits
+        .where((serviceUnit) => serviceUnit.unitName.toLowerCase() != 'other')
+        .toList();
+
     serviceUnitdropdownItems = serviceUnits.map((serviceUnit) {
+      String displayText = serviceUnit.unitName;
+      if (serviceUnit.description != null &&
+          serviceUnit.description!.isNotEmpty) {
+        displayText += ' - ${serviceUnit.description}';
+      }
       return DropdownMenuItem<String>(
         value: serviceUnit.id.toString(),
-        child: Text(serviceUnit.unitName),
+        child: Text(displayText),
       );
     }).toList();
     return serviceUnits;
   }
 
+  List<DropdownMenuItem<String>> addDividersAfterItems(
+      List<DropdownMenuItem<String>> items) {
+    final List<DropdownMenuItem<String>> menuItems = [];
+    for (final item in items) {
+      menuItems.addAll(
+        [
+          item,
+          if (item != items.last)
+            const DropdownMenuItem<String>(
+              enabled: false,
+              child: Divider(),
+            ),
+        ],
+      );
+    }
+    return menuItems;
+  }
+
+  List<double> getCustomItemsHeights(int length) {
+    final List<double> itemsHeights = [];
+    for (int i = 0; i < (length * 2) - 1; i++) {
+      if (i.isEven) {
+        itemsHeights.add(40);
+      }
+      if (i.isOdd) {
+        itemsHeights.add(4);
+      }
+    }
+    return itemsHeights;
+  }
+
   Future<ServiceCreationResult> runServiceCreation() async {
     final prefs = await SharedPreferences.getInstance();
-    final businessIdValue = prefs.getString('id');
+    final businessIdValue = prefs.getString('businessId');
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
     return _productxService.createServices(
         name: serviceNameValue ?? '',
         businessId: businessIdValue ?? '',

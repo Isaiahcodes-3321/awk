@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.locator.dart';
+import 'package:verzo/app/app.router.dart';
+import 'package:verzo/services/authentication_service.dart';
 import 'package:verzo/services/merchant_service.dart';
 import 'package:verzo/services/products_services_service.dart';
 import 'package:verzo/services/purchase_service.dart';
@@ -17,6 +19,7 @@ class AddPurchaseViewModel extends FormViewModel {
   final navigationService = locator<NavigationService>();
   final _merchantService = locator<MerchantService>();
   final _purchaseService = locator<PurchaseService>();
+  final authService = locator<AuthenticationService>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final GlobalKey<FormState> formKeyBottomSheet = GlobalKey<FormState>();
   List<Products> selectedPurchaseItems = [];
@@ -125,6 +128,7 @@ class AddPurchaseViewModel extends FormViewModel {
 
   void openEditBottomSheet(Products purchaseItem) {
     showModalBottomSheet(
+      backgroundColor: kcButtonTextColor,
       isScrollControlled: true,
       context: navigationService.navigatorKey!.currentContext!,
       builder: (BuildContext context) {
@@ -153,7 +157,7 @@ class AddPurchaseViewModel extends FormViewModel {
                     verticalSpaceTiny,
                     TextFormField(
                       cursorColor: kcPrimaryColor,
-                      initialValue: purchaseItem.price.toString(),
+                      initialValue: purchaseItem.price.toStringAsFixed(0),
                       // Handle price input
                       onChanged: (value) {
                         // Update the item price
@@ -276,8 +280,12 @@ class AddPurchaseViewModel extends FormViewModel {
   Future<List<Merchants>> getMerchantsByBusiness() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String businessIdValue = prefs.getString('businessId') ?? '';
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
 
-// Retrieve existing expense categories
+// Retrieve existing merchants
     final merchants = await _merchantService.getMerchantsByBusiness(
         businessId: businessIdValue);
 
@@ -297,6 +305,10 @@ class AddPurchaseViewModel extends FormViewModel {
   Future<PurchaseCreationResult> runPurchaseCreation() async {
     final prefs = await SharedPreferences.getInstance();
     final businessIdValue = prefs.getString('businessId');
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
     return _purchaseService.createPurchaseEntry(
         description: descriptionValue ?? '',
         businessId: businessIdValue ?? '',

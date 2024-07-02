@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:stacked/stacked.dart';
-import 'package:stacked/stacked_annotations.dart';
 import 'package:verzo/ui/common/app_colors.dart';
 import 'package:verzo/ui/common/app_styles.dart';
 import 'package:verzo/ui/common/authentication_layout.dart';
@@ -25,15 +25,15 @@ class BusinessBvnView extends StackedView<BusinessAccountViewModel>
         body: AuthenticationLayout(
           busy: viewModel.isBusy,
           // validationMessage: viewModel.validationMessage,
-          onBackPressed: viewModel.navigateBack2,
+          onBackPressed: viewModel.navigateBack,
           onMainButtonTapped: () {
             if (viewModel.formKey.currentState!.validate()) {
               viewModel.saveBVNData(context);
             }
           },
-          title: 'Tell us about your business',
-          subtitle: 'Input your BVN ',
-          mainButtonTitle: 'Next',
+          title: 'Create your Verzo account',
+          subtitle: 'Send OTP ',
+          mainButtonTitle: 'Send OTP',
           form: Form(
             key: viewModel.formKey,
             child: Column(
@@ -41,7 +41,10 @@ class BusinessBvnView extends StackedView<BusinessAccountViewModel>
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                verticalSpaceSmallMid,
+                Center(
+                  child: SvgPicture.asset('assets/images/Group_1000007830.svg'),
+                ),
+                verticalSpaceIntermitent,
                 Text('Bank Verification Number (BVN)', style: ktsFormTitleText),
                 verticalSpaceTiny,
                 TextFormField(

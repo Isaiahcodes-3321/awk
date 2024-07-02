@@ -30,3 +30,4 @@ const Color kcIconColor = Color(0xFF1E35CF);
 const Color kcTermsColor = Color(0xFFFFFCE9);
 const Color kcArchiveColor = Color(0xFFF4F4F4);
 const Color kcCardColor = Color(0xFFC0BCBE);
+const Color kcCardBorderColor = Color(0xFF6087D7);

@@ -142,6 +142,10 @@ class BusinessProfileView extends StackedView<BusinessProfileViewModel> {
               Text('Business Category', style: ktsFormTitleText),
               verticalSpaceTiny,
               DropdownButtonFormField(
+                hint: Text(
+                  'Select',
+                  style: ktsFormHintText,
+                ),
                 menuMaxHeight: 320,
                 elevation: 4,
                 // padding: EdgeInsets.symmetric(horizontal: 12),

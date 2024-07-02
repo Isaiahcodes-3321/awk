@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:stacked/stacked.dart';
+import 'package:verzo/app/app.router.dart';
 import 'package:verzo/ui/common/app_colors.dart';
 import 'package:verzo/ui/common/app_styles.dart';
 import 'package:verzo/ui/common/ui_helpers.dart';
@@ -122,8 +123,10 @@ class _EmployeeSettingsViewState extends State<EmployeeSettingsView> {
                                   style: ktsTextAuthentication,
                                 ),
                                 subtitle: Text(
-                                  '${viewModel.userName},',
+                                  '${viewModel.userEmail}, ${viewModel.userName}',
                                   style: ktsFormHintText,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
                                 ),
                                 // trailing: IconButton(
                                 //   onPressed: () {
@@ -147,8 +150,10 @@ class _EmployeeSettingsViewState extends State<EmployeeSettingsView> {
                                   style: ktsTextAuthentication,
                                 ),
                                 subtitle: Text(
-                                  '${viewModel.businessName}',
+                                  '${viewModel.businessEmail}, ${viewModel.businessName}, ${viewModel.businessMobile}',
                                   style: ktsFormHintText,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
                                 ),
                                 // trailing: IconButton(
                                 //   onPressed: () {
@@ -159,6 +164,31 @@ class _EmployeeSettingsViewState extends State<EmployeeSettingsView> {
                                 //   iconSize: 20,
                                 //   color: kcTextSubTitleColor,
                                 // ),
+                              ),
+                              ListTile(
+                                contentPadding: EdgeInsetsDirectional.zero,
+                                leading: SvgPicture.asset(
+                                  'assets/images/Frame_43540-2.svg',
+                                  width: 36,
+                                  height: 36,
+                                ),
+                                title: Text(
+                                  'Security',
+                                  style: ktsTextAuthentication,
+                                ),
+                                subtitle: Text(
+                                  'Password',
+                                  style: ktsFormHintText,
+                                ),
+                                trailing: IconButton(
+                                  onPressed: () {
+                                    viewModel.navigationService.navigateTo(
+                                        Routes.employeePasswordView);
+                                  },
+                                  icon: const Icon(Icons.arrow_forward),
+                                  iconSize: 24,
+                                  color: kcTextSubTitleColor,
+                                ),
                               ),
                               verticalSpaceRegular,
                               Center(

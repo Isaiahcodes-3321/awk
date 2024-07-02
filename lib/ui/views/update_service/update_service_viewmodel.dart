@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.dialogs.dart';
 import 'package:verzo/app/app.locator.dart';
 import 'package:verzo/app/app.router.dart';
+import 'package:verzo/services/authentication_service.dart';
 import 'package:verzo/services/products_services_service.dart';
 import 'package:verzo/ui/common/app_colors.dart';
 import 'package:verzo/ui/common/app_styles.dart';
@@ -13,6 +15,7 @@ class UpdateServiceViewModel extends FormViewModel {
   final navigationService = locator<NavigationService>();
   final serviceService = locator<ProductsServicesService>();
   final DialogService dialogService = locator<DialogService>();
+  final authService = locator<AuthenticationService>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   List<DropdownMenuItem<String>> serviceUnitdropdownItems = [];
@@ -23,11 +26,23 @@ class UpdateServiceViewModel extends FormViewModel {
   UpdateServiceViewModel({required this.serviceId});
 
   Future<List<ServiceUnit>> getServiceUnits() async {
-    final serviceUnits = await serviceService.getServiceUnits();
+    final prefs = await SharedPreferences.getInstance();
+    final businessIdValue = prefs.getString('businessId');
+    final unfilteredserviceUnits =
+        await serviceService.getServiceUnits(businessId: businessIdValue ?? '');
+    // Filter out the service unit with the name 'others'
+    final serviceUnits = unfilteredserviceUnits
+        .where((serviceUnit) => serviceUnit.unitName.toLowerCase() != 'other')
+        .toList();
     serviceUnitdropdownItems = serviceUnits.map((serviceUnit) {
+      String displayText = serviceUnit.unitName;
+      if (serviceUnit.description != null &&
+          serviceUnit.description!.isNotEmpty) {
+        displayText += ' - ${serviceUnit.description}';
+      }
       return DropdownMenuItem<String>(
         value: serviceUnit.id.toString(),
-        child: Text(serviceUnit.unitName),
+        child: Text(displayText),
       );
     }).toList();
     return serviceUnits;
@@ -39,6 +54,10 @@ class UpdateServiceViewModel extends FormViewModel {
   }
 
   Future<Services> getServicesById() async {
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
     final services = await serviceService.getServiceById(serviceId: serviceId);
     service = services;
 
@@ -59,29 +78,35 @@ class UpdateServiceViewModel extends FormViewModel {
 
     // Check if the user confirmed the action
     if (response?.confirmed == true) {
-      // Proceed with archiving if confirmed
-      final bool isArchived =
-          await serviceService.archiveService(serviceId: serviceId);
+      final result = await authService.refreshToken();
+      if (result.error != null) {
+        await navigationService.replaceWithLoginView();
+      } else if (result.tokens != null) {
+        // Proceed with archiving if confirmed
+        final bool isArchived =
+            await serviceService.archiveService(serviceId: serviceId);
 
-      if (isArchived) {
-        await dialogService.showCustomDialog(
-          variant: DialogType.archiveSuccess,
-          title: 'Archived!',
-          description: 'Your service has been successfully archived.',
-          barrierDismissible: true,
-          mainButtonTitle: 'Ok',
-        );
-        await db.delete('services');
+        if (isArchived) {
+          await dialogService.showCustomDialog(
+            variant: DialogType.archiveSuccess,
+            title: 'Archived!',
+            description: 'Your service has been successfully archived.',
+            barrierDismissible: true,
+            mainButtonTitle: 'Ok',
+          );
+          await db.delete('services');
+        }
+
+        // Navigate to the service view
+        navigationService.replaceWith(Routes.serviceView);
+
+        return isArchived;
       }
-
-      // Navigate to the service view
-      navigationService.replaceWith(Routes.serviceView);
-
-      return isArchived;
     } else {
       // User canceled the action
       return false;
     }
+    return false;
   }
 
   Future<bool> deleteService() async {
@@ -98,35 +123,41 @@ class UpdateServiceViewModel extends FormViewModel {
 
     // Check if the user confirmed the action
     if (response?.confirmed == true) {
-      // Proceed with deleting if confirmed
-      final bool isDeleted =
-          await serviceService.deleteService(serviceId: serviceId);
+      final result = await authService.refreshToken();
+      if (result.error != null) {
+        await navigationService.replaceWithLoginView();
+      } else if (result.tokens != null) {
+        // Proceed with deleting if confirmed
+        final bool isDeleted =
+            await serviceService.deleteService(serviceId: serviceId);
 
-      if (isDeleted) {
-        await dialogService.showCustomDialog(
-          variant: DialogType.deleteSuccess,
-          title: 'Deleted!',
-          description: 'Your service has been successfully deleted.',
-          barrierDismissible: true,
-          mainButtonTitle: 'Ok',
-        );
-        await db.delete('services');
+        if (isDeleted) {
+          await dialogService.showCustomDialog(
+            variant: DialogType.deleteSuccess,
+            title: 'Deleted!',
+            description: 'Your service has been successfully deleted.',
+            barrierDismissible: true,
+            mainButtonTitle: 'Ok',
+          );
+          await db.delete('services');
+        }
+
+        // Navigate to the service view
+        navigationService.replaceWith(Routes.serviceView);
+
+        return isDeleted;
       }
-
-      // Navigate to the service view
-      navigationService.replaceWith(Routes.serviceView);
-
-      return isDeleted;
     } else {
       // User canceled the action
       return false;
     }
+    return false;
   }
 
   void setSelectedService() {
     // Set the form field values based on the selected expense properties
     updateserviceNameController.text = service.name;
-    updatepriceController.text = service.price.toString();
+    updatepriceController.text = service.price.toStringAsFixed(0);
     updateServiceUnitIdController.text = service.serviceUnitId!;
     rebuildUi();
   }
@@ -136,6 +167,10 @@ class UpdateServiceViewModel extends FormViewModel {
   TextEditingController updateServiceUnitIdController = TextEditingController();
 
   Future<ServiceUpdateResult> runServiceUpdate() async {
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
     return serviceService.updateServices(
         serviceId: serviceId,
         name: updateserviceNameController.text,

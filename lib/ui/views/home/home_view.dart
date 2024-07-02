@@ -53,7 +53,7 @@ class _HomeViewState extends State<HomeView>
         onViewModelReady: (viewModel) async {
           viewModel.setUserDetails();
           await viewModel.getCardsByBusiness();
-          await viewModel.getUserAndBusinessData();
+          // await viewModel.getUserAndBusinessData();
           await viewModel.totalWeeklyInvoicesAmount();
           await viewModel.getInvoiceByBusiness();
           await viewModel.getExpensesForWeek();
@@ -63,6 +63,7 @@ class _HomeViewState extends State<HomeView>
           await viewModel.totalMonthlyInvoicesAmount();
           await viewModel.getExpensesForMonth();
           await viewModel.getPurchasesForMonth();
+          //refresh token on invoice,expense,purchase list, weekly invoice expense purchase.
         },
         builder: (
           BuildContext context,
@@ -166,7 +167,7 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
         onViewModelReady: (viewModel) async {
           viewModel.setUserDetails();
           await viewModel.getCardsByBusiness();
-          await viewModel.getUserAndBusinessData();
+          // await viewModel.getUserAndBusinessData();
           await viewModel.totalWeeklyInvoicesAmount();
           await viewModel.getInvoiceByBusiness();
           await viewModel.getExpensesForWeek();
@@ -283,7 +284,7 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
                                           onChanged: null,
                                         ),
                                         Text(
-                                          'Last 7 days',
+                                          'This week',
                                           style: ktsFormHintText,
                                         ),
                                       ],
@@ -319,12 +320,84 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
                                           onChanged: null,
                                         ),
                                         Text(
-                                          'Last 30 days',
+                                          'This month',
                                           style: ktsFormHintText,
                                         ),
                                       ],
                                     ),
                                   ),
+                                  // PopupMenuItem(
+                                  //   onTap: () {
+                                  //     setState(() {
+                                  //       viewModel.isChecked =
+                                  //           false; // Set the checkbox state to false for 'Last 30 days'
+                                  //     });
+                                  //   },
+                                  //   child: Row(
+                                  //     children: [
+                                  //       Checkbox(
+                                  //         fillColor: MaterialStateProperty
+                                  //             .resolveWith<Color?>(
+                                  //           (Set<MaterialState> states) {
+                                  //             return !viewModel.isChecked
+                                  //                 ? kcFormBorderColor
+                                  //                     .withOpacity(.7)
+                                  //                 : null;
+                                  //             // You can customize the fill color if needed
+                                  //           },
+                                  //         ),
+                                  //         checkColor: kcTextTitleColor,
+                                  //         side: const BorderSide(
+                                  //           width: 1,
+                                  //           color:
+                                  //               kcFormBorderColor, // Set the border color
+                                  //         ),
+                                  //         value: !viewModel.isChecked,
+                                  //         onChanged: null,
+                                  //       ),
+                                  //       Text(
+                                  //         'This quarter',
+                                  //         style: ktsFormHintText,
+                                  //       ),
+                                  //     ],
+                                  //   ),
+                                  // ),
+                                  // PopupMenuItem(
+                                  //   onTap: () {
+                                  //     setState(() {
+                                  //       viewModel.isChecked =
+                                  //           false; // Set the checkbox state to false for 'Last 30 days'
+                                  //     });
+                                  //   },
+                                  //   child: Row(
+                                  //     children: [
+                                  //       Checkbox(
+                                  //         fillColor: MaterialStateProperty
+                                  //             .resolveWith<Color?>(
+                                  //           (Set<MaterialState> states) {
+                                  //             return !viewModel.isChecked
+                                  //                 ? kcFormBorderColor
+                                  //                     .withOpacity(.7)
+                                  //                 : null;
+                                  //             // You can customize the fill color if needed
+                                  //           },
+                                  //         ),
+                                  //         checkColor: kcTextTitleColor,
+                                  //         side: const BorderSide(
+                                  //           width: 1,
+                                  //           color:
+                                  //               kcFormBorderColor, // Set the border color
+                                  //         ),
+                                  //         value: !viewModel.isChecked,
+                                  //         onChanged: null,
+                                  //       ),
+                                  //       Text(
+                                  //         'This year',
+                                  //         style: ktsFormHintText,
+                                  //       ),
+                                  //     ],
+                                  //   ),
+                                  // ),
                                 ];
                               },
                             )
@@ -347,8 +420,12 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
                                 height: 200,
                                 width: MediaQuery.of(context).size.width * 0.9,
                                 decoration: BoxDecoration(
+                                  border: Border.all(
+                                      strokeAlign: BorderSide.strokeAlignInside,
+                                      width: 2,
+                                      color: kcCardBorderColor),
                                   color: kcCardColor.withOpacity(0.3),
-                                  borderRadius: BorderRadius.circular(20),
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Column(
                                     mainAxisSize: MainAxisSize.min,
@@ -405,38 +482,30 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
                                                     ),
                                                     verticalSpaceTinyt1,
                                                     Text(
-                                                      'XX/XX',
+                                                      'XX / XX',
                                                       style:
-                                                          ktsHeroTextWhiteDashboard2,
+                                                          ktsHeroTextWhiteDashboard1,
                                                     )
                                                   ],
                                                 ),
-                                                horizontalSpaceRegular,
-                                                // Column(
-                                                //   children: [
-                                                //     Text(
-                                                //       'CVV',
-                                                //       style: ktsButtonText2,
-                                                //     ),
-                                                //     verticalSpaceTinyt1,
-                                                //     Text(
-                                                //       'XXX',
-                                                //       style:
-                                                //           ktsHeroTextWhiteDashboard2,
-                                                //     )
-                                                //   ],
-                                                // )
                                               ],
                                             ),
                                             SvgPicture.asset(
-                                              'assets/images/MasterCard.svg',
-                                              // width: 20,
-                                              // height: 20,
+                                              'assets/images/verve.svg',
+                                              width: 28,
+                                              height: 28,
                                             ),
                                           ]),
                                     ]),
                               ),
-                              verticalSpaceSmallMid,
+                              verticalSpaceTiny,
+                              Center(
+                                child: Text(
+                                  'You have no card',
+                                  style: ktsButtonText,
+                                ),
+                              ),
+                              verticalSpaceSmall,
                               Container(
                                 padding: EdgeInsets.zero,
                                 width: MediaQuery.of(context).size.width * 0.9,
@@ -446,8 +515,9 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
                                   children: [
                                     GestureDetector(
                                       onTap: () {
-                                        viewModel.navigationService
-                                            .navigateTo(Routes.addCardView);
+                                        viewModel.checkbusinessAcccount();
+                                        // viewModel.navigationService
+                                        //     .navigateTo(Routes.addCardView);
                                         // viewModel.createSudoCard();
                                       },
                                       child: Column(
@@ -579,92 +649,27 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
                                               color: kcPrimaryColor
                                                   .withOpacity(0.9)),
                                         ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
+                                        child: Column(
                                           mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
-                                            Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  // style: ktsButtonText,
-                                                  'Revenue',
-                                                  style: TextStyle(
-                                                    fontFamily: 'Satoshi',
-                                                    color: kcButtonTextColor,
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                                verticalSpaceSmallMid,
-                                                verticalSpaceTiny,
-                                                RichText(
-                                                  text: TextSpan(
-                                                    children: [
-                                                      TextSpan(
-                                                        text: NumberFormat
-                                                                .currency(
-                                                                    locale:
-                                                                        'en_NGN',
-                                                                    symbol: '₦')
-                                                            .currencySymbol, // The remaining digits without the symbol
-                                                        style: TextStyle(
-                                                          fontFamily: 'Satoshi',
-                                                          color:
-                                                              kcButtonTextColor,
-                                                          fontSize: 26,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                        ).copyWith(
-                                                            fontFamily:
-                                                                'Roboto'),
-                                                      ),
-                                                      TextSpan(
-                                                        text: viewModel
-                                                                .isChecked
-                                                            ? NumberFormat.currency(
-                                                                    locale:
-                                                                        'en_NGN',
-                                                                    symbol: '')
-                                                                .format(viewModel
-                                                                        .weeklyInvoices
-                                                                        ?.totalInvoiceAmountForWeek ??
-                                                                    0)
-                                                            : NumberFormat.currency(
-                                                                    locale:
-                                                                        'en_NGN',
-                                                                    symbol: '')
-                                                                .format(viewModel
-                                                                        .monthlyInvoices
-                                                                        ?.totalInvoiceAmountForMonth ??
-                                                                    0), // The remaining digits without the symbol
-                                                        style: TextStyle(
-                                                          fontFamily: 'Satoshi',
-                                                          color:
-                                                              kcButtonTextColor,
-                                                          fontSize: 26,
-                                                          fontWeight:
-                                                              FontWeight.w800,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
+                                            const Text(
+                                              // style: ktsButtonText,
+                                              'Revenue',
+                                              style: TextStyle(
+                                                fontFamily: 'Satoshi',
+                                                color: kcButtonTextColor,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w500,
+                                              ),
                                             ),
+                                            // verticalSpaceSmallMid,
                                             Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                mainAxisSize: MainAxisSize.min,
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment.start,
+                                                    MainAxisAlignment.end,
                                                 children: [
                                                   CircleAvatar(
                                                     radius: 10,
@@ -679,7 +684,7 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
                                                   horizontalSpaceminute2,
                                                   Text(
                                                     "${viewModel.isChecked ? (viewModel.weeklyInvoices?.percentageOfIncreaseInInvoicesThisWeek ?? 0) : (viewModel.monthlyInvoices?.percentageIncreaseInInvoicesThisMonth ?? 0)}%",
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                       fontFamily: 'Satoshi',
                                                       color: kcButtonTextColor,
                                                       fontSize: 18,
@@ -687,7 +692,54 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
                                                           FontWeight.w500,
                                                     ),
                                                   ),
-                                                ])
+                                                ]),
+                                            // verticalSpaceTiny,
+                                            RichText(
+                                              text: TextSpan(
+                                                children: [
+                                                  TextSpan(
+                                                    text: NumberFormat.currency(
+                                                            locale: 'en_NGN',
+                                                            symbol: '₦')
+                                                        .currencySymbol, // The remaining digits without the symbol
+                                                    style: const TextStyle(
+                                                      fontFamily: 'Satoshi',
+                                                      color: kcButtonTextColor,
+                                                      fontSize: 26,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                    ).copyWith(
+                                                        fontFamily: 'Roboto'),
+                                                  ),
+                                                  TextSpan(
+                                                    text: viewModel.isChecked
+                                                        ? NumberFormat.currency(
+                                                                locale:
+                                                                    'en_NGN',
+                                                                symbol: '')
+                                                            .format(viewModel
+                                                                    .weeklyInvoices
+                                                                    ?.totalInvoiceAmountForWeek ??
+                                                                0)
+                                                        : NumberFormat.currency(
+                                                                locale:
+                                                                    'en_NGN',
+                                                                symbol: '')
+                                                            .format(viewModel
+                                                                    .monthlyInvoices
+                                                                    ?.totalInvoiceAmountForMonth ??
+                                                                0), // The remaining digits without the symbol
+                                                    style: const TextStyle(
+                                                      fontFamily: 'Satoshi',
+                                                      color: kcButtonTextColor,
+                                                      fontSize: 26,
+                                                      fontWeight:
+                                                          FontWeight.w800,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
                                           ],
                                         ),
                                       ),
@@ -713,93 +765,25 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
                                               color: kcPrimaryColor
                                                   .withOpacity(0.9)),
                                         ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
+                                        child: Column(
                                           mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
-                                            Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                    style: TextStyle(
-                                                      fontFamily: 'Satoshi',
-                                                      color: kcButtonTextColor,
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                    ),
-                                                    'Expenses'),
-                                                verticalSpaceSmallMid,
-                                                verticalSpaceTiny,
-                                                RichText(
-                                                  text: TextSpan(
-                                                    children: [
-                                                      TextSpan(
-                                                        text: NumberFormat
-                                                                .currency(
-                                                                    locale:
-                                                                        'en_NGN',
-                                                                    symbol: '₦')
-                                                            .currencySymbol, // The remaining digits without the symbol
-                                                        style: TextStyle(
-                                                          fontFamily: 'Satoshi',
-                                                          color:
-                                                              kcButtonTextColor,
-                                                          fontSize: 26,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                        ).copyWith(
-                                                            fontFamily:
-                                                                'Roboto'),
-                                                      ),
-                                                      TextSpan(
-                                                        text: viewModel
-                                                                .isChecked
-                                                            ? NumberFormat.currency(
-                                                                    locale:
-                                                                        'en_NGN',
-                                                                    symbol: '')
-                                                                .format(viewModel
-                                                                        .expenseForWeek
-                                                                        ?.totalExpenseAmountThisWeek ??
-                                                                    0)
-                                                            : NumberFormat.currency(
-                                                                    locale:
-                                                                        'en_NGN',
-                                                                    symbol: '')
-                                                                .format(viewModel
-                                                                        .expenseForMonth
-                                                                        ?.totalExpenseAmountThisMonth ??
-                                                                    0), // The remaining digits without the symbol
-                                                        // style:
-                                                        //     ktsCardMetricsAmount2,
-                                                        style: TextStyle(
-                                                          fontFamily: 'Satoshi',
-                                                          color:
-                                                              kcButtonTextColor,
-                                                          fontSize: 26,
-                                                          fontWeight:
-                                                              FontWeight.w800,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
+                                            const Text(
+                                                style: TextStyle(
+                                                  fontFamily: 'Satoshi',
+                                                  color: kcButtonTextColor,
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w500,
                                                 ),
-                                              ],
-                                            ),
+                                                'Expenses'),
+                                            // verticalSpaceSmallMid,
                                             Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                mainAxisSize: MainAxisSize.min,
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment.start,
+                                                    MainAxisAlignment.end,
                                                 children: [
                                                   CircleAvatar(
                                                     radius: 10,
@@ -822,7 +806,56 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
                                                           FontWeight.w500,
                                                     ),
                                                   ),
-                                                ])
+                                                ]),
+                                            // verticalSpaceTiny,
+                                            RichText(
+                                              text: TextSpan(
+                                                children: [
+                                                  TextSpan(
+                                                    text: NumberFormat.currency(
+                                                            locale: 'en_NGN',
+                                                            symbol: '₦')
+                                                        .currencySymbol, // The remaining digits without the symbol
+                                                    style: const TextStyle(
+                                                      fontFamily: 'Satoshi',
+                                                      color: kcButtonTextColor,
+                                                      fontSize: 26,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                    ).copyWith(
+                                                        fontFamily: 'Roboto'),
+                                                  ),
+                                                  TextSpan(
+                                                    text: viewModel.isChecked
+                                                        ? NumberFormat.currency(
+                                                                locale:
+                                                                    'en_NGN',
+                                                                symbol: '')
+                                                            .format(viewModel
+                                                                    .expenseForWeek
+                                                                    ?.totalExpenseAmountThisWeek ??
+                                                                0)
+                                                        : NumberFormat.currency(
+                                                                locale:
+                                                                    'en_NGN',
+                                                                symbol: '')
+                                                            .format(viewModel
+                                                                    .expenseForMonth
+                                                                    ?.totalExpenseAmountThisMonth ??
+                                                                0), // The remaining digits without the symbol
+                                                    // style:
+                                                    //     ktsCardMetricsAmount2,
+                                                    style: const TextStyle(
+                                                      fontFamily: 'Satoshi',
+                                                      color: kcButtonTextColor,
+                                                      fontSize: 26,
+                                                      fontWeight:
+                                                          FontWeight.w800,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
                                           ],
                                         ),
                                       ),
@@ -848,91 +881,26 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
                                               color: kcPrimaryColor
                                                   .withOpacity(0.9)),
                                         ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
+                                        child: Column(
                                           mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
-                                            Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                    style: TextStyle(
-                                                      fontFamily: 'Satoshi',
-                                                      color: kcButtonTextColor,
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                    ),
-                                                    'Purchases'),
-                                                verticalSpaceSmallMid,
-                                                verticalSpaceTiny,
-                                                RichText(
-                                                  text: TextSpan(
-                                                    children: [
-                                                      TextSpan(
-                                                        text: NumberFormat
-                                                                .currency(
-                                                                    locale:
-                                                                        'en_NGN',
-                                                                    symbol: '₦')
-                                                            .currencySymbol, // The remaining digits without the symbol
-                                                        style: TextStyle(
-                                                          fontFamily: 'Satoshi',
-                                                          color:
-                                                              kcButtonTextColor,
-                                                          fontSize: 26,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                        ).copyWith(
-                                                            fontFamily:
-                                                                'Roboto'),
-                                                      ),
-                                                      TextSpan(
-                                                        text: viewModel
-                                                                .isChecked
-                                                            ? NumberFormat.currency(
-                                                                    locale:
-                                                                        'en_NGN',
-                                                                    symbol: '')
-                                                                .format(viewModel
-                                                                        .purchaseForWeek
-                                                                        ?.totalPurchaseAmountThisWeek ??
-                                                                    0)
-                                                            : NumberFormat.currency(
-                                                                    locale:
-                                                                        'en_NGN',
-                                                                    symbol: '')
-                                                                .format(viewModel
-                                                                        .purchaseForMonth
-                                                                        ?.totalPurchaseAmountThisMonth ??
-                                                                    0), // The remaining digits without the symbol
-                                                        style: TextStyle(
-                                                          fontFamily: 'Satoshi',
-                                                          color:
-                                                              kcButtonTextColor,
-                                                          fontSize: 26,
-                                                          fontWeight:
-                                                              FontWeight.w800,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
+                                            const Text(
+                                                style: TextStyle(
+                                                  fontFamily: 'Satoshi',
+                                                  color: kcButtonTextColor,
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w500,
                                                 ),
-                                              ],
-                                            ),
+                                                'Purchases'),
+                                            // verticalSpaceSmallMid,
+                                            // verticalSpaceTiny,
                                             Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                mainAxisSize: MainAxisSize.min,
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment.start,
+                                                    MainAxisAlignment.end,
                                                 children: [
                                                   CircleAvatar(
                                                     radius: 10,
@@ -947,7 +915,7 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
                                                   horizontalSpaceminute2,
                                                   Text(
                                                     "${viewModel.isChecked ? (viewModel.purchaseForWeek?.percentageIncreaseInPurchaseThisWeek ?? 0) : (viewModel.purchaseForMonth?.percentageIncreaseInPurchaseThisMonth ?? 0)}%",
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                       fontFamily: 'Satoshi',
                                                       color: kcButtonTextColor,
                                                       fontSize: 18,
@@ -955,7 +923,53 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
                                                           FontWeight.w500,
                                                     ),
                                                   ),
-                                                ])
+                                                ]),
+                                            RichText(
+                                              text: TextSpan(
+                                                children: [
+                                                  TextSpan(
+                                                    text: NumberFormat.currency(
+                                                            locale: 'en_NGN',
+                                                            symbol: '₦')
+                                                        .currencySymbol, // The remaining digits without the symbol
+                                                    style: const TextStyle(
+                                                      fontFamily: 'Satoshi',
+                                                      color: kcButtonTextColor,
+                                                      fontSize: 26,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                    ).copyWith(
+                                                        fontFamily: 'Roboto'),
+                                                  ),
+                                                  TextSpan(
+                                                    text: viewModel.isChecked
+                                                        ? NumberFormat.currency(
+                                                                locale:
+                                                                    'en_NGN',
+                                                                symbol: '')
+                                                            .format(viewModel
+                                                                    .purchaseForWeek
+                                                                    ?.totalPurchaseAmountThisWeek ??
+                                                                0)
+                                                        : NumberFormat.currency(
+                                                                locale:
+                                                                    'en_NGN',
+                                                                symbol: '')
+                                                            .format(viewModel
+                                                                    .purchaseForMonth
+                                                                    ?.totalPurchaseAmountThisMonth ??
+                                                                0), // The remaining digits without the symbol
+                                                    style: const TextStyle(
+                                                      fontFamily: 'Satoshi',
+                                                      color: kcButtonTextColor,
+                                                      fontSize: 26,
+                                                      fontWeight:
+                                                          FontWeight.w800,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
                                           ],
                                         ),
                                       ),
@@ -1094,8 +1108,12 @@ class Cards extends ViewModelWidget<HomeViewModel> {
           height: 200,
           width: MediaQuery.of(context).size.width * 0.9,
           decoration: BoxDecoration(
+            border: Border.all(
+                strokeAlign: BorderSide.strokeAlignInside,
+                width: 2,
+                color: kcCardBorderColor),
             color: kcCardColor.withOpacity(0.3),
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(12),
           ),
           child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -1112,6 +1130,14 @@ class Cards extends ViewModelWidget<HomeViewModel> {
                     //   height: 22,
                     //   color: Colors.white,
                     // ),
+                    IconButton(
+                        onPressed: () async {
+                          await viewModel.revealSensitiveData(businessCard.id);
+                        },
+                        icon: Icon(
+                          Icons.visibility,
+                          weight: 12,
+                        ))
                   ],
                 ),
                 Column(
@@ -1149,26 +1175,26 @@ class Cards extends ViewModelWidget<HomeViewModel> {
                               )
                             ],
                           ),
-                          horizontalSpaceRegular,
-                          // Column(
-                          //   children: [
-                          //     Text(
-                          //       'CVV',
-                          //       style: ktsButtonText2,
-                          //     ),
-                          //     verticalSpaceTinyt1,
-                          //     Text(
-                          //       'XXX',
-                          //       style: ktsHeroTextWhiteDashboard2,
-                          //     )
-                          //   ],
-                          // )
+                          horizontalSpaceMedium,
+                          Column(
+                            children: [
+                              Text(
+                                'CVV',
+                                style: ktsButtonText2,
+                              ),
+                              verticalSpaceTinyt1,
+                              Text(
+                                '333',
+                                style: ktsHeroTextWhiteDashboard2,
+                              )
+                            ],
+                          )
                         ],
                       ),
                       SvgPicture.asset(
-                        'assets/images/MasterCard.svg',
-                        // width: 20,
-                        // height: 20,
+                        'assets/images/verve.svg',
+                        width: 28,
+                        height: 28,
                       ),
                     ]),
               ]),
@@ -1208,8 +1234,7 @@ class Cards extends ViewModelWidget<HomeViewModel> {
             children: [
               GestureDetector(
                 onTap: () {
-                  viewModel.navigationService.navigateTo(Routes.addCardView);
-                  // viewModel.createSudoCard();
+                  viewModel.checkbusinessAcccount();
                 },
                 child: Column(
                   children: [
@@ -1234,34 +1259,34 @@ class Cards extends ViewModelWidget<HomeViewModel> {
                   ],
                 ),
               ),
-              GestureDetector(
-                onTap: () {
-                  viewModel.navigationService.navigateTo(Routes.addCardView);
-                  // viewModel.createSudoCard();
-                },
-                child: Column(
-                  children: [
-                    CircleAvatar(
-                      radius: 20,
-                      backgroundColor: kcPrimaryColor.withOpacity(0.6),
-                      child: const Icon(
-                        Icons.visibility,
-                        color: kcButtonTextColor,
-                        size: 24,
-                      ),
-                    ),
-                    verticalSpaceTiny,
-                    Text(
-                      'View card',
-                      style: GoogleFonts.dmSans(
-                        color: kcButtonTextColor,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w300,
-                      ),
-                    )
-                  ],
-                ),
-              ),
+              // GestureDetector(
+              //   onTap: () {
+              //     // viewModel.navigationService.navigateTo(Routes.addCardView);
+              //     // viewModel.createSudoCard();
+              //   },
+              //   child: Column(
+              //     children: [
+              //       CircleAvatar(
+              //         radius: 20,
+              //         backgroundColor: kcPrimaryColor.withOpacity(0.6),
+              //         child: const Icon(
+              //           Icons.visibility,
+              //           color: kcButtonTextColor,
+              //           size: 24,
+              //         ),
+              //       ),
+              //       verticalSpaceTiny,
+              //       Text(
+              //         'View',
+              //         style: GoogleFonts.dmSans(
+              //           color: kcButtonTextColor,
+              //           fontSize: 18,
+              //           fontWeight: FontWeight.w300,
+              //         ),
+              //       )
+              //     ],
+              //   ),
+              // ),
               GestureDetector(
                 onTap: () {
                   viewModel.navigationService.navigateTo(
@@ -1450,7 +1475,10 @@ class SalesCard extends ViewModelWidget<HomeViewModel> {
                   Text(
                     // '#${purchase.reference}',
                     // '${sales.description[0].toUpperCase()}${sales.description.substring(1)}',
-                    sales.customerName,
+                    sales.customerName.length <= 15
+                        ? '${sales.customerName[0].toUpperCase()}${sales.customerName.substring(1)}'
+                        : '${sales.customerName[0].toUpperCase()}${sales.customerName.substring(1, 15)}...',
+                    // sales.customerName,
                     style: TextStyle(
                       fontFamily: 'Satoshi',
                       color: kcTextTitleColor.withOpacity(0.9),
@@ -1681,9 +1709,10 @@ class ExpenseCard extends ViewModelWidget<HomeViewModel> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    // '#${purchase.reference}',
-                    // expenses.merchantName,
-                    '${expenses.description[0].toUpperCase()}${expenses.description.substring(1)}',
+                    // '${expenses.description[0].toUpperCase()}${expenses.description.substring(1)}',
+                    expenses.description.length <= 15
+                        ? '${expenses.description[0].toUpperCase()}${expenses.description.substring(1)}'
+                        : '${expenses.description[0].toUpperCase()}${expenses.description.substring(1, 15)}...',
                     style: TextStyle(
                       fontFamily: 'Satoshi',
                       color: kcTextTitleColor.withOpacity(0.9),
@@ -1908,7 +1937,10 @@ class PurchaseOrderCard extends ViewModelWidget<HomeViewModel> {
                 children: [
                   Text(
                     // '#${purchase.reference}',
-                    purchase.merchantName,
+                    purchase.merchantName.length <= 15
+                        ? '${purchase.merchantName[0].toUpperCase()}${purchase.merchantName.substring(1)}'
+                        : '${purchase.merchantName[0].toUpperCase()}${purchase.merchantName.substring(1, 15)}...',
+                    // purchase.merchantName,
                     // '${purchase.description[0].toUpperCase()}${purchase.description.substring(1)}',
                     style: TextStyle(
                       fontFamily: 'Satoshi',
