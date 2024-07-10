@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "714820134583",
+    "project_id": "verzo-3a3c9",
+    "storage_bucket": "verzo-3a3c9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:714820134583:android:61ad4039e2b88c0cdd4f32",
+        "android_client_info": {
+          "package_name": "com.example.verzo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdm6DMf5lZazK6FIGsZJIqoD6VPYgHhq8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -52,6 +52,7 @@ class _HomeViewState extends State<HomeView>
         viewModelBuilder: () => HomeViewModel(),
         onViewModelReady: (viewModel) async {
           viewModel.setUserDetails();
+          await viewModel.subscriptionValidation();
           await viewModel.getCardsByBusiness();
           // await viewModel.getUserAndBusinessData();
           await viewModel.totalWeeklyInvoicesAmount();
@@ -166,6 +167,7 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
         viewModelBuilder: () => HomeViewModel(),
         onViewModelReady: (viewModel) async {
           viewModel.setUserDetails();
+          await viewModel.subscriptionValidation();
           await viewModel.getCardsByBusiness();
           // await viewModel.getUserAndBusinessData();
           await viewModel.totalWeeklyInvoicesAmount();

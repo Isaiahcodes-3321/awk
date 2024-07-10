@@ -6,6 +6,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:verzo/app/app.locator.dart';
 import 'package:verzo/app/app.router.dart';
 import 'package:verzo/services/authentication_service.dart';
+import 'package:verzo/services/billing_service.dart';
 import 'package:verzo/services/business_creation_service.dart';
 import 'package:verzo/services/dashboard_service.dart';
 import 'package:verzo/services/expense_service.dart';
@@ -28,6 +29,31 @@ enum FilterItems { weekly, monthly }
 class HomeViewModel extends ReactiveViewModel with ListenableServiceMixin {
   final MethodChannel platform =
       const MethodChannel('com.verzo/vgs_show_view_channel');
+
+  Future<void> revealSensitiveData(String cardId) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String businessIdValue = prefs.getString('businessId') ?? '';
+
+      final result1 = await authService.refreshToken();
+      if (result1.error != null) {
+        await navigationService.replaceWithLoginView();
+      }
+
+      final result = await _dashboardService.generateCardToken(
+          businessId: businessIdValue, cardId: cardId);
+
+      if (result.isNotEmpty) {
+        String cardToken = result;
+        await platform.invokeMethod('revealData', {'cardToken': cardToken});
+      } else {
+        print("Failed to generate card token.");
+      }
+    } on PlatformException catch (e) {
+      print("Failed to reveal data: '${e.message}'.");
+    }
+  }
+
   final navigationService = locator<NavigationService>();
   final _dashboardService = locator<DashboardService>();
   final _expenseService = locator<ExpenseService>();
@@ -35,6 +61,7 @@ class HomeViewModel extends ReactiveViewModel with ListenableServiceMixin {
   final businessService = locator<BusinessCreationService>();
   final _saleService = locator<SalesService>();
   final authService = locator<AuthenticationService>();
+  final billingService = locator<BillingService>();
   final DialogService dialogService = locator<DialogService>();
 
   bool isChecked = true;
@@ -109,7 +136,20 @@ class HomeViewModel extends ReactiveViewModel with ListenableServiceMixin {
     userName = prefs.getString('userName') ?? '';
 
     businessName = prefs.getString('businessName') ?? '';
+
     rebuildUi();
+  }
+
+  Future<bool> subscriptionValidation() async {
+    final result1 = await authService.refreshToken();
+    if (result1.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
+    final bool isValid = await billingService.isSubscriptionValid();
+    if (isValid == false) {
+      await navigationService.navigateTo(Routes.subscriptionCheckView);
+    }
+    return isValid;
   }
 
   // User? user; // Store user data here
@@ -128,30 +168,6 @@ class HomeViewModel extends ReactiveViewModel with ListenableServiceMixin {
   //   }
   //   rebuildUi();
   // }
-
-  Future<void> revealSensitiveData(String cardId) async {
-    try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String businessIdValue = prefs.getString('businessId') ?? '';
-
-      final result1 = await authService.refreshToken();
-      if (result1.error != null) {
-        await navigationService.replaceWithLoginView();
-      }
-
-      final result = await _dashboardService.generateCardToken(
-          businessId: businessIdValue, cardId: cardId);
-
-      if (result.isNotEmpty) {
-        String cardToken = result;
-        await platform.invokeMethod('revealData', {'cardToken': cardToken});
-      } else {
-        print("Failed to generate card token.");
-      }
-    } on PlatformException catch (e) {
-      print("Failed to reveal data: '${e.message}'.");
-    }
-  }
 
   // Future<String> generateCardToken() async {
   //   SharedPreferences prefs = await SharedPreferences.getInstance();

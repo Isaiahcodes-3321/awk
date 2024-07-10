@@ -70,8 +70,7 @@ class BillingService {
         _subscriptionCheckerForFrontendQuery = QueryOptions(
           document: gql('''
         query subscriptionCheckerForFrontend{
-          subscriptionCheckerForFrontend{
-            }
+          subscriptionCheckerForFrontend
             }
             '''),
         );
@@ -100,15 +99,17 @@ class BillingService {
     final QueryOptions options = QueryOptions(
       document: _subscriptionCheckerForFrontendQuery.document,
     );
-
     final QueryResult result = await newClient.query(options);
-    bool isValid = result.data?['subscriptionCheckerForFrontend'];
+    bool isValid;
 
     if (result.hasException) {
       // Handle any errors that may have occurred during the log out process
       // throw Exception(result.exception);
       isValid = false;
     }
+
+    isValid = result.data?['subscriptionCheckerForFrontend'] ?? false;
+
     return isValid;
   }
 
