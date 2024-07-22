@@ -41,48 +41,48 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyD6QwUeBYcHiaBGyy69zs27w3OwmdZewVg',
-    appId: '1:714820134583:web:5533171b2ef8ef7fdd4f32',
-    messagingSenderId: '714820134583',
-    projectId: 'verzo-3a3c9',
-    authDomain: 'verzo-3a3c9.firebaseapp.com',
-    storageBucket: 'verzo-3a3c9.appspot.com',
-    measurementId: 'G-Y1DHFRWWE3',
+    apiKey: 'AIzaSyD7M12_46h-OWLqQBLWHxNfj9AyR00xQ3c',
+    appId: '1:532715957064:web:9dfaa4a1de778e21d2a17d',
+    messagingSenderId: '532715957064',
+    projectId: 'verzo-83af7',
+    authDomain: 'verzo-83af7.firebaseapp.com',
+    storageBucket: 'verzo-83af7.appspot.com',
+    measurementId: 'G-47DG37P3EV',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDdm6DMf5lZazK6FIGsZJIqoD6VPYgHhq8',
-    appId: '1:714820134583:android:61ad4039e2b88c0cdd4f32',
-    messagingSenderId: '714820134583',
-    projectId: 'verzo-3a3c9',
-    storageBucket: 'verzo-3a3c9.appspot.com',
+    apiKey: 'AIzaSyAyv_08NLI_6Ke-X3gCr_IOWYQ-cnM_lZc',
+    appId: '1:532715957064:android:6eecc88c6a2eba30d2a17d',
+    messagingSenderId: '532715957064',
+    projectId: 'verzo-83af7',
+    storageBucket: 'verzo-83af7.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyD_33Yi-SPY_OjIkaxYCutxDqMeuHn9PGw',
-    appId: '1:714820134583:ios:711cb4eed51f0856dd4f32',
-    messagingSenderId: '714820134583',
-    projectId: 'verzo-3a3c9',
-    storageBucket: 'verzo-3a3c9.appspot.com',
+    apiKey: 'AIzaSyA0RYwOoEDEnAh6pggfUIwE3oXFWU34_-A',
+    appId: '1:532715957064:ios:b62b81036413e3c1d2a17d',
+    messagingSenderId: '532715957064',
+    projectId: 'verzo-83af7',
+    storageBucket: 'verzo-83af7.appspot.com',
     iosBundleId: 'com.example.verzo',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyD_33Yi-SPY_OjIkaxYCutxDqMeuHn9PGw',
-    appId: '1:714820134583:ios:711cb4eed51f0856dd4f32',
-    messagingSenderId: '714820134583',
-    projectId: 'verzo-3a3c9',
-    storageBucket: 'verzo-3a3c9.appspot.com',
+    apiKey: 'AIzaSyA0RYwOoEDEnAh6pggfUIwE3oXFWU34_-A',
+    appId: '1:532715957064:ios:b62b81036413e3c1d2a17d',
+    messagingSenderId: '532715957064',
+    projectId: 'verzo-83af7',
+    storageBucket: 'verzo-83af7.appspot.com',
     iosBundleId: 'com.example.verzo',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyD6QwUeBYcHiaBGyy69zs27w3OwmdZewVg',
-    appId: '1:714820134583:web:8e91918b36fa3e50dd4f32',
-    messagingSenderId: '714820134583',
-    projectId: 'verzo-3a3c9',
-    authDomain: 'verzo-3a3c9.firebaseapp.com',
-    storageBucket: 'verzo-3a3c9.appspot.com',
-    measurementId: 'G-JP1XDLH2GZ',
+    apiKey: 'AIzaSyD7M12_46h-OWLqQBLWHxNfj9AyR00xQ3c',
+    appId: '1:532715957064:web:744707fab42fdca7d2a17d',
+    messagingSenderId: '532715957064',
+    projectId: 'verzo-83af7',
+    authDomain: 'verzo-83af7.firebaseapp.com',
+    storageBucket: 'verzo-83af7.appspot.com',
+    measurementId: 'G-ZWKD490EC1',
   );
 }

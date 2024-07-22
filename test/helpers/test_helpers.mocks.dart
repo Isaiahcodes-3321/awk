@@ -17,6 +17,7 @@ import 'package:verzo/services/business_creation_service.dart' as _i6;
 import 'package:verzo/services/dashboard_service.dart' as _i7;
 import 'package:verzo/services/expense_service.dart' as _i9;
 import 'package:verzo/services/merchant_service.dart' as _i8;
+import 'package:verzo/services/notification_service.dart' as _i18;
 import 'package:verzo/services/products_services_service.dart' as _i12;
 import 'package:verzo/services/purchase_service.dart' as _i10;
 import 'package:verzo/services/sales_service.dart' as _i11;
@@ -1238,6 +1239,30 @@ class MockAuthenticationService extends _i1.Mock
         returnValue: _i15.Future<bool>.value(false),
         returnValueForMissingStub: _i15.Future<bool>.value(false),
       ) as _i15.Future<bool>);
+
+  @override
+  _i15.Future<String?> addUserDeviceToken({required String? deviceToken}) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #addUserDeviceToken,
+          [],
+          {#deviceToken: deviceToken},
+        ),
+        returnValue: _i15.Future<String?>.value(),
+        returnValueForMissingStub: _i15.Future<String?>.value(),
+      ) as _i15.Future<String?>);
+
+  @override
+  _i15.Future<String?> removeUserDeviceToken({required String? deviceToken}) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #removeUserDeviceToken,
+          [],
+          {#deviceToken: deviceToken},
+        ),
+        returnValue: _i15.Future<String?>.value(),
+        returnValueForMissingStub: _i15.Future<String?>.value(),
+      ) as _i15.Future<String?>);
 
   @override
   _i15.Future<_i4.AuthenticationResult> loginWithEmail({
@@ -4535,4 +4560,61 @@ class MockBillingService extends _i1.Mock implements _i13.BillingService {
         returnValueForMissingStub:
             _i15.Future<List<_i13.Plans>>.value(<_i13.Plans>[]),
       ) as _i15.Future<List<_i13.Plans>>);
+}
+
+/// A class which mocks [NotificationService].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockNotificationService extends _i1.Mock
+    implements _i18.NotificationService {
+  @override
+  _i2.NavigationService get navigationService => (super.noSuchMethod(
+        Invocation.getter(#navigationService),
+        returnValue: _FakeNavigationService_0(
+          this,
+          Invocation.getter(#navigationService),
+        ),
+        returnValueForMissingStub: _FakeNavigationService_0(
+          this,
+          Invocation.getter(#navigationService),
+        ),
+      ) as _i2.NavigationService);
+
+  @override
+  _i3.ValueNotifier<_i17.GraphQLClient> get client => (super.noSuchMethod(
+        Invocation.getter(#client),
+        returnValue: _FakeValueNotifier_1<_i17.GraphQLClient>(
+          this,
+          Invocation.getter(#client),
+        ),
+        returnValueForMissingStub: _FakeValueNotifier_1<_i17.GraphQLClient>(
+          this,
+          Invocation.getter(#client),
+        ),
+      ) as _i3.ValueNotifier<_i17.GraphQLClient>);
+
+  @override
+  set client(_i3.ValueNotifier<_i17.GraphQLClient>? _client) =>
+      super.noSuchMethod(
+        Invocation.setter(
+          #client,
+          _client,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  _i15.Future<List<_i18.Notificationss>> getMessages(
+          {required String? token}) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getMessages,
+          [],
+          {#token: token},
+        ),
+        returnValue: _i15.Future<List<_i18.Notificationss>>.value(
+            <_i18.Notificationss>[]),
+        returnValueForMissingStub: _i15.Future<List<_i18.Notificationss>>.value(
+            <_i18.Notificationss>[]),
+      ) as _i15.Future<List<_i18.Notificationss>>);
 }

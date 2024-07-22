@@ -13,6 +13,8 @@ class AuthenticationService {
   final MutationOptions _refreshTokenMutation;
   final MutationOptions _logOutMutation;
   final MutationOptions _signUpMutation;
+  final MutationOptions _addUserDeviceTokenMutation;
+  final MutationOptions _removeUserDeviceTokenMutation;
 
   AuthenticationService()
       : client = ValueNotifier(GraphQLClient(
@@ -58,10 +60,111 @@ class AuthenticationService {
           }
         }
       '''),
+        ),
+        _addUserDeviceTokenMutation = MutationOptions(
+          document: gql('''
+        mutation AddUserDeviceToken(\$token: String!) {
+          addUserDeviceToken(token: \$token) 
+        }
+      '''),
+        ),
+        _removeUserDeviceTokenMutation = MutationOptions(
+          document: gql('''
+        mutation RemoveUserDeviceToken(\$token: String!) {
+          removeUserDeviceToken(token: \$token) 
+        }
+      '''),
         );
   Future<bool> isLoggedIn() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool('isLoggedIn') ?? false;
+  }
+
+  Future<String?> addUserDeviceToken({required String deviceToken}) async {
+    final prefs = await SharedPreferences.getInstance();
+    await refreshToken();
+    final token = prefs.getString('access_token');
+    final deviceToken = prefs.getString('device_token');
+
+    if (token == null) {
+      GraphQLAuthError(
+        message: "Access token not found",
+      );
+    }
+
+    // Use the token to create an authlink
+    final authLink = AuthLink(
+      getToken: () => 'Bearer $token',
+    );
+
+    // Create a new GraphQLClient with the authlink
+    final newClient = GraphQLClient(
+      cache: GraphQLCache(),
+      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+    );
+
+    final MutationOptions options = MutationOptions(
+      document: _addUserDeviceTokenMutation.document,
+      variables: {
+        'token': deviceToken,
+      },
+    );
+    final QueryResult result = await newClient.mutate(options);
+    if (result.hasException) {
+      // Handle any errors that may have occurred during the log out process
+      // throw Exception(result.exception);
+    }
+    String? deviceTokenResult = result.data?['addUserDeviceToken'];
+
+    if (result.hasException == true) {
+      // Handle any errors that may have occurred during the log out process
+      // throw Exception(result.exception);
+    }
+
+    return deviceTokenResult;
+  }
+
+  Future<String?> removeUserDeviceToken({required String deviceToken}) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('access_token');
+    final deviceToken = prefs.getString('device_token');
+
+    if (token == null) {
+      GraphQLAuthError(
+        message: "Access token not found",
+      );
+    }
+
+    // Use the token to create an authlink
+    final authLink = AuthLink(
+      getToken: () => 'Bearer $token',
+    );
+
+    // Create a new GraphQLClient with the authlink
+    final newClient = GraphQLClient(
+      cache: GraphQLCache(),
+      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+    );
+
+    final MutationOptions options = MutationOptions(
+      document: _removeUserDeviceTokenMutation.document,
+      variables: {
+        'token': deviceToken,
+      },
+    );
+    final QueryResult result = await newClient.mutate(options);
+    if (result.hasException) {
+      // Handle any errors that may have occurred during the log out process
+      // throw Exception(result.exception);
+    }
+    String? deviceTokenResult = result.data?['removeUserDeviceToken'];
+
+    if (result.hasException == true) {
+      // Handle any errors that may have occurred during the log out process
+      // throw Exception(result.exception);
+    }
+
+    return deviceTokenResult;
   }
 
   Future<AuthenticationResult> loginWithEmail(
@@ -114,6 +217,9 @@ class AuthenticationService {
         accessToken: accessToken,
         refreshToken: refreshToken,
         verified: verified ?? false);
+
+    final deviceToken = prefs.getString('device_token');
+    await addUserDeviceToken(deviceToken: deviceToken!);
 
     return AuthenticationResult(tokens: tokens);
   }
@@ -198,6 +304,9 @@ class AuthenticationService {
     );
 
     final QueryResult result = await newClient.mutate(options);
+
+    final deviceToken = prefs.getString('device_token');
+    await removeUserDeviceToken(deviceToken: deviceToken!);
 
     prefs.setString('access_token', '');
     prefs.setString('refresh_token', '');

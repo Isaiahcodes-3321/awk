@@ -17,6 +17,7 @@ import '../services/business_creation_service.dart';
 import '../services/dashboard_service.dart';
 import '../services/expense_service.dart';
 import '../services/merchant_service.dart';
+import '../services/notification_service.dart';
 import '../services/products_services_service.dart';
 import '../services/purchase_service.dart';
 import '../services/sales_service.dart';
@@ -46,4 +47,5 @@ Future<void> setupLocator({
   locator.registerLazySingleton(() => SalesService());
   locator.registerLazySingleton(() => ProductsServicesService());
   locator.registerLazySingleton(() => BillingService());
+  locator.registerLazySingleton(() => NotificationService());
 }

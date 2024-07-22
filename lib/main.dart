@@ -8,22 +8,15 @@ import 'package:verzo/app/app.dialogs.dart';
 import 'package:verzo/app/app.locator.dart';
 import 'package:verzo/app/app.router.dart';
 import 'package:stacked_services/stacked_services.dart';
+import 'package:verzo/firebase_api.dart';
 import 'package:verzo/firebase_options.dart';
 import 'package:verzo/ui/common/app_colors.dart';
 
-Future<void> main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
-  await messaging.requestPermission(
-      alert: true,
-      announcement: false,
-      badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
-      sound: true);
   await setupLocator();
+  await FirebaseApi().initNotifications();
   setupDialogUi();
   setupBottomSheetUi();
   runApp(const MainApp());

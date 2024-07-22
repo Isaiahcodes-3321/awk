@@ -200,7 +200,7 @@ class _SettingsViewState extends State<SettingsView> {
                             ListTile(
                               contentPadding: EdgeInsetsDirectional.zero,
                               leading: SvgPicture.asset(
-                                'assets/images/Frame_43540-3.svg',
+                                'assets/images/Frame 43540-1.svg',
                                 width: 36,
                                 height: 36,
                               ),
@@ -209,13 +209,13 @@ class _SettingsViewState extends State<SettingsView> {
                                 style: ktsTextAuthentication,
                               ),
                               subtitle: Text(
-                                'See your business tasks',
+                                'See your notifications',
                                 style: ktsFormHintText,
                               ),
                               trailing: IconButton(
                                 onPressed: () {
                                   viewModel.navigationService
-                                      .navigateTo(Routes.businessTasksView);
+                                      .navigateTo(Routes.notificationsView);
                                 },
                                 icon: const Icon(Icons.arrow_forward),
                                 iconSize: 24,
@@ -314,13 +314,14 @@ class _SettingsViewState extends State<SettingsView> {
                                 style: ktsTextAuthentication,
                               ),
                               subtitle: Text(
-                                'Manage your transactions',
+                                'Coming soon',
+                                // 'Manage your transactions',
                                 style: ktsFormHintText,
                               ),
                               trailing: IconButton(
                                   onPressed: () {
-                                    viewModel.navigationService.navigateTo(
-                                        Routes.reportTransactionsView);
+                                    // viewModel.navigationService.navigateTo(
+                                    //     Routes.reportTransactionsView);
                                   },
                                   icon: const Icon(Icons.arrow_forward),
                                   iconSize: 24,

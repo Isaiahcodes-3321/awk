@@ -99,6 +99,8 @@ import 'package:verzo/ui/views/report_transactions/report_transactions_view.dart
 import 'package:verzo/ui/views/employee_password/employee_password_view.dart';
 import 'package:verzo/ui/views/view_business_account/view_business_account_view.dart';
 import 'package:verzo/ui/views/subscription_check/subscription_check_view.dart';
+import 'package:verzo/ui/views/notifications/notifications_view.dart';
+import 'package:verzo/services/notification_service.dart';
 // @stacked-import
 
 @StackedApp(
@@ -176,6 +178,7 @@ import 'package:verzo/ui/views/subscription_check/subscription_check_view.dart';
     MaterialRoute(page: EmployeePasswordView),
     MaterialRoute(page: ViewBusinessAccountView),
     MaterialRoute(page: SubscriptionCheckView),
+    MaterialRoute(page: NotificationsView),
 // @stacked-route
   ],
   dependencies: [
@@ -192,6 +195,7 @@ import 'package:verzo/ui/views/subscription_check/subscription_check_view.dart';
     LazySingleton(classType: SalesService),
     LazySingleton(classType: ProductsServicesService),
     LazySingleton(classType: BillingService),
+    LazySingleton(classType: NotificationService),
 // @stacked-service
   ],
   bottomsheets: [

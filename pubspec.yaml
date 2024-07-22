@@ -29,6 +29,7 @@ dependencies:
   dropdown_button2: ^2.3.9
   firebase_core: ^2.27.0
   firebase_messaging: ^14.7.19
+  flutter_local_notifications: ^17.2.1+1
   provider: ^6.0.3
 
 
@@ -56,6 +57,7 @@ flutter:
         - assets/images/Icon_launcher2.png
         - assets/images/Frame_43540.svg
         - assets/images/Frame 43540.svg
+        - assets/images/Frame 43540-1.svg
         - assets/images/Frame_43540-2.svg
         - assets/images/Frame_43540-3.svg
         - assets/images/Frame_43540-4.svg
@@ -84,6 +86,7 @@ flutter:
         - assets/images/Group_search.svg
         - assets/images/Group_2780.svg
         - assets/images/Group 2171.svg
+        - assets/images/Group 2984.svg
         - assets/images/Frame 2171.svg
         - assets/images/Group_3161.svg
         - assets/images/home-02.svg

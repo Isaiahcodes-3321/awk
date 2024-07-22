@@ -7,14 +7,13 @@ import 'package:verzo/app/app.router.dart';
 import 'package:verzo/services/authentication_service.dart';
 import 'package:verzo/services/notification_service.dart';
 
-class EmployeeInboxViewModel extends FutureViewModel<List<Notificationss>> {
+class NotificationsViewModel extends FutureViewModel<List<Notificationss>> {
   final navigationService = locator<NavigationService>();
   final authService = locator<AuthenticationService>();
   final notoficationService = locator<NotificationService>();
 
   List<Notificationss> notifications = [];
   Map<int, bool> expandedStates = {};
-
   @override
   Future<List<Notificationss>> futureToRun() => getBusinessTasks();
 

@@ -72,12 +72,17 @@ class StartupViewModel extends BaseViewModel {
       final result = await _authenticationService.refreshToken();
       if (result.tokens != null) {
         await getUserAndRoleData();
-        // await _navigationService.replaceWith(Routes.homeView);
       } else if (result.error != null) {
+        //       final deviceToken = prefs.getString('device_token');
+        // await removeUserDeviceToken(deviceToken: deviceToken!);
         await _navigationService.replaceWithLoginView();
+        // await _authenticationService.isLoggedIn() == false;
       }
     } else {
+      //     final deviceToken = prefs.getString('device_token');
+      // await removeUserDeviceToken(deviceToken: deviceToken!);
       _navigationService.replaceWithLoginView();
+      // await _authenticationService.isLoggedIn() == false;
     }
 
     //   // This is where you can make decisions on where your app should navigate when
