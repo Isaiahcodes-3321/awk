@@ -54,6 +54,7 @@ class AddCardView extends StackedView<AddCardViewModel> with $AddCardView {
                     'Select',
                     style: ktsFormHintText,
                   ),
+                  // new column here
                   menuMaxHeight: 320,
                   elevation: 4,
                   // padding: EdgeInsets.symmetric(horizontal: 12),
