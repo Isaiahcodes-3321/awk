@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 class ExpenseService {
   ValueNotifier<GraphQLClient> client;
@@ -304,6 +306,7 @@ class ExpenseService {
   Future<Expenses> getExpenseById({required String expenseId}) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('access_token');
+    final timeZone = prefs.getString('timeZone') ?? 'UTC';
 
     if (token == null) {
       throw GraphQLExpenseError(
@@ -335,6 +338,14 @@ class ExpenseService {
     }
 
     final expenseByIdData = expenseByIdResult.data?['getExpenseById'];
+    final location = tz.getLocation(timeZone);
+    // Parse the UTC date string to DateTime
+    final utcDate = DateTime.parse(expenseByIdData['expenseDate']).toUtc();
+    // Convert UTC date to local time zone
+    final localDate = tz.TZDateTime.from(utcDate, location);
+    // Format localDate as a string (adjust the format as needed)
+    // final formattedDate = DateFormat('yyyy-MM-ddTHH:mm:ss').format(localDate);
+    final formattedDate = DateFormat('yyyy-MM-dd').format(localDate);
 
     final List<dynamic> expenseItemsData =
         expenseByIdData['expenseItems'] ?? [];
@@ -360,7 +371,7 @@ class ExpenseService {
         reference: expenseByIdData['reference'],
         expenseCategoryId: expenseByIdData['expenseCategoryId'],
         expenseCategoryName: expenseByIdData['expenseCategory']['name'],
-        expenseDate: expenseByIdData['expenseDate'],
+        expenseDate: formattedDate,
         merchantId: expenseByIdData['merchantId'],
         merchantName: expenseByIdData['merchant']['name'],
         merchantEmail: expenseByIdData['merchant']['email'],
@@ -453,6 +464,7 @@ class ExpenseService {
       {required String businessId, num? take, String? cursor}) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('access_token');
+    final timeZone = prefs.getString('timeZone') ?? 'UTC';
 
     if (token == null) {
       throw GraphQLExpenseError(
@@ -495,11 +507,20 @@ class ExpenseService {
 
     final List<Expenses> expenses = expensesData.map((data) {
       final merchantData = data['merchant']; // Access merchant data
+      final location = tz.getLocation(timeZone);
+      // Parse the UTC date string to DateTime
+      final utcDate = DateTime.parse(data['expenseDate']).toUtc();
+      // Convert UTC date to local time zone
+      final localDate = tz.TZDateTime.from(utcDate, location);
+
+      // Format localDate as a string (adjust the format as needed)
+      // final formattedDate = DateFormat('yyyy-MM-ddTHH:mm:ss').format(localDate);
+      final formattedDate = DateFormat('yyyy-MM-dd').format(localDate);
       return Expenses(
         id: data['id'],
         description: data['description'],
         amount: data['amount'] / 100,
-        expenseDate: data['expenseDate'],
+        expenseDate: formattedDate,
         reference: data['reference'],
         merchantId: '',
         expenseStatusId: 0,
@@ -517,6 +538,7 @@ class ExpenseService {
       {required String businessId, num? take, String? cursor}) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('access_token');
+    final timeZone = prefs.getString('timeZone') ?? 'UTC';
 
     if (token == null) {
       throw GraphQLExpenseError(
@@ -559,11 +581,21 @@ class ExpenseService {
 
     final List<Expenses> expenses = expensesData.map((data) {
       final merchantData = data['merchant']; // Access merchant data
+      final location = tz.getLocation(timeZone);
+      // Parse the UTC date string to DateTime
+      final utcDate = DateTime.parse(data['expenseDate']).toUtc();
+      // Convert UTC date to local time zone
+      final localDate = tz.TZDateTime.from(utcDate, location);
+
+      // Format localDate as a string (adjust the format as needed)
+      // final formattedDate = DateFormat('yyyy-MM-ddTHH:mm:ss').format(localDate);
+      final formattedDate = DateFormat('yyyy-MM-dd').format(localDate);
+
       return Expenses(
         id: data['id'],
         description: data['description'],
         amount: data['amount'] / 100,
-        expenseDate: data['expenseDate'],
+        expenseDate: formattedDate,
         reference: data['reference'],
         merchantId: '',
         expenseStatusId: 0,

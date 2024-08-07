@@ -54,7 +54,7 @@ class _HomeViewState extends State<HomeView>
           viewModel.setUserDetails();
           await viewModel.subscriptionValidation();
           await viewModel.getCardsByBusiness();
-          // await viewModel.getUserAndBusinessData();
+          await viewModel.getBusinessById();
           await viewModel.totalWeeklyInvoicesAmount();
           await viewModel.getInvoiceByBusiness();
           await viewModel.getExpensesForWeek();
@@ -169,6 +169,7 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
           viewModel.setUserDetails();
           await viewModel.subscriptionValidation();
           await viewModel.getCardsByBusiness();
+          await viewModel.getBusinessById();
           // await viewModel.getUserAndBusinessData();
           await viewModel.totalWeeklyInvoicesAmount();
           await viewModel.getInvoiceByBusiness();
@@ -180,6 +181,7 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
           await viewModel.totalMonthlyInvoicesAmount();
           await viewModel.getExpensesForMonth();
           await viewModel.getPurchasesForMonth();
+          //refresh token on invoice,expense,purchase list, weekly invoice expense purchase.
         },
         builder: (
           BuildContext context,
@@ -1495,7 +1497,7 @@ class SalesCard extends ViewModelWidget<HomeViewModel> {
                       children: [
                         TextSpan(
                           text: NumberFormat.currency(
-                                  locale: 'en_NGN', symbol: '₦')
+                                  symbol: sales.currencySymbol)
                               .currencySymbol, // The remaining digits without the symbol
                           style: GoogleFonts.openSans(
                             color: kcTextTitleColor.withOpacity(0.8),

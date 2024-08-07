@@ -74,7 +74,7 @@ Future<Database> getSalesDatabase2() async {
     join(await getDatabasesPath(), 'sales_database.db'),
     onCreate: (db, version) {
       db.execute(
-        'CREATE TABLE sales(id TEXT PRIMARY KEY, description TEXT, reference TEXT,  paid INTEGER, customerName TEXT, subtotal REAL, totalAmount REAL, discount REAL, VAT REAL, dueDate TEXT, transactionDate TEXT, customerId TEXT, overdue INTEGER, invoiceDetails TEXT, saleServiceExpenses TEXT, saleExpenses TEXT, invoiceId TEXT, saleStatusId REAL)',
+        'CREATE TABLE sales(id TEXT PRIMARY KEY, description TEXT, reference TEXT, paid INTEGER, customerName TEXT, currencySymbol TEXT, currencyName TEXT, subtotal REAL, totalAmount REAL, discount REAL, VAT REAL, dueDate TEXT, transactionDate TEXT, customerId TEXT, overdue INTEGER, invoiceDetails TEXT, saleServiceExpenses TEXT, saleExpenses TEXT, invoiceId TEXT, saleStatusId REAL)',
       );
     },
     // onUpgrade: (db, oldVersion, newVersion) {
@@ -93,7 +93,7 @@ Future<Database> getSalesDatabaseList() async {
     join(await getDatabasesPath(), 'sales_list_database.db'),
     onCreate: (db, version) {
       db.execute(
-        'CREATE TABLE sales(id TEXT PRIMARY KEY, description TEXT, reference TEXT,  paid INTEGER, customerName TEXT, subtotal REAL, totalAmount REAL, discount REAL, VAT REAL, dueDate TEXT, transactionDate TEXT, customerId TEXT, overdue INTEGER, invoiceDetails TEXT, saleServiceExpenses TEXT, saleExpenses TEXT, invoiceId TEXT, saleStatusId REAL)',
+        'CREATE TABLE sales(id TEXT PRIMARY KEY, description TEXT, reference TEXT, paid INTEGER, customerName TEXT, currencySymbol TEXT, currencyName TEXT, subtotal REAL, totalAmount REAL, discount REAL, VAT REAL, dueDate TEXT, transactionDate TEXT, customerId TEXT, overdue INTEGER, invoiceDetails TEXT, saleServiceExpenses TEXT, saleExpenses TEXT, invoiceId TEXT, saleStatusId REAL)',
       );
     },
     version: 1,

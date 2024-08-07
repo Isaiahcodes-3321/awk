@@ -24,7 +24,7 @@ class AuthenticationService {
         _signInMutation = MutationOptions(
           document: gql('''
         mutation SignIn(\$input: SignInDetails!) {
-          signIn(input: \$input) {
+          signIn(input: \$input) {  
             token{
             access_token
             refresh_token
@@ -217,9 +217,6 @@ class AuthenticationService {
         accessToken: accessToken,
         refreshToken: refreshToken,
         verified: verified ?? false);
-
-    final deviceToken = prefs.getString('device_token');
-    await addUserDeviceToken(deviceToken: deviceToken!);
 
     return AuthenticationResult(tokens: tokens);
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:stacked/stacked.dart';
 import 'package:verzo/app/app.router.dart';
@@ -79,7 +80,7 @@ class AddSales2View extends StackedView<AddSalesViewModel> with $AddSalesView {
                       children: [
                         TextSpan(
                           text: NumberFormat.currency(
-                                  locale: 'en_NGN', symbol: '₦')
+                                  symbol: viewModel.selectedCurrencySymbol)
                               .currencySymbol, // The remaining digits without the symbol
                           style: ktsFormHintText.copyWith(fontFamily: 'Roboto'),
                         ),
@@ -136,7 +137,7 @@ class AddSales2View extends StackedView<AddSalesViewModel> with $AddSalesView {
                       children: [
                         TextSpan(
                           text: NumberFormat.currency(
-                                  locale: 'en_NGN', symbol: '₦')
+                                  symbol: viewModel.selectedCurrencySymbol)
                               .currencySymbol, // The remaining digits without the symbol
                           style: ktsBorderText2.copyWith(fontFamily: 'Roboto'),
                         ),
@@ -184,7 +185,7 @@ class AddSales2View extends StackedView<AddSalesViewModel> with $AddSalesView {
                       children: [
                         TextSpan(
                           text: NumberFormat.currency(
-                                  locale: 'en_NGN', symbol: '₦')
+                                  symbol: viewModel.selectedCurrencySymbol)
                               .currencySymbol, // The remaining digits without the symbol
                           style: ktsBorderText2.copyWith(fontFamily: 'Roboto'),
                         ),
@@ -213,7 +214,7 @@ class AddSales2View extends StackedView<AddSalesViewModel> with $AddSalesView {
                       children: [
                         TextSpan(
                           text: NumberFormat.currency(
-                                  locale: 'en_NGN', symbol: '₦')
+                                  symbol: viewModel.selectedCurrencySymbol)
                               .currencySymbol, // The remaining digits without the symbol
                           style: ktsBorderText2.copyWith(fontFamily: 'Roboto'),
                         ),
@@ -287,7 +288,7 @@ class AddSales2View extends StackedView<AddSalesViewModel> with $AddSalesView {
                         children: [
                           TextSpan(
                             text: NumberFormat.currency(
-                                    locale: 'en_NGN', symbol: '₦')
+                                    symbol: viewModel.selectedCurrencySymbol)
                                 .currencySymbol, // The remaining digits without the symbol
                             style: ktsSubtitleTextAuthentication.copyWith(
                                 fontFamily: 'Roboto'),
@@ -369,7 +370,7 @@ class AddSales2View extends StackedView<AddSalesViewModel> with $AddSalesView {
                         children: [
                           TextSpan(
                             text: NumberFormat.currency(
-                                    locale: 'en_NGN', symbol: '₦')
+                                    symbol: viewModel.selectedCurrencySymbol)
                                 .currencySymbol, // The remaining digits without the symbol
                             style: ktsSubtitleTextAuthentication.copyWith(
                                 fontFamily: 'Roboto'),
@@ -403,6 +404,7 @@ class AddSales2View extends StackedView<AddSalesViewModel> with $AddSalesView {
 
   @override
   void onViewModelReady(AddSalesViewModel viewModel) async {
+    await viewModel.getCurrencySymbol();
     syncFormWithViewModel(viewModel);
   }
 
@@ -470,7 +472,14 @@ class AddSaleExpenseItemBottomSheet extends StackedView<AddSalesViewModel>
               },
             ),
             verticalSpaceSmall,
-            Text('Expense amount', style: ktsFormTitleText),
+            Text(
+              'Expense amount (${viewModel.selectedCurrencySymbol})',
+              style: GoogleFonts.openSans(
+                color: kcTextTitleColor,
+                fontSize: 15,
+                fontWeight: FontWeight.w300,
+              ).copyWith(fontFamily: 'Roboto'),
+            ),
             verticalSpaceTiny,
             TextFormField(
               cursorColor: kcPrimaryColor,
@@ -502,6 +511,55 @@ class AddSaleExpenseItemBottomSheet extends StackedView<AddSalesViewModel>
                 return null;
               },
             ),
+            verticalSpaceSmall,
+            if (viewModel.baseCurrencySymbol !=
+                viewModel.selectedCurrencySymbol)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Expense base amount (${viewModel.baseCurrencySymbol})',
+                    style: GoogleFonts.openSans(
+                      color: kcTextTitleColor,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w300,
+                    ).copyWith(fontFamily: 'Roboto'),
+                  ),
+                  verticalSpaceTiny,
+                  TextFormField(
+                    cursorColor: kcPrimaryColor,
+                    decoration: InputDecoration(
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 12),
+                        hintText: 'Enter base amount',
+                        hintStyle: ktsFormHintText,
+                        // border: defaultFormBorder,
+                        enabledBorder: defaultFormBorder,
+                        focusedBorder: defaultFocusedFormBorder,
+                        focusedErrorBorder: defaultErrorFormBorder,
+                        errorStyle: ktsErrorText,
+                        errorBorder: defaultErrorFormBorder),
+                    // textCapitalization: TextCapitalization.words,
+                    style: ktsBodyText,
+                    keyboardType: TextInputType.number,
+                    controller: saleExpenseItemBaseAmountController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a valid price';
+                      }
+
+                      // Check if the value is not a whole number (non-integer) or is negative
+                      final parsedValue = int.tryParse(value);
+                      if (parsedValue == null || parsedValue < 0) {
+                        return 'Please enter a valid non-negative whole number (integer)';
+                      }
+
+                      return null;
+                    },
+                  ),
+                ],
+              ),
+
             verticalSpaceSmallMid,
             GestureDetector(
               onTap: () {
@@ -512,6 +570,10 @@ class AddSaleExpenseItemBottomSheet extends StackedView<AddSalesViewModel>
                     index: 1,
                     description: saleExpenseItemDescriptionController.text,
                     amount: double.parse(saleExpenseItemAmountController.text),
+                    baseAmount: viewModel.baseCurrencySymbol !=
+                            viewModel.selectedCurrencySymbol
+                        ? double.parse(saleExpenseItemBaseAmountController.text)
+                        : double.parse(saleExpenseItemAmountController.text),
                   );
                   // Close the bottom sheet
                   Navigator.of(context).pop(saleExpense);
@@ -545,12 +607,14 @@ class AddSaleExpenseItemBottomSheet extends StackedView<AddSalesViewModel>
   @override
   void onDispose(AddSalesViewModel viewModel) {
     super.onDispose(viewModel);
+
     disposeForm();
   }
 
   @override
   void onViewModelReady(AddSalesViewModel viewModel) async {
-    await viewModel.getServiceByBusiness();
+    // await viewModel.getServiceByBusiness();
+    await viewModel.getCurrencySymbol();
     syncFormWithViewModel(viewModel);
   }
 
@@ -642,7 +706,14 @@ class AddServiceExpenseItemBottomSheet extends StackedView<AddSalesViewModel>
               },
             ),
             verticalSpaceSmall,
-            Text('Amount', style: ktsFormTitleText),
+            Text(
+              'Amount (${viewModel.selectedCurrencySymbol})',
+              style: GoogleFonts.openSans(
+                color: kcTextTitleColor,
+                fontSize: 15,
+                fontWeight: FontWeight.w300,
+              ).copyWith(fontFamily: 'Roboto'),
+            ),
             verticalSpaceTiny,
             TextFormField(
               cursorColor: kcPrimaryColor,
@@ -674,6 +745,51 @@ class AddServiceExpenseItemBottomSheet extends StackedView<AddSalesViewModel>
               },
             ),
             verticalSpaceSmall,
+            if (viewModel.baseCurrencySymbol !=
+                viewModel.selectedCurrencySymbol)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Base Amount (${viewModel.baseCurrencySymbol})',
+                    style: GoogleFonts.openSans(
+                      color: kcTextTitleColor,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w300,
+                    ).copyWith(fontFamily: 'Roboto'),
+                  ),
+                  verticalSpaceTiny,
+                  TextFormField(
+                    cursorColor: kcPrimaryColor,
+                    decoration: InputDecoration(
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 12),
+                        hintText: 'Enter base amount',
+                        hintStyle: ktsFormHintText,
+                        // border: defaultFormBorder,
+                        enabledBorder: defaultFormBorder,
+                        focusedBorder: defaultFocusedFormBorder,
+                        focusedErrorBorder: defaultErrorFormBorder,
+                        errorStyle: ktsErrorText,
+                        errorBorder: defaultErrorFormBorder),
+                    style: ktsBodyText,
+                    keyboardType: TextInputType.number,
+                    controller: serviceExpenseBaseAmountController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a valid price';
+                      }
+                      // Check if the value is not a whole number (non-integer) or is negative
+                      final parsedValue = int.tryParse(value);
+                      if (parsedValue == null || parsedValue < 0) {
+                        return 'Please enter a valid non-negative whole number (integer)';
+                      }
+                      return null;
+                    },
+                  ),
+                ],
+              ),
+
             Text('Description', style: ktsFormTitleText),
             verticalSpaceTiny,
             TextFormField(
@@ -706,12 +822,17 @@ class AddServiceExpenseItemBottomSheet extends StackedView<AddSalesViewModel>
                 if (viewModel.formKeyBottomSheetSaleServiceExpense.currentState!
                     .validate()) {
                   SaleServiceExpenseEntry saleService = SaleServiceExpenseEntry(
-                      id: '',
-                      index: 1,
-                      description: serviceExpenseDescriptionController.text,
-                      amount: num.parse(serviceExpenseAmountController.text),
-                      serviceId: serviceIdController.text,
-                      serviceName: viewModel.selectedServiceName);
+                    id: '',
+                    index: 1,
+                    description: serviceExpenseDescriptionController.text,
+                    amount: num.parse(serviceExpenseAmountController.text),
+                    serviceId: serviceIdController.text,
+                    serviceName: viewModel.selectedServiceName,
+                    baseAmount: viewModel.baseCurrencySymbol !=
+                            viewModel.selectedCurrencySymbol
+                        ? double.parse(serviceExpenseBaseAmountController.text)
+                        : double.parse(serviceExpenseAmountController.text),
+                  );
 
                   // Close the bottom sheet
                   Navigator.of(context).pop(saleService);
@@ -753,6 +874,7 @@ class AddServiceExpenseItemBottomSheet extends StackedView<AddSalesViewModel>
 
   @override
   void onViewModelReady(AddSalesViewModel viewModel) async {
+    await viewModel.getCurrencySymbol();
     await viewModel.getServiceByBusiness();
     syncFormWithViewModel(viewModel);
   }

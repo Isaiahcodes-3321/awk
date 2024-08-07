@@ -1,11 +1,13 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.locator.dart';
 import 'package:verzo/app/app.router.dart';
 import 'package:verzo/services/authentication_service.dart';
+import 'package:verzo/services/business_creation_service.dart';
 import 'package:verzo/services/products_services_service.dart';
 import 'package:verzo/services/sales_service.dart';
 import 'package:verzo/ui/common/app_colors.dart';
@@ -17,6 +19,7 @@ import 'package:verzo/ui/views/add_sales/add_sales_view.form.dart';
 class AddSalesViewModel extends FormViewModel {
   final navigationService = locator<NavigationService>();
   final _saleService = locator<SalesService>();
+  final businessCreationService = locator<BusinessCreationService>();
   final _serviceService = locator<ProductsServicesService>();
   final authService = locator<AuthenticationService>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -26,11 +29,18 @@ class AddSalesViewModel extends FormViewModel {
   final GlobalKey<FormState> formKeyBottomSheetSaleServiceExpense =
       GlobalKey<FormState>();
   List<Customers> customerList = [];
+  List<Currency> currencyList = [];
   List<Services> serviceList = [];
   List<DropdownMenuItem<String>> customerdropdownItems = [];
+  List<DropdownMenuItem<String>> currencydropdownItems = [];
+  TextEditingController currencyIdController = TextEditingController();
   List<DropdownMenuItem<String>> servicedropdownItems = [];
 
   String selectedServiceName = '';
+  String? selectedCurrencySymbol;
+  String? baseCurrencySymbol;
+  String? currencyIdValue;
+  num basePrice = 0;
   List<Items> selectedItems = [];
   List<Items> newlySelectedItems = [];
   List<SaleExpenses> saleExpenseItems = [];
@@ -154,6 +164,75 @@ class AddSalesViewModel extends FormViewModel {
     return customers;
   }
 
+  // Future<List<Currency>> getCurrencies() async {
+  //   final result = await authService.refreshToken();
+  //   if (result.error != null) {
+  //     await navigationService.replaceWithLoginView();
+  //   }
+  //   final currencies = await businessCreationService.getCurrencies();
+
+  //   // Find the NGN currency and set it as the default value
+  //   final ngnCurrency =
+  //       currencies.firstWhere((currency) => currency.currency == 'NGN');
+  //   currencyIdController.text = ngnCurrency.id.toString();
+  //   currencydropdownItems = currencies.map((currency) {
+  //     return DropdownMenuItem<String>(
+  //       value: currency.id.toString(),
+  //       child: Text('(${currency.symbol}) ${currency.currency}'),
+  //     );
+  //   }).toList();
+  //   return currencies;
+  // }
+
+  Future<void> setDefaultCurrency() async {
+    final prefs = await SharedPreferences.getInstance();
+    String currency = prefs.getString('currency') ?? '';
+    final currencies = await businessCreationService.getCurrencies();
+
+    Currency defaultCurrency;
+
+    defaultCurrency = currencies.firstWhere(
+      (cur) => cur.currency == currency,
+      orElse: () => currencies.first,
+    );
+
+// Set default currency ID and symbol
+    currencyIdController.text = defaultCurrency.id;
+    rebuildUi();
+    selectedCurrencySymbol = defaultCurrency.symbol;
+
+    currencydropdownItems = currencies.map((currency) {
+      return DropdownMenuItem<String>(
+        value: currency.id.toString(),
+        child: Text('(${currency.symbol}) ${currency.currency}'),
+      );
+    }).toList();
+    currencyList = currencies;
+    rebuildUi();
+  }
+
+  Future<List<Currency>> getCurrencies() async {
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
+    await setDefaultCurrency();
+    final currencies = await businessCreationService.getCurrencies();
+    rebuildUi();
+    return currencies;
+  }
+
+  Future<void> setSelectedCurrencySymbol(String symbol) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('selectedSymbol', symbol);
+  }
+
+  Future<void> getCurrencySymbol() async {
+    final prefs = await SharedPreferences.getInstance();
+    selectedCurrencySymbol = prefs.getString('selectedSymbol') ?? '';
+    baseCurrencySymbol = prefs.getString('symbol') ?? '';
+  }
+
   void addSaleExpenseItem(SaleExpenses saleExpense) {
     currentIndex++; // Increment the index for each new expense detail
     saleExpense.index = currentIndex;
@@ -214,6 +293,9 @@ class AddSalesViewModel extends FormViewModel {
           id: item.id,
           type: item.type,
           price: item.price,
+          basePrice: baseCurrencySymbol != selectedCurrencySymbol
+              ? basePrice
+              : item.price,
           index: i + 1,
           quantity: item.quantity,
           name: item.title);
@@ -278,6 +360,7 @@ class AddSalesViewModel extends FormViewModel {
       item: convertItemsToItemDetails(selectedItems),
       dueDate: dueDateValue ?? '',
       dateOfIssue: dateOfIssueValue ?? '',
+      currencyId: currencyIdController.text,
       vat: 7.5 * 100,
     );
   }
@@ -330,6 +413,8 @@ class AddSalesViewModel extends FormViewModel {
   void navigateBack() => navigationService.back();
   void navigateTo2() => navigationService.navigateTo(Routes.addSales2View);
   void openEditBottomSheet(Items item) {
+    // Temporary variable to store the base price
+    basePrice = item.price;
     showModalBottomSheet(
       backgroundColor: kcButtonTextColor,
       isScrollControlled: true,
@@ -356,7 +441,14 @@ class AddSalesViewModel extends FormViewModel {
                       style: ktsBottomSheetHeaderText,
                     ),
                     verticalSpaceSmallMid,
-                    Text('Price', style: ktsFormTitleText),
+                    Text(
+                      'Price ($selectedCurrencySymbol)',
+                      style: GoogleFonts.openSans(
+                        color: kcTextTitleColor,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w300,
+                      ).copyWith(fontFamily: 'Roboto'),
+                    ),
                     verticalSpaceTiny,
                     TextFormField(
                       cursorColor: kcPrimaryColor,
@@ -396,6 +488,58 @@ class AddSalesViewModel extends FormViewModel {
                         return null;
                       },
                     ),
+                    verticalSpaceSmall,
+                    if (baseCurrencySymbol != selectedCurrencySymbol)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Base Price ($baseCurrencySymbol)',
+                            style: GoogleFonts.openSans(
+                              color: kcTextTitleColor,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w300,
+                            ).copyWith(fontFamily: 'Roboto'),
+                          ),
+                          verticalSpaceTiny,
+                          TextFormField(
+                            cursorColor: kcPrimaryColor,
+                            initialValue: item.price.toStringAsFixed(0),
+                            // Handle price input
+                            onChanged: (value) {
+                              basePrice = num.tryParse(value) ?? item.price;
+                            },
+                            decoration: InputDecoration(
+                                contentPadding:
+                                    const EdgeInsets.symmetric(horizontal: 12),
+
+                                // border: defaultFormBorder,
+                                enabledBorder: defaultFormBorder,
+                                focusedBorder: defaultFocusedFormBorder,
+                                focusedErrorBorder: defaultErrorFormBorder,
+                                errorStyle: ktsErrorText,
+                                errorBorder: defaultErrorFormBorder),
+                            // textCapitalization: TextCapitalization.words,
+                            style: ktsBodyText,
+                            // controller: mobileController,
+                            keyboardType: TextInputType.number,
+
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter a valid number';
+                              }
+
+                              // Check if the value is not a whole number (non-integer) or is negative
+                              final parsedValue = int.tryParse(value);
+                              if (parsedValue == null || parsedValue < 0) {
+                                return 'Please enter a valid non-negative whole number (integer)';
+                              }
+
+                              return null;
+                            },
+                          ),
+                        ],
+                      ),
                     verticalSpaceSmall,
                     Text('Quantity', style: ktsFormTitleText),
                     verticalSpaceTiny,

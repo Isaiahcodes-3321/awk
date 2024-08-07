@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:stacked/stacked.dart';
@@ -10,6 +11,8 @@ import 'package:verzo/services/authentication_service.dart';
 import 'package:verzo/services/expense_service.dart';
 import 'package:verzo/ui/common/database_helper.dart';
 import 'package:verzo/ui/common/typesense.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 class ExpenseViewModel extends FutureViewModel<List<Expenses>> {
   final navigationService = locator<NavigationService>();
@@ -20,6 +23,7 @@ class ExpenseViewModel extends FutureViewModel<List<Expenses>> {
 
   List<Expenses> expenses = []; // Original list of expenses
   List<Expenses> searchResults = [];
+  String? timeZone;
 
   // @override
   // Future<List<Expenses>> futureToRun() => getExpenseByBusiness();
@@ -39,8 +43,20 @@ class ExpenseViewModel extends FutureViewModel<List<Expenses>> {
   //   listenToReactiveValues([allExpenses]);
   // }
 
+  Future<void> _initializeTimeZone() async {
+    final prefs = await SharedPreferences.getInstance();
+    timeZone = prefs.getString('timeZone') ?? 'UTC';
+    tz.initializeTimeZones();
+  }
+
+  tz.TZDateTime convertToTimeZone(DateTime utcDate) {
+    final location = tz.getLocation(timeZone!);
+    return tz.TZDateTime.from(utcDate, location);
+  }
+
   @override
   Future<List<Expenses>> futureToRun() async {
+    _initializeTimeZone();
     final db = await getExpenseDatabaseList();
 
     //retrieveExpensesfromDatabase
@@ -159,5 +175,13 @@ class ExpenseViewModel extends FutureViewModel<List<Expenses>> {
 
   Future reload() async {
     runBusyFuture(reloadExpense());
+  }
+
+  Future<String> getFormattedExpenseDate(DateTime utcDate) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final timeZone = prefs.getString('timeZone') ?? 'UTC';
+    final location = tz.getLocation(timeZone);
+    final localDate = tz.TZDateTime.from(utcDate, location);
+    return DateFormat('yyyy-MM-dd – kk:mm').format(localDate);
   }
 }

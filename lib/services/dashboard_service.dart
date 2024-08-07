@@ -18,6 +18,7 @@ class DashboardService {
   final QueryOptions _viewCardTransactionsQuery;
   final QueryOptions _getCardByIdQuery;
   final QueryOptions _getBusinessesByUserIdQuery;
+  final QueryOptions _getBusinessByIdQuery;
   final QueryOptions _getUserByIdQuery;
   final QueryOptions _getUsersByBusinessQuery;
   final QueryOptions _getExpensesForWeekQuery;
@@ -66,6 +67,27 @@ class DashboardService {
             role{
               roleName
             }
+            }
+            }
+            '''),
+        ),
+        _getBusinessByIdQuery = QueryOptions(
+          document: gql('''
+        query getBusinessById(\$businessId: String!){
+          getBusinessById(businessId: \$businessId) {
+            id
+            businessName
+            businessEmail
+            businessMobile
+            businessCategoryId
+            country{
+              countryName
+              timeZone
+              currency{
+                currency
+                symbol
+                  }
+                }
             }
             }
             '''),
@@ -254,8 +276,8 @@ class DashboardService {
         ),
         _totalWeeklyInvoicesAmountQuery = QueryOptions(
           document: gql('''
-        query TotalWeeklyInvoicesAmount(\$businessId: String!,\$weekly: Boolean){
-          totalWeeklyInvoicesAmount (businessId: \$businessId, weekly: \$weekly){
+        query TotalWeeklyInvoicesAmount(\$input: WeeklyInvoiceAmountInput!){
+          totalWeeklyInvoicesAmount (input: \$input){
             totalInvoiceAmountForWeek
             percentageOfIncreaseInInvoicesThisWeek
             totalPendingInvoiceAmountThisWeek
@@ -268,8 +290,8 @@ class DashboardService {
         ),
         _totalMonthlyInvoicesAmountQuery = QueryOptions(
           document: gql('''
-        query TotalMonthlyInvoicesAmount (\$businessId: String!,\$monthly: Boolean) {
-          totalMonthlyInvoicesAmount (businessId: \$businessId, monthly: \$monthly) {
+        query TotalMonthlyInvoicesAmount (\$input: MonthlyInvoiceAmountInput!) {
+          totalMonthlyInvoicesAmount (input: \$input) {
             totalInvoiceAmountForMonth
             percentageIncreaseInInvoicesThisMonth
             totalPendingInvoiceAmountThisMonth
@@ -681,6 +703,7 @@ class DashboardService {
               businessEmail: business['businessEmail'] ?? '',
               businessMobile: business['businessMobile'] ?? '',
               businessCategoryId: business['businessCategoryId'] ?? '',
+
               // Add other business fields as needed
             ))
         .toList();
@@ -702,6 +725,59 @@ class DashboardService {
     // }
 
     return UserAndBusinessResult(user: user, businesses: businesses);
+  }
+
+  Future<Business> getBusinessById() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('access_token');
+    final businessId = prefs.getString('businessId');
+
+    if (token == null) {
+      throw GraphQLAuthError(
+        message: "Access token not found",
+      );
+    }
+// Use the token to create an authlink
+    final authLink = AuthLink(
+      getToken: () => 'Bearer $token',
+    );
+
+    // Create a new GraphQLClient with the authlink
+    final newClient = GraphQLClient(
+      cache: GraphQLCache(),
+      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+    );
+    final QueryOptions options = QueryOptions(
+      document: _getBusinessByIdQuery.document,
+      variables: {'businessId': businessId},
+    );
+
+    final QueryResult businessByIdResult = await newClient.query(options);
+
+    if (businessByIdResult.hasException) {
+      throw GraphQLAuthError(
+        message: businessByIdResult.exception?.graphqlErrors.first.message
+            .toString(),
+      );
+    }
+
+    final businessByIdData = businessByIdResult.data?['getBusinessById'];
+    final countryData = businessByIdData['country'];
+    final currencyData = countryData['currency'];
+
+    final Business businessById = Business(
+      id: businessByIdData['id'],
+      businessName: businessByIdData['businessName'],
+      businessEmail: businessByIdData['businessEmail'],
+      businessMobile: businessByIdData['businessMobile'],
+      businessCategoryId: businessByIdData['businessCategoryId'],
+      countryName: countryData['countryName'],
+      timeZone: countryData['timeZone'],
+      currency: currencyData['currency'],
+      symbol: currencyData['symbol'],
+    );
+
+    return businessById;
   }
 
   Future<UserAndRoleResult> getUserAndRoleData() async {
@@ -1194,7 +1270,9 @@ class DashboardService {
   }
 
   Future<WeeklyInvoices> totalWeeklyInvoicesAmount(
-      {required String businessId, bool? weekly = true}) async {
+      {required String businessId,
+      bool? weekly = true,
+      String? currencyId}) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('access_token');
     final businessId = prefs.getString('businessId');
@@ -1216,7 +1294,13 @@ class DashboardService {
 
     final QueryOptions options = QueryOptions(
       document: _totalWeeklyInvoicesAmountQuery.document,
-      variables: {'businessId': businessId, 'weekly': weekly},
+      variables: {
+        'input': {
+          'businessId': businessId,
+          'weekly': weekly,
+          'currencyId': currencyId,
+        },
+      },
     );
 
     final QueryResult expensesResult = await newClient.query(options);
@@ -1267,7 +1351,9 @@ class DashboardService {
   }
 
   Future<MonthlyInvoices> totalMonthlyInvoicesAmount(
-      {required String businessId, bool? monthly = true}) async {
+      {required String businessId,
+      bool? monthly = true,
+      String? currencyId}) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('access_token');
     final businessId = prefs.getString('businessId');
@@ -1289,7 +1375,13 @@ class DashboardService {
 
     final QueryOptions options = QueryOptions(
       document: _totalMonthlyInvoicesAmountQuery.document,
-      variables: {'businessId': businessId, 'monthly': monthly},
+      variables: {
+        'input': {
+          'businessId': businessId,
+          'monthly': monthly,
+          'currencyId': currencyId,
+        },
+      },
     );
 
     final QueryResult expensesResult = await newClient.query(options);
@@ -1544,13 +1636,21 @@ class Business {
   late final String businessEmail;
   late final String businessMobile;
   late final String businessCategoryId;
+  String? countryName;
+  String? timeZone;
+  String? currency;
+  String? symbol;
 
   Business(
       {required this.id,
       required this.businessName,
       required this.businessEmail,
       required this.businessMobile,
-      required this.businessCategoryId});
+      required this.businessCategoryId,
+      this.countryName,
+      this.timeZone,
+      this.currency,
+      this.symbol});
 }
 
 class BusinessCard {

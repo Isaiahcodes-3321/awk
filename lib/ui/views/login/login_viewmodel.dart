@@ -32,14 +32,20 @@ class LoginViewModel extends FormViewModel {
   // }
 
   Future<void> getUserAndRoleData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final deviceToken = prefs.getString('device_token');
     final result = await _dashboardService.getUserAndRoleData();
 
     if (result.roleName != 'Owner') {
       await getUserAndBusinessData();
+      await _authenticationService.addUserDeviceToken(
+          deviceToken: deviceToken!);
       await navigationService.replaceWith(Routes.employeeHomeView);
     } else {
       await getUserAndBusinessData();
       // navigate to success route
+      await _authenticationService.addUserDeviceToken(
+          deviceToken: deviceToken!);
       await navigationService.replaceWith(Routes.homeView);
     }
   }

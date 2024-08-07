@@ -130,7 +130,9 @@ Future<List<Sales>> searchSales(
         VAT: 0,
         subtotal: 0,
         discount: 0,
-        saleStatusId: 0);
+        saleStatusId: 0,
+        currencyName: '',
+        currencySymbol: '');
   }).toList();
 
   return salesList;

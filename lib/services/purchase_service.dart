@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 class PurchaseService {
   ValueNotifier<GraphQLClient> client;
@@ -260,6 +262,7 @@ class PurchaseService {
   Future<Purchases> getPurchaseById({required String purchaseId}) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('access_token');
+    final timeZone = prefs.getString('timeZone') ?? 'UTC';
 
     if (token == null) {
       throw GraphQLPurchaseError(
@@ -292,6 +295,15 @@ class PurchaseService {
 
     final purchaseByIdData = purchaseByIdResult.data?['getPurchaseById'];
 
+    final location = tz.getLocation(timeZone);
+    // Parse the UTC date string to DateTime
+    final utcDate = DateTime.parse(purchaseByIdData['transactionDate']).toUtc();
+    // Convert UTC date to local time zone
+    final localDate = tz.TZDateTime.from(utcDate, location);
+    // Format localDate as a string (adjust the format as needed)
+    // final formattedDate = DateFormat('yyyy-MM-ddTHH:mm:ss').format(localDate);
+    final formattedDate = DateFormat('yyyy-MM-dd').format(localDate);
+
     final List<dynamic> purchaseItemsData =
         purchaseByIdData['purchaseItems'] ?? [];
     final List<PurchaseItemDetail> purchaseItems =
@@ -311,7 +323,7 @@ class PurchaseService {
         paid: purchaseByIdData['paid'] ?? false,
         id: purchaseByIdData['id'],
         description: purchaseByIdData['description'],
-        transactionDate: purchaseByIdData['transactionDate'],
+        transactionDate: formattedDate,
         merchantId: purchaseByIdData['merchantId'],
         merchantName: purchaseByIdData['merchant']['name'],
         merchantEmail: purchaseByIdData['merchant']['email'],
@@ -739,6 +751,7 @@ class PurchaseService {
   Future<List<Purchases>> getPurchaseByBusiness(
       {required String businessId, num? take}) async {
     final prefs = await SharedPreferences.getInstance();
+    final timeZone = prefs.getString('timeZone') ?? 'UTC';
     final token = prefs.getString('access_token');
 
     if (token == null) {
@@ -776,10 +789,19 @@ class PurchaseService {
 
     final List<Purchases> purchases = purchaseData.map((data) {
       final merchantData = data['merchant']; // Access merchant data
+
+      final location = tz.getLocation(timeZone);
+      // Parse the UTC date string to DateTime
+      final utcDate = DateTime.parse(data['transactionDate']).toUtc();
+      // Convert UTC date to local time zone
+      final localDate = tz.TZDateTime.from(utcDate, location);
+      // Format localDate as a string (adjust the format as needed)
+      // final formattedDate = DateFormat('yyyy-MM-ddTHH:mm:ss').format(localDate);
+      final formattedDate = DateFormat('yyyy-MM-dd').format(localDate);
       return Purchases(
           id: data['id'],
           description: data['description'],
-          transactionDate: data['transactionDate'],
+          transactionDate: formattedDate,
           reference: data['reference'],
           merchantId: '',
           merchantName: merchantData['name'],
@@ -797,6 +819,7 @@ class PurchaseService {
       {required String businessId, num? take}) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('access_token');
+    final timeZone = prefs.getString('timeZone') ?? 'UTC';
 
     if (token == null) {
       throw GraphQLPurchaseError(
@@ -834,10 +857,19 @@ class PurchaseService {
 
     final List<Purchases> purchases = purchaseData.map((data) {
       final merchantData = data['merchant']; // Access merchant data
+
+      final location = tz.getLocation(timeZone);
+      // Parse the UTC date string to DateTime
+      final utcDate = DateTime.parse(data['transactionDate']).toUtc();
+      // Convert UTC date to local time zone
+      final localDate = tz.TZDateTime.from(utcDate, location);
+      // Format localDate as a string (adjust the format as needed)
+      // final formattedDate = DateFormat('yyyy-MM-ddTHH:mm:ss').format(localDate);
+      final formattedDate = DateFormat('yyyy-MM-dd').format(localDate);
       return Purchases(
           id: data['id'],
           description: data['description'],
-          transactionDate: data['transactionDate'],
+          transactionDate: formattedDate,
           reference: data['reference'],
           merchantId: '',
           merchantName: merchantData['name'],

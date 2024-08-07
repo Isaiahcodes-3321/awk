@@ -14,6 +14,8 @@ class BusinessCreationService {
   final MutationOptions _updateBusinessMutation;
 
   final QueryOptions _getBusinessCategoriesQuery;
+  final QueryOptions _getCountriesQuery;
+  final QueryOptions _getCurrenciesQuery;
   final QueryOptions _getBusinessTasksQuery;
   final QueryOptions _viewBusinessAccountQuery;
   final QueryOptions _viewBusinessAccountStatementQuery;
@@ -70,6 +72,27 @@ class BusinessCreationService {
           getBusinessCategories {
             id
             categoryName
+            }
+            }
+            '''),
+        ),
+        _getCountriesQuery = QueryOptions(
+          document: gql('''
+        query GetCountries {
+          getCountries {
+            id
+            countryName
+            }
+            }
+            '''),
+        ),
+        _getCurrenciesQuery = QueryOptions(
+          document: gql('''
+        query GetCurrencies {
+          getCurrencies {
+            id
+            currency
+            symbol
             }
             }
             '''),
@@ -229,11 +252,13 @@ class BusinessCreationService {
     return BusinessOTPResult(OTP: OTP);
   }
 
-  Future<BusinessCreationResult> createBusinessProfile(
-      {required String businessName,
-      required String businessEmail,
-      required String businessMobile,
-      required String businessCategoryId}) async {
+  Future<BusinessCreationResult> createBusinessProfile({
+    required String businessName,
+    required String businessEmail,
+    required String businessMobile,
+    required String businessCategoryId,
+    required String countryId,
+  }) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('access_token');
 
@@ -264,6 +289,7 @@ class BusinessCreationService {
           'businessEmail': businessEmail,
           'businessMobile': businessMobile,
           'businessCategoryId': businessCategoryId,
+          'countryId': countryId,
         },
       },
     );
@@ -448,6 +474,59 @@ class BusinessCreationService {
     return businessCategories;
   }
 
+  Future<List<Country>> getCountries() async {
+    final QueryOptions options = QueryOptions(
+      document: _getCountriesQuery.document,
+    );
+
+    final QueryResult countriesResult = await client.value.query(options);
+
+    if (countriesResult.hasException) {
+      GraphQLBusinessError(
+        message:
+            countriesResult.exception?.graphqlErrors.first.message.toString(),
+      );
+    }
+
+    final List countriesData = countriesResult.data?['getCountries'] ?? [];
+
+    final List<Country> countries = countriesData.map((data) {
+      return Country(
+        id: data['id'],
+        countryName: data['countryName'],
+      );
+    }).toList();
+
+    return countries;
+  }
+
+  Future<List<Currency>> getCurrencies() async {
+    final QueryOptions options = QueryOptions(
+      document: _getCurrenciesQuery.document,
+    );
+
+    final QueryResult currenciesResult = await client.value.query(options);
+
+    if (currenciesResult.hasException) {
+      GraphQLBusinessError(
+        message:
+            currenciesResult.exception?.graphqlErrors.first.message.toString(),
+      );
+    }
+
+    final List currenciesData = currenciesResult.data?['getCurrencies'] ?? [];
+
+    final List<Currency> currencies = currenciesData.map((data) {
+      return Currency(
+        id: data['id'],
+        currency: data['currency'],
+        symbol: data['symbol'],
+      );
+    }).toList();
+
+    return currencies;
+  }
+
   Future<List<BusinessTask>> getBusinessTasks(
       {required String businessId, num? take, String? cursor}) async {
     final prefs = await SharedPreferences.getInstance();
@@ -567,6 +646,21 @@ class BusinessCategory {
   final String categoryName;
 
   BusinessCategory({required this.id, required this.categoryName});
+}
+
+class Country {
+  final String id;
+  final String countryName;
+
+  Country({required this.id, required this.countryName});
+}
+
+class Currency {
+  final String id;
+  final String currency;
+  final String symbol;
+
+  Currency({required this.id, required this.currency, required this.symbol});
 }
 
 class BusinessTask {

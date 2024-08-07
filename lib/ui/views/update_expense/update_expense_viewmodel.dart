@@ -55,7 +55,7 @@ class UpdateExpenseViewModel extends FormViewModel {
     updateMerchantIdController.text = expense.merchantId;
     updateMerchantEmailController.text = expense.merchantEmail!;
     updateDescriptionController.text = expense.description;
-    updateExpenseDateController.text = expense.expenseDate;
+    updateExpenseDateController.text = expense.expenseDate as String;
 
     expenseItems = expense.expenseItems;
     // recurringValue = expense.recurring;

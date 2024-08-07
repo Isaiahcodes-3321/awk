@@ -14,13 +14,16 @@ const bool _autoTextFieldValidation = true;
 const String DescriptionValueKey = 'description';
 const String NoteValueKey = 'note';
 const String CustomerIdValueKey = 'customerId';
+const String CurrencyIdValueKey = 'currencyId';
 const String DueDateValueKey = 'dueDate';
 const String DateOfIssueValueKey = 'dateOfIssue';
 const String ServiceIdValueKey = 'serviceId';
 const String ServiceExpenseAmountValueKey = 'serviceExpenseAmount';
+const String ServiceExpenseBaseAmountValueKey = 'serviceExpenseBaseAmount';
 const String ServiceExpenseDescriptionValueKey = 'serviceExpenseDescription';
 const String SaleExpenseItemDescriptionValueKey = 'saleExpenseItemDescription';
 const String SaleExpenseItemAmountValueKey = 'saleExpenseItemAmount';
+const String SaleExpenseItemBaseAmountValueKey = 'saleExpenseItemBaseAmount';
 
 final Map<String, TextEditingController> _AddSalesViewTextEditingControllers =
     {};
@@ -31,13 +34,16 @@ final Map<String, String? Function(String?)?> _AddSalesViewTextValidations = {
   DescriptionValueKey: null,
   NoteValueKey: null,
   CustomerIdValueKey: null,
+  CurrencyIdValueKey: null,
   DueDateValueKey: null,
   DateOfIssueValueKey: null,
   ServiceIdValueKey: null,
   ServiceExpenseAmountValueKey: null,
+  ServiceExpenseBaseAmountValueKey: null,
   ServiceExpenseDescriptionValueKey: null,
   SaleExpenseItemDescriptionValueKey: null,
   SaleExpenseItemAmountValueKey: null,
+  SaleExpenseItemBaseAmountValueKey: null,
 };
 
 mixin $AddSalesView {
@@ -47,6 +53,8 @@ mixin $AddSalesView {
       _getFormTextEditingController(NoteValueKey);
   TextEditingController get customerIdController =>
       _getFormTextEditingController(CustomerIdValueKey);
+  TextEditingController get currencyIdController =>
+      _getFormTextEditingController(CurrencyIdValueKey);
   TextEditingController get dueDateController =>
       _getFormTextEditingController(DueDateValueKey);
   TextEditingController get dateOfIssueController =>
@@ -55,27 +63,36 @@ mixin $AddSalesView {
       _getFormTextEditingController(ServiceIdValueKey);
   TextEditingController get serviceExpenseAmountController =>
       _getFormTextEditingController(ServiceExpenseAmountValueKey);
+  TextEditingController get serviceExpenseBaseAmountController =>
+      _getFormTextEditingController(ServiceExpenseBaseAmountValueKey);
   TextEditingController get serviceExpenseDescriptionController =>
       _getFormTextEditingController(ServiceExpenseDescriptionValueKey);
   TextEditingController get saleExpenseItemDescriptionController =>
       _getFormTextEditingController(SaleExpenseItemDescriptionValueKey);
   TextEditingController get saleExpenseItemAmountController =>
       _getFormTextEditingController(SaleExpenseItemAmountValueKey);
+  TextEditingController get saleExpenseItemBaseAmountController =>
+      _getFormTextEditingController(SaleExpenseItemBaseAmountValueKey);
 
   FocusNode get descriptionFocusNode => _getFormFocusNode(DescriptionValueKey);
   FocusNode get noteFocusNode => _getFormFocusNode(NoteValueKey);
   FocusNode get customerIdFocusNode => _getFormFocusNode(CustomerIdValueKey);
+  FocusNode get currencyIdFocusNode => _getFormFocusNode(CurrencyIdValueKey);
   FocusNode get dueDateFocusNode => _getFormFocusNode(DueDateValueKey);
   FocusNode get dateOfIssueFocusNode => _getFormFocusNode(DateOfIssueValueKey);
   FocusNode get serviceIdFocusNode => _getFormFocusNode(ServiceIdValueKey);
   FocusNode get serviceExpenseAmountFocusNode =>
       _getFormFocusNode(ServiceExpenseAmountValueKey);
+  FocusNode get serviceExpenseBaseAmountFocusNode =>
+      _getFormFocusNode(ServiceExpenseBaseAmountValueKey);
   FocusNode get serviceExpenseDescriptionFocusNode =>
       _getFormFocusNode(ServiceExpenseDescriptionValueKey);
   FocusNode get saleExpenseItemDescriptionFocusNode =>
       _getFormFocusNode(SaleExpenseItemDescriptionValueKey);
   FocusNode get saleExpenseItemAmountFocusNode =>
       _getFormFocusNode(SaleExpenseItemAmountValueKey);
+  FocusNode get saleExpenseItemBaseAmountFocusNode =>
+      _getFormFocusNode(SaleExpenseItemBaseAmountValueKey);
 
   TextEditingController _getFormTextEditingController(
     String key, {
@@ -104,15 +121,20 @@ mixin $AddSalesView {
     descriptionController.addListener(() => _updateFormData(model));
     noteController.addListener(() => _updateFormData(model));
     customerIdController.addListener(() => _updateFormData(model));
+    currencyIdController.addListener(() => _updateFormData(model));
     dueDateController.addListener(() => _updateFormData(model));
     dateOfIssueController.addListener(() => _updateFormData(model));
     serviceIdController.addListener(() => _updateFormData(model));
     serviceExpenseAmountController.addListener(() => _updateFormData(model));
+    serviceExpenseBaseAmountController
+        .addListener(() => _updateFormData(model));
     serviceExpenseDescriptionController
         .addListener(() => _updateFormData(model));
     saleExpenseItemDescriptionController
         .addListener(() => _updateFormData(model));
     saleExpenseItemAmountController.addListener(() => _updateFormData(model));
+    saleExpenseItemBaseAmountController
+        .addListener(() => _updateFormData(model));
 
     _updateFormData(model, forceValidate: _autoTextFieldValidation);
   }
@@ -127,15 +149,20 @@ mixin $AddSalesView {
     descriptionController.addListener(() => _updateFormData(model));
     noteController.addListener(() => _updateFormData(model));
     customerIdController.addListener(() => _updateFormData(model));
+    currencyIdController.addListener(() => _updateFormData(model));
     dueDateController.addListener(() => _updateFormData(model));
     dateOfIssueController.addListener(() => _updateFormData(model));
     serviceIdController.addListener(() => _updateFormData(model));
     serviceExpenseAmountController.addListener(() => _updateFormData(model));
+    serviceExpenseBaseAmountController
+        .addListener(() => _updateFormData(model));
     serviceExpenseDescriptionController
         .addListener(() => _updateFormData(model));
     saleExpenseItemDescriptionController
         .addListener(() => _updateFormData(model));
     saleExpenseItemAmountController.addListener(() => _updateFormData(model));
+    saleExpenseItemBaseAmountController
+        .addListener(() => _updateFormData(model));
 
     _updateFormData(model, forceValidate: _autoTextFieldValidation);
   }
@@ -148,15 +175,20 @@ mixin $AddSalesView {
           DescriptionValueKey: descriptionController.text,
           NoteValueKey: noteController.text,
           CustomerIdValueKey: customerIdController.text,
+          CurrencyIdValueKey: currencyIdController.text,
           DueDateValueKey: dueDateController.text,
           DateOfIssueValueKey: dateOfIssueController.text,
           ServiceIdValueKey: serviceIdController.text,
           ServiceExpenseAmountValueKey: serviceExpenseAmountController.text,
+          ServiceExpenseBaseAmountValueKey:
+              serviceExpenseBaseAmountController.text,
           ServiceExpenseDescriptionValueKey:
               serviceExpenseDescriptionController.text,
           SaleExpenseItemDescriptionValueKey:
               saleExpenseItemDescriptionController.text,
           SaleExpenseItemAmountValueKey: saleExpenseItemAmountController.text,
+          SaleExpenseItemBaseAmountValueKey:
+              saleExpenseItemBaseAmountController.text,
         }),
     );
 
@@ -203,18 +235,24 @@ extension ValueProperties on FormStateHelper {
   String? get noteValue => this.formValueMap[NoteValueKey] as String?;
   String? get customerIdValue =>
       this.formValueMap[CustomerIdValueKey] as String?;
+  String? get currencyIdValue =>
+      this.formValueMap[CurrencyIdValueKey] as String?;
   String? get dueDateValue => this.formValueMap[DueDateValueKey] as String?;
   String? get dateOfIssueValue =>
       this.formValueMap[DateOfIssueValueKey] as String?;
   String? get serviceIdValue => this.formValueMap[ServiceIdValueKey] as String?;
   String? get serviceExpenseAmountValue =>
       this.formValueMap[ServiceExpenseAmountValueKey] as String?;
+  String? get serviceExpenseBaseAmountValue =>
+      this.formValueMap[ServiceExpenseBaseAmountValueKey] as String?;
   String? get serviceExpenseDescriptionValue =>
       this.formValueMap[ServiceExpenseDescriptionValueKey] as String?;
   String? get saleExpenseItemDescriptionValue =>
       this.formValueMap[SaleExpenseItemDescriptionValueKey] as String?;
   String? get saleExpenseItemAmountValue =>
       this.formValueMap[SaleExpenseItemAmountValueKey] as String?;
+  String? get saleExpenseItemBaseAmountValue =>
+      this.formValueMap[SaleExpenseItemBaseAmountValueKey] as String?;
 
   set descriptionValue(String? value) {
     this.setData(
@@ -244,6 +282,17 @@ extension ValueProperties on FormStateHelper {
 
     if (_AddSalesViewTextEditingControllers.containsKey(CustomerIdValueKey)) {
       _AddSalesViewTextEditingControllers[CustomerIdValueKey]?.text =
+          value ?? '';
+    }
+  }
+
+  set currencyIdValue(String? value) {
+    this.setData(
+      this.formValueMap..addAll({CurrencyIdValueKey: value}),
+    );
+
+    if (_AddSalesViewTextEditingControllers.containsKey(CurrencyIdValueKey)) {
+      _AddSalesViewTextEditingControllers[CurrencyIdValueKey]?.text =
           value ?? '';
     }
   }
@@ -292,6 +341,18 @@ extension ValueProperties on FormStateHelper {
     }
   }
 
+  set serviceExpenseBaseAmountValue(String? value) {
+    this.setData(
+      this.formValueMap..addAll({ServiceExpenseBaseAmountValueKey: value}),
+    );
+
+    if (_AddSalesViewTextEditingControllers.containsKey(
+        ServiceExpenseBaseAmountValueKey)) {
+      _AddSalesViewTextEditingControllers[ServiceExpenseBaseAmountValueKey]
+          ?.text = value ?? '';
+    }
+  }
+
   set serviceExpenseDescriptionValue(String? value) {
     this.setData(
       this.formValueMap..addAll({ServiceExpenseDescriptionValueKey: value}),
@@ -328,6 +389,18 @@ extension ValueProperties on FormStateHelper {
     }
   }
 
+  set saleExpenseItemBaseAmountValue(String? value) {
+    this.setData(
+      this.formValueMap..addAll({SaleExpenseItemBaseAmountValueKey: value}),
+    );
+
+    if (_AddSalesViewTextEditingControllers.containsKey(
+        SaleExpenseItemBaseAmountValueKey)) {
+      _AddSalesViewTextEditingControllers[SaleExpenseItemBaseAmountValueKey]
+          ?.text = value ?? '';
+    }
+  }
+
   bool get hasDescription =>
       this.formValueMap.containsKey(DescriptionValueKey) &&
       (descriptionValue?.isNotEmpty ?? false);
@@ -337,6 +410,9 @@ extension ValueProperties on FormStateHelper {
   bool get hasCustomerId =>
       this.formValueMap.containsKey(CustomerIdValueKey) &&
       (customerIdValue?.isNotEmpty ?? false);
+  bool get hasCurrencyId =>
+      this.formValueMap.containsKey(CurrencyIdValueKey) &&
+      (currencyIdValue?.isNotEmpty ?? false);
   bool get hasDueDate =>
       this.formValueMap.containsKey(DueDateValueKey) &&
       (dueDateValue?.isNotEmpty ?? false);
@@ -349,6 +425,9 @@ extension ValueProperties on FormStateHelper {
   bool get hasServiceExpenseAmount =>
       this.formValueMap.containsKey(ServiceExpenseAmountValueKey) &&
       (serviceExpenseAmountValue?.isNotEmpty ?? false);
+  bool get hasServiceExpenseBaseAmount =>
+      this.formValueMap.containsKey(ServiceExpenseBaseAmountValueKey) &&
+      (serviceExpenseBaseAmountValue?.isNotEmpty ?? false);
   bool get hasServiceExpenseDescription =>
       this.formValueMap.containsKey(ServiceExpenseDescriptionValueKey) &&
       (serviceExpenseDescriptionValue?.isNotEmpty ?? false);
@@ -358,6 +437,9 @@ extension ValueProperties on FormStateHelper {
   bool get hasSaleExpenseItemAmount =>
       this.formValueMap.containsKey(SaleExpenseItemAmountValueKey) &&
       (saleExpenseItemAmountValue?.isNotEmpty ?? false);
+  bool get hasSaleExpenseItemBaseAmount =>
+      this.formValueMap.containsKey(SaleExpenseItemBaseAmountValueKey) &&
+      (saleExpenseItemBaseAmountValue?.isNotEmpty ?? false);
 
   bool get hasDescriptionValidationMessage =>
       this.fieldsValidationMessages[DescriptionValueKey]?.isNotEmpty ?? false;
@@ -365,6 +447,8 @@ extension ValueProperties on FormStateHelper {
       this.fieldsValidationMessages[NoteValueKey]?.isNotEmpty ?? false;
   bool get hasCustomerIdValidationMessage =>
       this.fieldsValidationMessages[CustomerIdValueKey]?.isNotEmpty ?? false;
+  bool get hasCurrencyIdValidationMessage =>
+      this.fieldsValidationMessages[CurrencyIdValueKey]?.isNotEmpty ?? false;
   bool get hasDueDateValidationMessage =>
       this.fieldsValidationMessages[DueDateValueKey]?.isNotEmpty ?? false;
   bool get hasDateOfIssueValidationMessage =>
@@ -373,6 +457,11 @@ extension ValueProperties on FormStateHelper {
       this.fieldsValidationMessages[ServiceIdValueKey]?.isNotEmpty ?? false;
   bool get hasServiceExpenseAmountValidationMessage =>
       this.fieldsValidationMessages[ServiceExpenseAmountValueKey]?.isNotEmpty ??
+      false;
+  bool get hasServiceExpenseBaseAmountValidationMessage =>
+      this
+          .fieldsValidationMessages[ServiceExpenseBaseAmountValueKey]
+          ?.isNotEmpty ??
       false;
   bool get hasServiceExpenseDescriptionValidationMessage =>
       this
@@ -389,6 +478,11 @@ extension ValueProperties on FormStateHelper {
           .fieldsValidationMessages[SaleExpenseItemAmountValueKey]
           ?.isNotEmpty ??
       false;
+  bool get hasSaleExpenseItemBaseAmountValidationMessage =>
+      this
+          .fieldsValidationMessages[SaleExpenseItemBaseAmountValueKey]
+          ?.isNotEmpty ??
+      false;
 
   String? get descriptionValidationMessage =>
       this.fieldsValidationMessages[DescriptionValueKey];
@@ -396,6 +490,8 @@ extension ValueProperties on FormStateHelper {
       this.fieldsValidationMessages[NoteValueKey];
   String? get customerIdValidationMessage =>
       this.fieldsValidationMessages[CustomerIdValueKey];
+  String? get currencyIdValidationMessage =>
+      this.fieldsValidationMessages[CurrencyIdValueKey];
   String? get dueDateValidationMessage =>
       this.fieldsValidationMessages[DueDateValueKey];
   String? get dateOfIssueValidationMessage =>
@@ -404,12 +500,16 @@ extension ValueProperties on FormStateHelper {
       this.fieldsValidationMessages[ServiceIdValueKey];
   String? get serviceExpenseAmountValidationMessage =>
       this.fieldsValidationMessages[ServiceExpenseAmountValueKey];
+  String? get serviceExpenseBaseAmountValidationMessage =>
+      this.fieldsValidationMessages[ServiceExpenseBaseAmountValueKey];
   String? get serviceExpenseDescriptionValidationMessage =>
       this.fieldsValidationMessages[ServiceExpenseDescriptionValueKey];
   String? get saleExpenseItemDescriptionValidationMessage =>
       this.fieldsValidationMessages[SaleExpenseItemDescriptionValueKey];
   String? get saleExpenseItemAmountValidationMessage =>
       this.fieldsValidationMessages[SaleExpenseItemAmountValueKey];
+  String? get saleExpenseItemBaseAmountValidationMessage =>
+      this.fieldsValidationMessages[SaleExpenseItemBaseAmountValueKey];
 }
 
 extension Methods on FormStateHelper {
@@ -419,6 +519,8 @@ extension Methods on FormStateHelper {
       this.fieldsValidationMessages[NoteValueKey] = validationMessage;
   setCustomerIdValidationMessage(String? validationMessage) =>
       this.fieldsValidationMessages[CustomerIdValueKey] = validationMessage;
+  setCurrencyIdValidationMessage(String? validationMessage) =>
+      this.fieldsValidationMessages[CurrencyIdValueKey] = validationMessage;
   setDueDateValidationMessage(String? validationMessage) =>
       this.fieldsValidationMessages[DueDateValueKey] = validationMessage;
   setDateOfIssueValidationMessage(String? validationMessage) =>
@@ -427,6 +529,9 @@ extension Methods on FormStateHelper {
       this.fieldsValidationMessages[ServiceIdValueKey] = validationMessage;
   setServiceExpenseAmountValidationMessage(String? validationMessage) =>
       this.fieldsValidationMessages[ServiceExpenseAmountValueKey] =
+          validationMessage;
+  setServiceExpenseBaseAmountValidationMessage(String? validationMessage) =>
+      this.fieldsValidationMessages[ServiceExpenseBaseAmountValueKey] =
           validationMessage;
   setServiceExpenseDescriptionValidationMessage(String? validationMessage) =>
       this.fieldsValidationMessages[ServiceExpenseDescriptionValueKey] =
@@ -437,19 +542,25 @@ extension Methods on FormStateHelper {
   setSaleExpenseItemAmountValidationMessage(String? validationMessage) =>
       this.fieldsValidationMessages[SaleExpenseItemAmountValueKey] =
           validationMessage;
+  setSaleExpenseItemBaseAmountValidationMessage(String? validationMessage) =>
+      this.fieldsValidationMessages[SaleExpenseItemBaseAmountValueKey] =
+          validationMessage;
 
   /// Clears text input fields on the Form
   void clearForm() {
     descriptionValue = '';
     noteValue = '';
     customerIdValue = '';
+    currencyIdValue = '';
     dueDateValue = '';
     dateOfIssueValue = '';
     serviceIdValue = '';
     serviceExpenseAmountValue = '';
+    serviceExpenseBaseAmountValue = '';
     serviceExpenseDescriptionValue = '';
     saleExpenseItemDescriptionValue = '';
     saleExpenseItemAmountValue = '';
+    saleExpenseItemBaseAmountValue = '';
   }
 
   /// Validates text input fields on the Form
@@ -458,17 +569,22 @@ extension Methods on FormStateHelper {
       DescriptionValueKey: getValidationMessage(DescriptionValueKey),
       NoteValueKey: getValidationMessage(NoteValueKey),
       CustomerIdValueKey: getValidationMessage(CustomerIdValueKey),
+      CurrencyIdValueKey: getValidationMessage(CurrencyIdValueKey),
       DueDateValueKey: getValidationMessage(DueDateValueKey),
       DateOfIssueValueKey: getValidationMessage(DateOfIssueValueKey),
       ServiceIdValueKey: getValidationMessage(ServiceIdValueKey),
       ServiceExpenseAmountValueKey:
           getValidationMessage(ServiceExpenseAmountValueKey),
+      ServiceExpenseBaseAmountValueKey:
+          getValidationMessage(ServiceExpenseBaseAmountValueKey),
       ServiceExpenseDescriptionValueKey:
           getValidationMessage(ServiceExpenseDescriptionValueKey),
       SaleExpenseItemDescriptionValueKey:
           getValidationMessage(SaleExpenseItemDescriptionValueKey),
       SaleExpenseItemAmountValueKey:
           getValidationMessage(SaleExpenseItemAmountValueKey),
+      SaleExpenseItemBaseAmountValueKey:
+          getValidationMessage(SaleExpenseItemBaseAmountValueKey),
     });
   }
 }
@@ -491,15 +607,20 @@ void updateValidationData(FormStateHelper model) =>
       DescriptionValueKey: getValidationMessage(DescriptionValueKey),
       NoteValueKey: getValidationMessage(NoteValueKey),
       CustomerIdValueKey: getValidationMessage(CustomerIdValueKey),
+      CurrencyIdValueKey: getValidationMessage(CurrencyIdValueKey),
       DueDateValueKey: getValidationMessage(DueDateValueKey),
       DateOfIssueValueKey: getValidationMessage(DateOfIssueValueKey),
       ServiceIdValueKey: getValidationMessage(ServiceIdValueKey),
       ServiceExpenseAmountValueKey:
           getValidationMessage(ServiceExpenseAmountValueKey),
+      ServiceExpenseBaseAmountValueKey:
+          getValidationMessage(ServiceExpenseBaseAmountValueKey),
       ServiceExpenseDescriptionValueKey:
           getValidationMessage(ServiceExpenseDescriptionValueKey),
       SaleExpenseItemDescriptionValueKey:
           getValidationMessage(SaleExpenseItemDescriptionValueKey),
       SaleExpenseItemAmountValueKey:
           getValidationMessage(SaleExpenseItemAmountValueKey),
+      SaleExpenseItemBaseAmountValueKey:
+          getValidationMessage(SaleExpenseItemBaseAmountValueKey),
     });

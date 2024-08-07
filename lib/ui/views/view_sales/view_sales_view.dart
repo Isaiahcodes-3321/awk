@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:stacked/stacked.dart';
 import 'package:verzo/app/app.router.dart';
@@ -296,20 +297,46 @@ class ViewSalesView extends StackedView<ViewSalesViewModel> {
                 color: kcBorderColor,
               ),
               verticalSpaceTiny,
-              Column(
+              Row(
                 mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'Description',
-                    style: ktsFormHintText,
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Description',
+                        style: ktsFormHintText,
+                      ),
+                      verticalSpaceTinyt,
+                      Text(
+                        viewModel.sale!.description,
+                        style: ktsTextAuthentication3,
+                      ),
+                    ],
                   ),
-                  verticalSpaceTinyt,
-                  Text(
-                    viewModel.sale!.description,
-                    style: ktsTextAuthentication3,
-                  ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        'Currency',
+                        style: ktsFormHintText,
+                      ),
+                      verticalSpaceTinyt,
+                      Text(
+                        ('${viewModel.sale!.currencyName}(${viewModel.sale!.currencySymbol}) '),
+                        style: GoogleFonts.openSans(
+                          color: kcTextTitleColor.withOpacity(0.7),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ).copyWith(fontFamily: 'Roboto'),
+                      ),
+                    ],
+                  )
                 ],
               ),
               if (viewModel.sale!.note!.isNotEmpty) verticalSpaceTiny,
@@ -359,7 +386,7 @@ class ViewSalesView extends StackedView<ViewSalesViewModel> {
                         children: [
                           TextSpan(
                             text: NumberFormat.currency(
-                                    locale: 'en_NGN', symbol: '₦')
+                                    symbol: viewModel.sale!.currencySymbol)
                                 .currencySymbol, // The remaining digits without the symbol
                             style:
                                 ktsBorderText2.copyWith(fontFamily: 'Roboto'),
@@ -395,7 +422,7 @@ class ViewSalesView extends StackedView<ViewSalesViewModel> {
                       children: [
                         TextSpan(
                           text: NumberFormat.currency(
-                                  locale: 'en_NGN', symbol: '₦')
+                                  symbol: viewModel.sale!.currencySymbol)
                               .currencySymbol, // The remaining digits without the symbol
                           style: ktsBorderText2.copyWith(fontFamily: 'Roboto'),
                         ),
@@ -443,7 +470,7 @@ class ViewSalesView extends StackedView<ViewSalesViewModel> {
                         children: [
                           TextSpan(
                             text: NumberFormat.currency(
-                                    locale: 'en_NGN', symbol: '₦')
+                                    symbol: viewModel.sale!.currencySymbol)
                                 .currencySymbol,
                             style:
                                 ktsBorderText2.copyWith(fontFamily: 'Roboto'),
@@ -477,7 +504,7 @@ class ViewSalesView extends StackedView<ViewSalesViewModel> {
                       children: [
                         TextSpan(
                           text: NumberFormat.currency(
-                                  locale: 'en_NGN', symbol: '₦')
+                                  symbol: viewModel.sale!.currencySymbol)
                               .currencySymbol, // The remaining digits without the symbol
                           style: ktsBorderText2.copyWith(fontFamily: 'Roboto'),
                         ),
@@ -517,7 +544,7 @@ class ViewSalesView extends StackedView<ViewSalesViewModel> {
                         children: [
                           TextSpan(
                             text: NumberFormat.currency(
-                                    locale: 'en_NGN', symbol: '₦')
+                                    symbol: viewModel.sale!.currencySymbol)
                                 .currencySymbol, // The remaining digits without the symbol
                             style:
                                 ktsBorderText2.copyWith(fontFamily: 'Roboto'),

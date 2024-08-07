@@ -169,6 +169,23 @@ class HomeViewModel extends ReactiveViewModel with ListenableServiceMixin {
   //   rebuildUi();
   // }
 
+  Future<Business> getBusinessById() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
+    final business = await _dashboardService.getBusinessById();
+
+    prefs.setString('countryName', business.countryName ?? '');
+    prefs.setString('timeZone', business.timeZone ?? '');
+    prefs.setString('currency', business.currency ?? '');
+    prefs.setString('symbol', business.symbol ?? '');
+
+    rebuildUi();
+    return business;
+  }
+
   // Future<String> generateCardToken() async {
   //   SharedPreferences prefs = await SharedPreferences.getInstance();
   //   String businessIdValue = prefs.getString('businessId') ?? '';
@@ -341,7 +358,7 @@ class HomeViewModel extends ReactiveViewModel with ListenableServiceMixin {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String businessIdValue = prefs.getString('businessId') ?? '';
 
-    // Retrieve existing sales data from the database
+    // Retrieve existing sales data from the database5
     final List<Map<String, dynamic>> maps = await db.query('sales');
     List<Sales> salesFromDatabase;
 
@@ -352,6 +369,8 @@ class HomeViewModel extends ReactiveViewModel with ListenableServiceMixin {
           description: maps[i]['description'],
           reference: maps[i]['reference'],
           customerName: maps[i]['customerName'],
+          currencySymbol: maps[i]['currencySymbol'],
+          currencyName: '',
           subtotal: maps[i]['subtotal'],
           totalAmount: maps[i]['totalAmount'],
           discount: maps[i]['discount'],

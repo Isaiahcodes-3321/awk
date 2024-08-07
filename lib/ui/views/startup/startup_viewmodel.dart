@@ -5,6 +5,7 @@ import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/services/authentication_service.dart';
 import 'package:verzo/services/dashboard_service.dart';
 import 'package:verzo/ui/common/database_helper.dart';
+import 'package:verzo/ui/common/ui_helpers.dart';
 
 class StartupViewModel extends BaseViewModel {
   final _navigationService = locator<NavigationService>();
@@ -73,16 +74,12 @@ class StartupViewModel extends BaseViewModel {
       if (result.tokens != null) {
         await getUserAndRoleData();
       } else if (result.error != null) {
-        //       final deviceToken = prefs.getString('device_token');
-        // await removeUserDeviceToken(deviceToken: deviceToken!);
         await _navigationService.replaceWithLoginView();
-        // await _authenticationService.isLoggedIn() == false;
+        await _authenticationService.isLoggedIn() == false;
       }
     } else {
-      //     final deviceToken = prefs.getString('device_token');
-      // await removeUserDeviceToken(deviceToken: deviceToken!);
       _navigationService.replaceWithLoginView();
-      // await _authenticationService.isLoggedIn() == false;
+      await _authenticationService.isLoggedIn() == false;
     }
 
     //   // This is where you can make decisions on where your app should navigate when

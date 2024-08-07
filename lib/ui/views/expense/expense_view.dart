@@ -11,6 +11,7 @@ import 'package:verzo/ui/common/app_colors.dart';
 import 'package:verzo/ui/common/app_styles.dart';
 import 'package:verzo/ui/common/ui_helpers.dart';
 import 'package:verzo/ui/views/expense/expense_viewmodel.dart';
+import 'package:timezone/standalone.dart' as tz;
 
 class ExpenseView extends StatefulWidget {
   const ExpenseView({
@@ -332,6 +333,118 @@ class _ExpenseViewState extends State<ExpenseView> {
   }
 }
 
+// class ExpenseCard extends ViewModelWidget<ExpenseViewModel> {
+//   const ExpenseCard({
+//     Key? key,
+//     required this.expenses,
+//     required this.expenseId,
+//   }) : super(key: key);
+
+//   final Expenses expenses;
+
+//   final String expenseId;
+
+//   @override
+//   Widget build(BuildContext context, ExpenseViewModel viewModel) {
+//     return Material(
+//       color: Colors.transparent,
+//       child: InkWell(
+//         splashColor: kcFormBorderColor.withOpacity(0.3),
+//         onTap: (() async {
+//           final result = await viewModel.navigationService
+//               .navigateTo(Routes.viewExpenseView, arguments: expenseId);
+
+//           if (result == true) {
+//             viewModel.reloadExpenseData();
+//           }
+//         }),
+//         child: Padding(
+//           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
+//           child: Column(
+//             mainAxisAlignment: MainAxisAlignment.start,
+//             children: [
+//               Row(
+//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                 children: [
+//                   Text(
+//                     expenses.description.length <= 15
+//                         ? '${expenses.description[0].toUpperCase()}${expenses.description.substring(1)}'
+//                         : '${expenses.description[0].toUpperCase()}${expenses.description.substring(1, 15)}...',
+//                     style: TextStyle(
+//                       fontFamily: 'Satoshi',
+//                       color: kcTextTitleColor.withOpacity(0.9),
+//                       fontSize: 18,
+//                       fontWeight: FontWeight.w600,
+//                     ),
+//                     overflow: TextOverflow.ellipsis,
+//                     maxLines: 1,
+//                   ),
+//                   RichText(
+//                     text: TextSpan(
+//                       children: [
+//                         TextSpan(
+//                           text: NumberFormat.currency(
+//                                   locale: 'en_NGN', symbol: '₦')
+//                               .currencySymbol, // The remaining digits without the symbol
+//                           style: GoogleFonts.openSans(
+//                             color: kcTextTitleColor.withOpacity(0.8),
+//                             fontSize: 18,
+//                             fontWeight: FontWeight.w500,
+//                           ).copyWith(fontFamily: 'Roboto'),
+//                         ),
+//                         TextSpan(
+//                           text: NumberFormat.currency(
+//                                   locale: 'en_NGN', symbol: '')
+//                               .format(expenses
+//                                   .amount), // The remaining digits without the symbol
+//                           style: TextStyle(
+//                               fontFamily: 'Satoshi',
+//                               color: kcTextTitleColor.withOpacity(0.9),
+//                               fontSize: 18,
+//                               fontWeight: FontWeight.w600,
+//                               letterSpacing: 0.5),
+//                         ),
+//                       ],
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//               // verticalSpaceTinyt1,
+//               Row(
+//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                 children: [
+//                   Text(
+//                     expenses.expenseDate,
+//                     style: const TextStyle(
+//                       fontFamily: 'Satoshi',
+//                       color: kcTextSubTitleColor,
+//                       fontSize: 14,
+//                       fontWeight: FontWeight.w400,
+//                     ),
+//                     overflow: TextOverflow.ellipsis,
+//                     maxLines: 1,
+//                   ),
+//                   Text(
+//                     expenses.merchantName,
+//                     style: const TextStyle(
+//                       fontFamily: 'Satoshi',
+//                       color: kcTextSubTitleColor,
+//                       fontSize: 14,
+//                       fontWeight: FontWeight.w400,
+//                     ),
+//                     overflow: TextOverflow.ellipsis,
+//                     maxLines: 1,
+//                   ),
+//                 ],
+//               )
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
 class ExpenseCard extends ViewModelWidget<ExpenseViewModel> {
   const ExpenseCard({
     Key? key,
@@ -340,7 +453,6 @@ class ExpenseCard extends ViewModelWidget<ExpenseViewModel> {
   }) : super(key: key);
 
   final Expenses expenses;
-
   final String expenseId;
 
   @override

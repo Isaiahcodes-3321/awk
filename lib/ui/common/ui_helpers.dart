@@ -234,7 +234,7 @@ Future<void> logout() async {
     // Delete data from the 'monthly_invoices' table
     await dbMonthlyInvoices.delete('monthly_invoices');
 
-    navigationService.replaceWith(Routes.loginView);
+    navigationService.replaceWithLoginView();
     // Perform any additional logout actions
   }
 }

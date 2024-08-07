@@ -15,6 +15,7 @@ const String BusinessNameValueKey = 'businessName';
 const String BusinessEmailValueKey = 'businessEmail';
 const String BusinessMobileValueKey = 'businessMobile';
 const String BusinessCategoryIdValueKey = 'businessCategoryId';
+const String CountryIdValueKey = 'countryId';
 
 final Map<String, TextEditingController>
     _BusinessCreationViewTextEditingControllers = {};
@@ -27,6 +28,7 @@ final Map<String, String? Function(String?)?>
   BusinessEmailValueKey: null,
   BusinessMobileValueKey: null,
   BusinessCategoryIdValueKey: null,
+  CountryIdValueKey: null,
 };
 
 mixin $BusinessCreationView {
@@ -38,6 +40,8 @@ mixin $BusinessCreationView {
       _getFormTextEditingController(BusinessMobileValueKey);
   TextEditingController get businessCategoryIdController =>
       _getFormTextEditingController(BusinessCategoryIdValueKey);
+  TextEditingController get countryIdController =>
+      _getFormTextEditingController(CountryIdValueKey);
 
   FocusNode get businessNameFocusNode =>
       _getFormFocusNode(BusinessNameValueKey);
@@ -47,6 +51,7 @@ mixin $BusinessCreationView {
       _getFormFocusNode(BusinessMobileValueKey);
   FocusNode get businessCategoryIdFocusNode =>
       _getFormFocusNode(BusinessCategoryIdValueKey);
+  FocusNode get countryIdFocusNode => _getFormFocusNode(CountryIdValueKey);
 
   TextEditingController _getFormTextEditingController(
     String key, {
@@ -76,6 +81,7 @@ mixin $BusinessCreationView {
     businessEmailController.addListener(() => _updateFormData(model));
     businessMobileController.addListener(() => _updateFormData(model));
     businessCategoryIdController.addListener(() => _updateFormData(model));
+    countryIdController.addListener(() => _updateFormData(model));
 
     _updateFormData(model, forceValidate: _autoTextFieldValidation);
   }
@@ -91,6 +97,7 @@ mixin $BusinessCreationView {
     businessEmailController.addListener(() => _updateFormData(model));
     businessMobileController.addListener(() => _updateFormData(model));
     businessCategoryIdController.addListener(() => _updateFormData(model));
+    countryIdController.addListener(() => _updateFormData(model));
 
     _updateFormData(model, forceValidate: _autoTextFieldValidation);
   }
@@ -104,6 +111,7 @@ mixin $BusinessCreationView {
           BusinessEmailValueKey: businessEmailController.text,
           BusinessMobileValueKey: businessMobileController.text,
           BusinessCategoryIdValueKey: businessCategoryIdController.text,
+          CountryIdValueKey: countryIdController.text,
         }),
     );
 
@@ -153,6 +161,7 @@ extension ValueProperties on FormStateHelper {
       this.formValueMap[BusinessMobileValueKey] as String?;
   String? get businessCategoryIdValue =>
       this.formValueMap[BusinessCategoryIdValueKey] as String?;
+  String? get countryIdValue => this.formValueMap[CountryIdValueKey] as String?;
 
   set businessNameValue(String? value) {
     this.setData(
@@ -202,6 +211,18 @@ extension ValueProperties on FormStateHelper {
     }
   }
 
+  set countryIdValue(String? value) {
+    this.setData(
+      this.formValueMap..addAll({CountryIdValueKey: value}),
+    );
+
+    if (_BusinessCreationViewTextEditingControllers.containsKey(
+        CountryIdValueKey)) {
+      _BusinessCreationViewTextEditingControllers[CountryIdValueKey]?.text =
+          value ?? '';
+    }
+  }
+
   bool get hasBusinessName =>
       this.formValueMap.containsKey(BusinessNameValueKey) &&
       (businessNameValue?.isNotEmpty ?? false);
@@ -214,6 +235,9 @@ extension ValueProperties on FormStateHelper {
   bool get hasBusinessCategoryId =>
       this.formValueMap.containsKey(BusinessCategoryIdValueKey) &&
       (businessCategoryIdValue?.isNotEmpty ?? false);
+  bool get hasCountryId =>
+      this.formValueMap.containsKey(CountryIdValueKey) &&
+      (countryIdValue?.isNotEmpty ?? false);
 
   bool get hasBusinessNameValidationMessage =>
       this.fieldsValidationMessages[BusinessNameValueKey]?.isNotEmpty ?? false;
@@ -225,6 +249,8 @@ extension ValueProperties on FormStateHelper {
   bool get hasBusinessCategoryIdValidationMessage =>
       this.fieldsValidationMessages[BusinessCategoryIdValueKey]?.isNotEmpty ??
       false;
+  bool get hasCountryIdValidationMessage =>
+      this.fieldsValidationMessages[CountryIdValueKey]?.isNotEmpty ?? false;
 
   String? get businessNameValidationMessage =>
       this.fieldsValidationMessages[BusinessNameValueKey];
@@ -234,6 +260,8 @@ extension ValueProperties on FormStateHelper {
       this.fieldsValidationMessages[BusinessMobileValueKey];
   String? get businessCategoryIdValidationMessage =>
       this.fieldsValidationMessages[BusinessCategoryIdValueKey];
+  String? get countryIdValidationMessage =>
+      this.fieldsValidationMessages[CountryIdValueKey];
 }
 
 extension Methods on FormStateHelper {
@@ -246,6 +274,8 @@ extension Methods on FormStateHelper {
   setBusinessCategoryIdValidationMessage(String? validationMessage) =>
       this.fieldsValidationMessages[BusinessCategoryIdValueKey] =
           validationMessage;
+  setCountryIdValidationMessage(String? validationMessage) =>
+      this.fieldsValidationMessages[CountryIdValueKey] = validationMessage;
 
   /// Clears text input fields on the Form
   void clearForm() {
@@ -253,6 +283,7 @@ extension Methods on FormStateHelper {
     businessEmailValue = '';
     businessMobileValue = '';
     businessCategoryIdValue = '';
+    countryIdValue = '';
   }
 
   /// Validates text input fields on the Form
@@ -263,6 +294,7 @@ extension Methods on FormStateHelper {
       BusinessMobileValueKey: getValidationMessage(BusinessMobileValueKey),
       BusinessCategoryIdValueKey:
           getValidationMessage(BusinessCategoryIdValueKey),
+      CountryIdValueKey: getValidationMessage(CountryIdValueKey),
     });
   }
 }
@@ -287,4 +319,5 @@ void updateValidationData(FormStateHelper model) =>
       BusinessMobileValueKey: getValidationMessage(BusinessMobileValueKey),
       BusinessCategoryIdValueKey:
           getValidationMessage(BusinessCategoryIdValueKey),
+      CountryIdValueKey: getValidationMessage(CountryIdValueKey),
     });

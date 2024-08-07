@@ -180,7 +180,8 @@ class UpdateSalesViewModel extends FormViewModel {
           price: item.price,
           index: i + 1,
           quantity: item.quantity,
-          name: item.title);
+          name: item.title,
+          basePrice: 0);
       itemDetails.add(itemDetail);
     }
 

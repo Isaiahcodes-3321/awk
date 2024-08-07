@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 class SalesService {
   ValueNotifier<GraphQLClient> client;
@@ -70,10 +72,16 @@ class SalesService {
             reference
             saleAmount
             saleStatusId
+            currency{
+              id
+              currency
+              symbol
+            }
             saleExpenses{
               id
               index
               amount
+              baseAmount
               description
               effected
               }
@@ -81,6 +89,7 @@ class SalesService {
               id 
               serviceId
               amount
+              baseAmount
               description
               index
               effected
@@ -106,6 +115,7 @@ class SalesService {
                 productInvoiceDetail{
                   quantity
                   unitPrice
+                  baseUnitPrice
                   product{
                     productName
                     id
@@ -114,6 +124,7 @@ class SalesService {
                 serviceInvoiceDetail{
                   quantity
                   unitPrice
+                  baseUnitPrice
                   service{
                     name
                     id
@@ -127,13 +138,18 @@ class SalesService {
         ),
         _getSaleByBusinessMobileQuery = QueryOptions(
           document: gql('''
-        query GetSaleByBusinessMobile(\$businessId: String!, \$cursor: String, \$take: Int) {
-          getSaleByBusinessMobile (businessId: \$businessId, cursor: \$cursor, take: \$take) {
+        query GetSalesByBusinessMobile(\$input: GetSalesByBusinessMobileInput!) {
+          getSalesByBusinessMobile (input: \$input) {
             salesByBusiness{
             id
             description
             reference
             saleAmount
+            currency{
+              id
+              currency
+              symbol
+            }
             paid
             transactionDate
             customer{
@@ -150,8 +166,8 @@ class SalesService {
         ),
         _getArchivedSalesByBusinessMobileQuery = QueryOptions(
           document: gql('''
-        query GetArchivedSalesByBusinessMobile(\$businessId: String!, \$cursor: String, \$take: Int) {
-          getArchivedSalesByBusinessMobile (businessId: \$businessId, cursor: \$cursor, take: \$take) {
+        query GetArchivedSalesByBusinessMobile(\$input: GetSalesByBusinessMobileInput!) {
+          getArchivedSalesByBusinessMobile (input: \$input) {
             salesByBusiness{
             id
             description
@@ -159,6 +175,11 @@ class SalesService {
             saleAmount
             paid
             transactionDate
+            currency{
+              id
+              currency
+              symbol
+            }
             customer{
               name
             }
@@ -322,6 +343,7 @@ class SalesService {
   Future<SaleCreationResult> createSales(
       {required String customerId,
       required String businessId,
+      required String currencyId,
       required List<ItemDetail> item,
       List<SaleExpenses>? saleExpense,
       List<SaleServiceExpenseEntry>? saleServiceExpense,
@@ -362,6 +384,7 @@ class SalesService {
             'customerId': customerId,
             'dateOfIssue': dateOfIssue,
             'dueDate': dueDate,
+            'currencyId': currencyId,
             // 'discount': discount,
             'VAT': vat,
             'item': item
@@ -369,6 +392,7 @@ class SalesService {
                       'id': itemDetail.id,
                       'type': itemDetail.type,
                       'price': itemDetail.price * 100,
+                      'basePrice': itemDetail.basePrice * 100,
                       'quantity': itemDetail.quantity,
                       'index': itemDetail.index,
                     })
@@ -380,6 +404,7 @@ class SalesService {
               ?.map((saleExpenseItem) => {
                     'description': saleExpenseItem.description,
                     'amount': saleExpenseItem.amount * 100,
+                    'baseAmount': saleExpenseItem.baseAmount * 100,
                     'index': saleExpenseItem.index
                   })
               .toList(), // Populate this list if applicable
@@ -387,6 +412,7 @@ class SalesService {
               ?.map((saleServiceExpenseEntry) => {
                     'serviceId': saleServiceExpenseEntry.serviceId,
                     'amount': saleServiceExpenseEntry.amount * 100,
+                    'baseAmount': saleServiceExpenseEntry.baseAmount * 100,
                     'index': saleServiceExpenseEntry.index,
                     'description': saleServiceExpenseEntry.description,
                   })
@@ -428,6 +454,7 @@ class SalesService {
     required String saleId,
     String? description,
     String? customerId,
+    String? currencyId,
     String? dueDate,
     String? dateOfIssue,
     String? note,
@@ -468,6 +495,7 @@ class SalesService {
           'updateInvoiceInput': {
             'dateOfIssue': dateOfIssue,
             'customerId': customerId,
+            'currencyId': currencyId,
             'dueDate': dueDate,
             // 'discount': discount,
             'VAT': vat,
@@ -476,6 +504,7 @@ class SalesService {
                       'id': itemDetail.id,
                       'type': itemDetail.type,
                       'price': itemDetail.price * 100,
+                      'basePrice': itemDetail.basePrice * 100,
                       'quantity': itemDetail.quantity,
                       'index': itemDetail.index,
                     })
@@ -485,6 +514,7 @@ class SalesService {
               ?.map((saleExpenseItem) => {
                     'description': saleExpenseItem.description,
                     'amount': saleExpenseItem.amount * 100,
+                    'baseAmount': saleExpenseItem.baseAmount * 100,
                     'index': saleExpenseItem.index
                   })
               .toList(),
@@ -492,6 +522,7 @@ class SalesService {
               ?.map((saleServiceExpenseEntry) => {
                     'serviceId': saleServiceExpenseEntry.serviceId,
                     'amount': saleServiceExpenseEntry.amount * 100,
+                    'baseAmount': saleServiceExpenseEntry.baseAmount * 100,
                     'index': saleServiceExpenseEntry.index,
                     'description': saleServiceExpenseEntry.description
                   })
@@ -530,6 +561,7 @@ class SalesService {
   Future<Sales> getSaleById({required String saleId}) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('access_token');
+    final timeZone = prefs.getString('timeZone') ?? 'UTC';
 
     if (token == null) {
       throw GraphQLSaleError(
@@ -564,6 +596,15 @@ class SalesService {
 
     final saleByIdData = saleByIdResult.data?['getSaleById'];
 
+    final location = tz.getLocation(timeZone);
+    // Parse the UTC date string to DateTime
+    final utcDate = DateTime.parse(saleByIdData['transactionDate']).toUtc();
+    // Convert UTC date to local time zone
+    final localDate = tz.TZDateTime.from(utcDate, location);
+    // Format localDate as a string (adjust the format as needed)
+    // final formattedDate = DateFormat('yyyy-MM-ddTHH:mm:ss').format(localDate);
+    final formattedDate = DateFormat('yyyy-MM-dd').format(localDate);
+
     final List<dynamic> saleServiceExpenseData =
         saleByIdData['saleServiceExpenses'];
     final List<dynamic> saleExpenseData = saleByIdData['saleExpenses'];
@@ -575,6 +616,7 @@ class SalesService {
           serviceId: expenseData['service']['id'],
           id: expenseData['id'],
           amount: expenseData['amount'] / 100,
+          baseAmount: expenseData['baseAmount'] / 100,
           description: expenseData['description'],
           index: expenseData['index'],
           effected: expenseData['effected']);
@@ -584,6 +626,7 @@ class SalesService {
       return SaleExpenses(
           id: expenseData['id'],
           amount: expenseData['amount'] / 100,
+          baseAmount: expenseData['baseAmount'] / 100,
           description: expenseData['description'],
           index: expenseData['index'],
           effected: expenseData['effected']);
@@ -604,6 +647,7 @@ class SalesService {
         id: detailData['product']?['id'] ?? detailData['service']?['id'],
         index: invoiceData['index'],
         price: detailData['unitPrice'] / 100,
+        basePrice: detailData['baseUnitPrice'] / 100,
         quantity: detailData['quantity'],
         name: detailData['product']?['productName'] ??
             detailData['service']?['name'],
@@ -614,6 +658,7 @@ class SalesService {
     // Access customer name and ID from the invoice object
     final Map<String, dynamic> invoiceData = saleByIdData['invoice'];
     final Map<String, dynamic> customerData = invoiceData['customer'];
+    final Map<String, dynamic> currencyData = saleByIdData['currency'];
 
     final Sales saleById = Sales(
       id: saleByIdData['id'],
@@ -626,11 +671,13 @@ class SalesService {
       saleServiceExpenses: saleServiceExpenses,
       saleExpenses: saleExpenses,
       dueDate: saleByIdData['dueDate'],
-      transactionDate: saleByIdData['transactionDate'],
+      transactionDate: formattedDate,
       reference: saleByIdData['reference'],
       customerId: customerData['id'],
       customerName: customerData['name'],
       customerEmail: customerData['email'],
+      currencySymbol: currencyData['symbol'],
+      currencyName: currencyData['currency'],
       totalAmount: saleByIdData['saleAmount'] / 100,
       VAT: invoiceData['VAT'],
       subtotal: invoiceData['subtotal'] / 100,
@@ -642,9 +689,13 @@ class SalesService {
   }
 
   Future<List<Sales>> getSaleByBusiness(
-      {required String businessId, num? take, String? cursor}) async {
+      {required String businessId,
+      num? take,
+      String? cursor,
+      String? currencyId}) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('access_token');
+    final timeZone = prefs.getString('timeZone') ?? 'UTC';
 
     if (token == null) {
       throw GraphQLSaleError(
@@ -663,7 +714,14 @@ class SalesService {
     );
     final QueryOptions options = QueryOptions(
       document: _getSaleByBusinessMobileQuery.document,
-      variables: {'businessId': businessId, 'take': take, 'cursor': cursor},
+      variables: {
+        'input': {
+          'businessId': businessId,
+          'cursor': cursor,
+          'take': take,
+          'currencyId': currencyId,
+        },
+      },
     );
 
     final QueryResult saleByBusinessResult = await newClient.query(options);
@@ -675,8 +733,8 @@ class SalesService {
     //   );
     // }
 
-    final List salesData = saleByBusinessResult.data?['getSaleByBusinessMobile']
-            ['salesByBusiness'] ??
+    final List salesData = saleByBusinessResult
+            .data?['getSalesByBusinessMobile']['salesByBusiness'] ??
         [];
 
     // final String cursorId =
@@ -684,7 +742,17 @@ class SalesService {
 
     final List<Sales> sales = salesData.map((data) {
       final customerData = data['customer']; // Access customer data
+      final currencyData = data['currency']; // Access currency data
       final invoiceData = data['invoice']; // Access invoice data
+      final location = tz.getLocation(timeZone);
+      // Parse the UTC date string to DateTime
+      final utcDate = DateTime.parse(data['transactionDate']).toUtc();
+      // Convert UTC date to local time zone
+      final localDate = tz.TZDateTime.from(utcDate, location);
+
+      // Format localDate as a string (adjust the format as needed)
+      // final formattedDate = DateFormat('yyyy-MM-ddTHH:mm:ss').format(localDate);
+      final formattedDate = DateFormat('yyyy-MM-dd').format(localDate);
       return Sales(
           id: data['id'],
           invoiceId: '',
@@ -693,10 +761,12 @@ class SalesService {
           saleServiceExpenses: [],
           saleExpenses: [],
           dueDate: '',
-          transactionDate: data['transactionDate'],
+          transactionDate: formattedDate,
           reference: data['reference'],
           customerId: '',
           customerName: customerData['name'],
+          currencySymbol: currencyData['symbol'],
+          currencyName: currencyData['currency'],
           totalAmount: data['saleAmount'] / 100,
           VAT: 0,
           subtotal: 0,
@@ -710,9 +780,13 @@ class SalesService {
   }
 
   Future<List<Sales>> getArchivedSaleByBusiness(
-      {required String businessId, num? take, String? cursor}) async {
+      {required String businessId,
+      num? take,
+      String? cursor,
+      String? currencyId}) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('access_token');
+    final timeZone = prefs.getString('timeZone') ?? 'UTC';
 
     if (token == null) {
       throw GraphQLSaleError(
@@ -731,7 +805,14 @@ class SalesService {
     );
     final QueryOptions options = QueryOptions(
       document: _getArchivedSalesByBusinessMobileQuery.document,
-      variables: {'businessId': businessId, 'take': take, 'cursor': cursor},
+      variables: {
+        'input': {
+          'businessId': businessId,
+          'cursor': cursor,
+          'take': take,
+          'currencyId': currencyId,
+        },
+      },
     );
 
     final QueryResult saleByBusinessResult = await newClient.query(options);
@@ -752,6 +833,16 @@ class SalesService {
 
     final List<Sales> sales = salesData.map((data) {
       final customerData = data['customer']; // Access merchant data
+      final currencyData = data['currency'];
+      final location = tz.getLocation(timeZone);
+      // Parse the UTC date string to DateTime
+      final utcDate = DateTime.parse(data['transactionDate']).toUtc();
+      // Convert UTC date to local time zone
+      final localDate = tz.TZDateTime.from(utcDate, location);
+
+      // Format localDate as a string (adjust the format as needed)
+      // final formattedDate = DateFormat('yyyy-MM-ddTHH:mm:ss').format(localDate);
+      final formattedDate = DateFormat('yyyy-MM-dd').format(localDate);
       return Sales(
           id: data['id'],
           invoiceId: '',
@@ -761,10 +852,12 @@ class SalesService {
           saleServiceExpenses: [],
           saleExpenses: [],
           dueDate: '',
-          transactionDate: data['transactionDate'],
+          transactionDate: formattedDate,
           reference: data['reference'],
           customerId: '',
           customerName: customerData['name'],
+          currencySymbol: currencyData['symbol'],
+          currencyName: '',
           totalAmount: data['saleAmount'] / 100,
           VAT: 0,
           subtotal: 0,
@@ -1631,6 +1724,8 @@ class Sales {
   String reference;
   bool paid;
   final String customerName;
+  final String currencyName;
+  final String currencySymbol;
   final String? customerEmail;
   final num subtotal;
   final num totalAmount;
@@ -1640,6 +1735,7 @@ class Sales {
   final String dueDate;
   final String transactionDate;
   final String customerId;
+  final String? currencyId;
   bool? overdue;
   final List<ItemDetail> invoiceDetails;
   List<SaleServiceExpenseEntry>? saleServiceExpenses;
@@ -1653,6 +1749,9 @@ class Sales {
       this.note,
       required this.reference,
       required this.paid,
+      this.currencyId,
+      required this.currencyName,
+      required this.currencySymbol,
       required this.customerName,
       this.customerEmail,
       required this.subtotal,
@@ -1677,6 +1776,7 @@ class Sales {
       'reference': reference,
       'paid': paid == true ? 1 : 0,
       'customerName': customerName,
+      'currencySymbol': currencySymbol,
       'subtotal': subtotal,
       'totalAmount': totalAmount,
       'discount': discount,
@@ -1705,6 +1805,7 @@ class SaleExpenses {
   num index;
   String description;
   num amount;
+  num baseAmount;
   bool? effected;
 
   SaleExpenses(
@@ -1712,7 +1813,8 @@ class SaleExpenses {
       required this.index,
       required this.description,
       this.effected,
-      required this.amount});
+      required this.amount,
+      required this.baseAmount});
 
   Map<String, dynamic> toMap() {
     return {
@@ -1720,6 +1822,7 @@ class SaleExpenses {
       'index': index,
       'description': description,
       'amount': amount,
+      'baseAmount': baseAmount,
       'effected': effected
     };
   }
@@ -1730,6 +1833,7 @@ class SaleExpenses {
         index: map['index'],
         description: map['description'],
         amount: map['amount'],
+        baseAmount: map['baseAmount'],
         effected: map['effected']);
   }
 }
@@ -1740,6 +1844,7 @@ class ItemDetail {
   num index;
   String name;
   num price;
+  num basePrice;
   num quantity;
 
   ItemDetail({
@@ -1748,6 +1853,7 @@ class ItemDetail {
     required this.name,
     required this.index,
     required this.price,
+    required this.basePrice,
     required this.quantity,
   });
 
@@ -1758,6 +1864,7 @@ class ItemDetail {
       'name': name,
       'index': index,
       'price': price,
+      'basePrice': basePrice,
       'quantity': quantity,
     };
   }
@@ -1769,6 +1876,7 @@ class ItemDetail {
       name: map['name'],
       index: map['index'],
       price: map['price'],
+      basePrice: map['basePrice'],
       quantity: map['quantity'],
     );
   }
@@ -1780,6 +1888,7 @@ class SaleServiceExpenseEntry {
   String? serviceName;
   num index;
   num amount;
+  num baseAmount;
   final String description;
   bool? effected;
 
@@ -1789,6 +1898,7 @@ class SaleServiceExpenseEntry {
       this.serviceName,
       required this.index,
       required this.amount,
+      required this.baseAmount,
       this.effected,
       required this.description});
 
@@ -1798,6 +1908,7 @@ class SaleServiceExpenseEntry {
       'serviceId': serviceId,
       'index': index,
       'amount': amount,
+      'baseAmount': baseAmount,
       'effected': effected,
       'description': description
     };
@@ -1809,6 +1920,7 @@ class SaleServiceExpenseEntry {
       serviceId: map['serviceId'],
       index: map['index'],
       amount: map['amount'],
+      baseAmount: map['baseAmount'],
       effected: map['effected'],
       description: map['description'],
     );

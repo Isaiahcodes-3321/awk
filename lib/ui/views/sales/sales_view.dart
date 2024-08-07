@@ -399,7 +399,7 @@ class SalesCard extends ViewModelWidget<SalesViewModel> {
                       children: [
                         TextSpan(
                           text: NumberFormat.currency(
-                                  locale: 'en_NGN', symbol: '₦')
+                                  symbol: sales.currencySymbol)
                               .currencySymbol, // The remaining digits without the symbol
                           style: GoogleFonts.openSans(
                             color: kcTextTitleColor.withOpacity(0.8),

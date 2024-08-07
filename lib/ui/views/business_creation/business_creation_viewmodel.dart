@@ -16,6 +16,7 @@ class BusinessCreationViewModel extends FormViewModel {
   final _businessCreationService = locator<BusinessCreationService>();
   final authService = locator<AuthenticationService>();
   List<DropdownMenuItem<String>> businessCategorydropdownItems = [];
+  List<DropdownMenuItem<String>> countrydropdownItems = [];
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -35,6 +36,21 @@ class BusinessCreationViewModel extends FormViewModel {
     return businessCategories;
   }
 
+  Future<List<Country>> getCountries() async {
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
+    final countries = await _businessCreationService.getCountries();
+    countrydropdownItems = countries.map((country) {
+      return DropdownMenuItem<String>(
+        value: country.id.toString(),
+        child: Text(country.countryName),
+      );
+    }).toList();
+    return countries;
+  }
+
   Future<BusinessCreationResult> runBusinessCreation() async {
     final result = await authService.refreshToken();
     if (result.error != null) {
@@ -44,7 +60,8 @@ class BusinessCreationViewModel extends FormViewModel {
         businessName: businessNameValue ?? '',
         businessEmail: businessEmailValue ?? '',
         businessMobile: businessMobileValue ?? '',
-        businessCategoryId: businessCategoryIdValue ?? '');
+        businessCategoryId: businessCategoryIdValue ?? '',
+        countryId: countryIdValue ?? '');
   }
 
   Future saveBusinessData(BuildContext context) async {

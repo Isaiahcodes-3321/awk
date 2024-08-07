@@ -199,9 +199,9 @@ class RecordSaleExpenseView extends StackedView<RecordSaleExpenseViewModel>
                                             readOnly: true,
 
                                             initialValue: NumberFormat.currency(
-                                              locale: 'en_NGN',
-                                              symbol: '₦',
-                                            ).format(
+                                                    symbol: viewModel
+                                                        .sale.currencySymbol)
+                                                .format(
                                               saleExpenses?.amount,
                                             ),
                                             cursorColor: kcPrimaryColor,
@@ -366,10 +366,10 @@ class RecordSaleExpenseView extends StackedView<RecordSaleExpenseViewModel>
                                           TextFormField(
                                             readOnly: true,
                                             initialValue: NumberFormat.currency(
-                                              locale: 'en_NGN',
-                                              symbol: '₦',
-                                            ).format(
-                                                saleServiceExpenses?.amount),
+                                                    symbol: viewModel
+                                                        .sale.currencySymbol)
+                                                .format(saleServiceExpenses
+                                                    ?.amount),
                                             cursorColor: kcPrimaryColor,
                                             decoration: InputDecoration(
                                                 filled: true,

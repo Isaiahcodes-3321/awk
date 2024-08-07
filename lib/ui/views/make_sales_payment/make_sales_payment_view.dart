@@ -113,9 +113,8 @@ class MakeSalesPaymentView extends StackedView<MakeSalesPaymentViewModel>
                 TextFormField(
                   readOnly: true,
                   initialValue: NumberFormat.currency(
-                    locale: 'en_NGN',
-                    symbol: '₦',
-                  ).format(viewModel.sale.totalAmount),
+                          symbol: viewModel.sale.currencySymbol)
+                      .format(viewModel.sale.totalAmount),
                   cursorColor: kcPrimaryColor,
 
                   decoration: InputDecoration(

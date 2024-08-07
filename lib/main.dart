@@ -11,6 +11,7 @@ import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/firebase_api.dart';
 import 'package:verzo/firebase_options.dart';
 import 'package:verzo/ui/common/app_colors.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,6 +20,7 @@ void main() async {
   await FirebaseApi().initNotifications();
   setupDialogUi();
   setupBottomSheetUi();
+  tz.initializeTimeZones();
   runApp(const MainApp());
 }
 
@@ -55,21 +57,21 @@ class MainApp extends StatelessWidget {
   }
 }
 
-class VgsShowService {
-  static const platform = MethodChannel('com.verzo.vgsShow');
+// class VgsShowService {
+//   static const platform = MethodChannel('com.verzo.vgsShow');
 
-  Future<void> revealData(String path, Map<String, dynamic> payload) async {
-    try {
-      final result = await platform.invokeMethod('revealData', {
-        'path': path,
-        'payload': payload,
-      });
-      print('Reveal data response: $result');
-    } on PlatformException catch (e) {
-      print("Failed to reveal data: '${e.message}'.");
-    }
-  }
-}
+//   Future<void> revealData(String path, Map<String, dynamic> payload) async {
+//     try {
+//       final result = await platform.invokeMethod('revealData', {
+//         'path': path,
+//         'payload': payload,
+//       });
+//       print('Reveal data response: $result');
+//     } on PlatformException catch (e) {
+//       print("Failed to reveal data: '${e.message}'.");
+//     }
+//   }
+// }
 
 class _LoggingObserver extends NavigatorObserver {
   @override

@@ -90,9 +90,9 @@ class FirebaseApi {
         sound: true);
     final token = await _firebaseMessaging.getToken();
     prefs.setString('device_token', token ?? '');
-    final message = await _authService.addUserDeviceToken(deviceToken: token!);
+    // final message = await _authService.addUserDeviceToken(deviceToken: token!);
     print('Token : $token');
-    print('message: $message');
+    // print('message: $message');
     FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
     initPushNotofications();
 

@@ -14,6 +14,7 @@ import 'business_creation_viewmodel.dart';
   FormTextField(name: 'businessEmail'),
   FormTextField(name: 'businessMobile'),
   FormTextField(name: 'businessCategoryId'),
+  FormTextField(name: 'countryId'),
 ])
 class BusinessCreationView extends StackedView<BusinessCreationViewModel>
     with $BusinessCreationView {
@@ -197,6 +198,50 @@ class BusinessCreationView extends StackedView<BusinessCreationViewModel>
                     businessCategoryIdController.text = value.toString();
                   },
                 ),
+                verticalSpaceSmall,
+                Text('Country', style: ktsFormTitleText),
+                verticalSpaceTiny,
+                DropdownButtonFormField(
+                  hint: Text(
+                    'Select',
+                    style: ktsFormHintText,
+                  ),
+                  menuMaxHeight: 320,
+                  elevation: 4,
+                  // padding: EdgeInsets.symmetric(horizontal: 12),
+                  dropdownColor: kcButtonTextColor,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please select a country';
+                    }
+                    return null;
+                  },
+                  icon: const Icon(Icons.expand_more),
+                  iconSize: 20,
+                  isExpanded: true,
+                  focusColor: kcPrimaryColor,
+                  style: ktsBodyText,
+                  decoration: InputDecoration(
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 12),
+                      // hintStyle: ktsFormHintText,
+                      // hintText: 'Select',
+                      enabledBorder: defaultFormBorder,
+                      focusedBorder: defaultFocusedFormBorder,
+                      focusedErrorBorder: defaultErrorFormBorder,
+                      errorStyle: ktsErrorText,
+                      errorBorder: defaultErrorFormBorder
+                      // labelStyle: ktsFormText,
+                      // border: defaultFormBorder
+                      ),
+                  items: viewModel.countrydropdownItems,
+                  value: countryIdController.text.isEmpty
+                      ? null
+                      : countryIdController.text,
+                  onChanged: (value) {
+                    countryIdController.text = value.toString();
+                  },
+                ),
               ],
             ),
           ),
@@ -212,8 +257,9 @@ class BusinessCreationView extends StackedView<BusinessCreationViewModel>
   }
 
   @override
-  void onViewModelReady(BusinessCreationViewModel viewModel) {
-    viewModel.getBusinessCategories();
+  void onViewModelReady(BusinessCreationViewModel viewModel) async {
+    await viewModel.getBusinessCategories();
+    await viewModel.getCountries();
     syncFormWithViewModel(viewModel);
   }
 

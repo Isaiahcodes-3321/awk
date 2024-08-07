@@ -52,6 +52,8 @@ class SalesViewModel extends FutureViewModel<List<Sales>> {
           description: maps[i]['description'],
           reference: maps[i]['reference'],
           customerName: maps[i]['customerName'],
+          currencySymbol: maps[i]['currencySymbol'],
+          currencyName: '',
           subtotal: maps[i]['subtotal'],
           totalAmount: maps[i]['totalAmount'],
           discount: maps[i]['discount'],
