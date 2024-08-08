@@ -33,6 +33,7 @@ class BillingViewModel extends FormViewModel {
     final subscription = await billingService.getCurrentSubscriptionByBusiness(
         businessId: businessIdValue);
     subs = subscription;
+    rebuildUi();
     return subscription;
   }
 

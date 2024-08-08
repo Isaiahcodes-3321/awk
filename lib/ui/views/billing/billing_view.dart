@@ -15,538 +15,615 @@ class BillingView extends StackedView<BillingViewModel> {
   const BillingView({Key? key}) : super(key: key);
 
   @override
+  void onViewModelReady(BillingViewModel viewModel) async {
+    await viewModel.getCurrentSubscription();
+  }
+
+  @override
   Widget builder(
     BuildContext context,
     BillingViewModel viewModel,
     Widget? child,
   ) {
-    return Scaffold(
-      backgroundColor: kcButtonTextColor,
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-        child: ListView(
-          children: [
-            verticalSpaceSmall,
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    // Check if viewModel.subs is null and show a loading indicator
+    if (viewModel.subs == null) {
+      return Scaffold(
+          backgroundColor: kcButtonTextColor,
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+            child: ListView(
               children: [
+                verticalSpaceSmall,
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CircleAvatar(
-                      radius: 12,
-                      backgroundColor: kcFormBorderColor.withOpacity(0.3),
-                      child: IconButton(
-                          padding: EdgeInsets.zero,
-                          icon: const Icon(
-                            Icons.arrow_back_ios_rounded,
-                            fill: 0.9,
-                            color: kcTextSubTitleColor,
-                            size: 16,
-                          ),
-                          onPressed: () {
-                            viewModel.navigateBack();
-                          }),
-                    ),
-                    horizontalSpaceTiny,
-                    Text(
-                      'back',
-                      style: ktsSubtitleTextAuthentication,
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 12,
+                          backgroundColor: kcFormBorderColor.withOpacity(0.3),
+                          child: IconButton(
+                              padding: EdgeInsets.zero,
+                              icon: const Icon(
+                                Icons.arrow_back_ios_rounded,
+                                fill: 0.9,
+                                color: kcTextSubTitleColor,
+                                size: 16,
+                              ),
+                              onPressed: () {
+                                viewModel.navigateBack();
+                              }),
+                        ),
+                        horizontalSpaceTiny,
+                        Text(
+                          'back',
+                          style: ktsSubtitleTextAuthentication,
+                        ),
+                      ],
                     ),
                   ],
                 ),
+                verticalSpaceSmallMid,
+                const SizedBox(
+                    height: 500,
+                    child: Center(
+                        child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircularProgressIndicator(
+                          color: kcPrimaryColor,
+                        ),
+                      ],
+                    )))
               ],
             ),
-            verticalSpaceSmallMid,
-            Text('Pricing plans', style: ktsTitleTextAuthentication),
-            verticalSpaceTinyt,
-            Text.rich(
-              TextSpan(children: [
-                TextSpan(
-                  text: 'Upgrade or cancel plans on the ',
-                  style: ktsSubtitleTextAuthentication,
-                ),
-                TextSpan(
-                  text: 'website',
-                  style: const TextStyle(
-                    color: kcPrimaryColor,
-                    fontSize: 16,
-                    fontFamily: 'Satoshi',
-                    fontWeight: FontWeight.w500,
-                    decoration: TextDecoration.underline,
-                    decorationColor: kcPrimaryColor,
-                    height: 0,
-                    letterSpacing: -0.30,
+          ));
+    } else {
+      return Scaffold(
+        backgroundColor: kcButtonTextColor,
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+          child: ListView(
+            children: [
+              verticalSpaceSmall,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 12,
+                        backgroundColor: kcFormBorderColor.withOpacity(0.3),
+                        child: IconButton(
+                            padding: EdgeInsets.zero,
+                            icon: const Icon(
+                              Icons.arrow_back_ios_rounded,
+                              fill: 0.9,
+                              color: kcTextSubTitleColor,
+                              size: 16,
+                            ),
+                            onPressed: () {
+                              viewModel.navigateBack();
+                            }),
+                      ),
+                      horizontalSpaceTiny,
+                      Text(
+                        'back',
+                        style: ktsSubtitleTextAuthentication,
+                      ),
+                    ],
                   ),
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () async {
-                      // Handle tap on Privacy Policy
-                      // Navigate to the designated URL
-                      String url = "https://verzo.app/pricing";
-                      var urllaunchable = await canLaunchUrlString(
-                          url); //canLaunch is from url_launcher package
-                      if (urllaunchable) {
-                        await launchUrlString(
-                            url); //launch is from url_launcher package to launch URL
-                      } else {}
-                    },
-                ),
-              ]),
-            ),
-            verticalSpaceSmallMid,
-            Text.rich(
-              TextSpan(
-                text: 'You are currently on ', // The normal text
-                style: ktsFormHintText3,
-                children: <TextSpan>[
+                ],
+              ),
+              verticalSpaceSmallMid,
+              Text('Pricing plans', style: ktsTitleTextAuthentication),
+              verticalSpaceTinyt,
+              Text.rich(
+                TextSpan(children: [
                   TextSpan(
-                    text: viewModel.subs?.planName ?? '', // The plan name
+                    text: 'Upgrade or cancel plans on the ',
+                    style: ktsSubtitleTextAuthentication,
+                  ),
+                  TextSpan(
+                    text: 'website',
                     style: const TextStyle(
-                        color: kcPrimaryColor), // Apply blue color to plan name
-                  ),
-                ],
-              ),
-            ),
-            verticalSpaceTinyt,
-            Text(
-              'Valid to:  ${viewModel.subs?.validTo ?? ''}',
-              style: ktsFormHintText3,
-            ),
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: 8),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-              decoration: BoxDecoration(
-                border: Border.all(color: kcBorderColor, width: 1.5),
-                color: kcOTPColor.withOpacity(.3),
-                borderRadius: const BorderRadius.all(Radius.circular(10)),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Basic', style: ktsTitleText),
-                  verticalSpaceTinyt,
-                  Text(
-                    'Ideal for freelancers and small businesses',
-                    style: ktsFormHintText1,
-                  ),
-                  verticalSpaceSmallMid,
-                  Center(
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: NumberFormat.currency(
-                                            locale: 'en_NG', symbol: '₦')
-                                        .currencySymbol,
-                                    style: GoogleFonts.openSans(
-                                      color: kcTextTitleColor.withOpacity(0.8),
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w500,
-                                    ).copyWith(fontFamily: 'Roboto'),
-                                  ),
-                                  TextSpan(
-                                    text: NumberFormat.currency(
-                                            locale: 'en_NG',
-                                            symbol: '',
-                                            decimalDigits: 0)
-                                        .format(5500),
-                                    style: TextStyle(
-                                      fontFamily: 'Satoshi',
-                                      color: kcTextTitleColor.withOpacity(0.9),
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600,
-                                      letterSpacing: 0.5,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Text(
-                              '/month',
-                              style: TextStyle(
-                                fontFamily: 'Satoshi',
-                                color: kcTextTitleColor.withOpacity(0.9),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w400,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                          ],
-                        ),
-                        verticalSpaceTiny,
-                        const Text(
-                          'OR',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: kcTextTitleColor,
-                          ),
-                        ),
-                        verticalSpaceTiny,
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: NumberFormat.currency(
-                                            locale: 'en_NG', symbol: '₦')
-                                        .currencySymbol,
-                                    style: GoogleFonts.openSans(
-                                      color: kcTextTitleColor.withOpacity(0.8),
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w500,
-                                    ).copyWith(fontFamily: 'Roboto'),
-                                  ),
-                                  TextSpan(
-                                    text: NumberFormat.currency(
-                                            locale: 'en_NG',
-                                            symbol: '',
-                                            decimalDigits: 0)
-                                        .format(55000),
-                                    style: TextStyle(
-                                      fontFamily: 'Satoshi',
-                                      color: kcTextTitleColor.withOpacity(0.9),
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600,
-                                      letterSpacing: 0.5,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Text(
-                              '/year',
-                              style: TextStyle(
-                                fontFamily: 'Satoshi',
-                                color: kcTextTitleColor.withOpacity(0.9),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w400,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                      color: kcPrimaryColor,
+                      fontSize: 16,
+                      fontFamily: 'Satoshi',
+                      fontWeight: FontWeight.w500,
+                      decoration: TextDecoration.underline,
+                      decorationColor: kcPrimaryColor,
+                      height: 0,
+                      letterSpacing: -0.30,
                     ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () async {
+                        // Handle tap on Privacy Policy
+                        // Navigate to the designated URL
+                        String url = "https://verzo.app/pricing";
+                        var urllaunchable = await canLaunchUrlString(
+                            url); //canLaunch is from url_launcher package
+                        if (urllaunchable) {
+                          await launchUrlString(
+                              url); //launch is from url_launcher package to launch URL
+                        } else {}
+                      },
                   ),
-                  verticalSpaceIntermitent,
-                  PricingFeature(
-                    name: 'Create 100 invoice',
-                  ),
-                  PricingFeature(
-                    name: 'Send 100 invoices',
-                  ),
-                  PricingFeature(
-                    name: 'Create 100 purchase orders',
-                  ),
-                  PricingFeature(
-                    name: 'Create 100 customers',
-                  ),
-                  PricingFeature(
-                    name: 'Create 100 products and services',
-                  ),
-                ],
+                ]),
               ),
-            ),
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: 8),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-              decoration: BoxDecoration(
-                border: Border.all(color: kcBorderColor, width: 1.5),
-                color: kcOTPColor.withOpacity(0.3), // Add background color
-                borderRadius: const BorderRadius.all(Radius.circular(10)),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Standard', style: ktsTitleText),
-                  verticalSpaceTinyt,
-                  Text(
-                    'Tailored for growing businesses and entrepreneurs',
-                    style: ktsFormHintText1,
-                  ),
-                  verticalSpaceSmallMid,
-                  Center(
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: NumberFormat.currency(
-                                            locale: 'en_NG', symbol: '₦')
-                                        .currencySymbol,
-                                    style: GoogleFonts.openSans(
-                                      color: kcTextTitleColor.withOpacity(0.8),
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w500,
-                                    ).copyWith(fontFamily: 'Roboto'),
-                                  ),
-                                  TextSpan(
-                                    text: NumberFormat.currency(
-                                            locale: 'en_NG',
-                                            symbol: '',
-                                            decimalDigits: 0)
-                                        .format(12500),
-                                    style: TextStyle(
-                                      fontFamily: 'Satoshi',
-                                      color: kcTextTitleColor.withOpacity(0.9),
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600,
-                                      letterSpacing: 0.5,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Text(
-                              '/month',
-                              style: TextStyle(
-                                fontFamily: 'Satoshi',
-                                color: kcTextTitleColor.withOpacity(0.9),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w400,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                          ],
-                        ),
-                        verticalSpaceTiny,
-                        const Text(
-                          'OR',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: kcTextTitleColor,
-                          ),
-                        ),
-                        verticalSpaceTiny,
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: NumberFormat.currency(
-                                            locale: 'en_NG', symbol: '₦')
-                                        .currencySymbol,
-                                    style: GoogleFonts.openSans(
-                                      color: kcTextTitleColor.withOpacity(0.8),
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w500,
-                                    ).copyWith(fontFamily: 'Roboto'),
-                                  ),
-                                  TextSpan(
-                                    text: NumberFormat.currency(
-                                            locale: 'en_NG',
-                                            symbol: '',
-                                            decimalDigits: 0)
-                                        .format(125000),
-                                    style: TextStyle(
-                                      fontFamily: 'Satoshi',
-                                      color: kcTextTitleColor.withOpacity(0.9),
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600,
-                                      letterSpacing: 0.5,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Text(
-                              '/year',
-                              style: TextStyle(
-                                fontFamily: 'Satoshi',
-                                color: kcTextTitleColor.withOpacity(0.9),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w400,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+              verticalSpaceSmallMid,
+              Text.rich(
+                TextSpan(
+                  text: 'You are currently on ', // The normal text
+                  style: ktsFormHintText3,
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: viewModel.subs?.planName ?? '', // The plan name
+                      style: const TextStyle(
+                          color:
+                              kcPrimaryColor), // Apply blue color to plan name
                     ),
-                  ),
-                  verticalSpaceIntermitent,
-                  PricingFeature(
-                    name: 'Create 500 invoices',
-                  ),
-                  PricingFeature(
-                    name: 'Send 500 invoices',
-                  ),
-                  PricingFeature(
-                    name: 'Create 500 purchase orders',
-                  ),
-                  PricingFeature(
-                    name: 'Create 500 customers',
-                  ),
-                  PricingFeature(
-                    name: 'Create 500 products and services',
-                  ),
-                  PricingFeature(
-                    name: 'Assign 1 admin, manager or staff',
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: 8),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-              decoration: BoxDecoration(
-                border: Border.all(color: kcBorderColor, width: 1.5),
-                color: kcOTPColor.withOpacity(0.3), // Add background color
-                borderRadius: const BorderRadius.all(Radius.circular(10)),
+              verticalSpaceTinyt,
+              Text(
+                'Valid to:  ${viewModel.subs?.validTo ?? ''}',
+                style: ktsFormHintText3,
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Premium', style: ktsTitleText),
-                  verticalSpaceTinyt,
-                  Text(
-                    'Tailored for larger enterprises and complex financial needs',
-                    style: ktsFormHintText1,
-                  ),
-                  verticalSpaceSmallMid,
-                  Center(
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: NumberFormat.currency(
-                                            locale: 'en_NG', symbol: '₦')
-                                        .currencySymbol,
-                                    style: GoogleFonts.openSans(
-                                      color: kcTextTitleColor.withOpacity(0.8),
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w500,
-                                    ).copyWith(fontFamily: 'Roboto'),
-                                  ),
-                                  TextSpan(
-                                    text: NumberFormat.currency(
-                                            locale: 'en_NG',
-                                            symbol: '',
-                                            decimalDigits: 0)
-                                        .format(25000),
-                                    style: TextStyle(
-                                      fontFamily: 'Satoshi',
-                                      color: kcTextTitleColor.withOpacity(0.9),
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600,
-                                      letterSpacing: 0.5,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Text(
-                              '/month',
-                              style: TextStyle(
-                                fontFamily: 'Satoshi',
-                                color: kcTextTitleColor.withOpacity(0.9),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w400,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                          ],
-                        ),
-                        verticalSpaceTiny,
-                        const Text(
-                          'OR',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: kcTextTitleColor,
-                          ),
-                        ),
-                        verticalSpaceTiny,
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: NumberFormat.currency(
-                                            locale: 'en_NG', symbol: '₦')
-                                        .currencySymbol,
-                                    style: GoogleFonts.openSans(
-                                      color: kcTextTitleColor.withOpacity(0.8),
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w500,
-                                    ).copyWith(fontFamily: 'Roboto'),
-                                  ),
-                                  TextSpan(
-                                    text: NumberFormat.currency(
-                                            locale: 'en_NG',
-                                            symbol: '',
-                                            decimalDigits: 0)
-                                        .format(250000),
-                                    style: TextStyle(
-                                      fontFamily: 'Satoshi',
-                                      color: kcTextTitleColor.withOpacity(0.9),
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600,
-                                      letterSpacing: 0.5,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Text(
-                              '/year',
-                              style: TextStyle(
-                                fontFamily: 'Satoshi',
-                                color: kcTextTitleColor.withOpacity(0.9),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w400,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                decoration: BoxDecoration(
+                  border: Border.all(color: kcBorderColor, width: 1.5),
+                  color: kcOTPColor.withOpacity(.3),
+                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Basic', style: ktsTitleText),
+                    verticalSpaceTinyt,
+                    Text(
+                      'Ideal for freelancers and small businesses',
+                      style: ktsFormHintText1,
                     ),
-                  ),
-                  verticalSpaceIntermitent,
-                  PricingFeature(
-                    name: 'Create unlimited invoices',
-                  ),
-                  PricingFeature(
-                    name: 'Send unlimited invoices',
-                  ),
-                  PricingFeature(
-                    name: 'Create unlimited purchase orders',
-                  ),
-                  PricingFeature(
-                    name: 'Create unlimited customers',
-                  ),
-                  PricingFeature(
-                    name: 'Create unlimited products and services',
-                  ),
-                  PricingFeature(
-                    name: 'Assign 5 admins, managers or staff',
-                  ),
-                ],
+                    verticalSpaceSmallMid,
+                    Center(
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: NumberFormat.currency(
+                                              locale: 'en_NG', symbol: '₦')
+                                          .currencySymbol,
+                                      style: GoogleFonts.openSans(
+                                        color:
+                                            kcTextTitleColor.withOpacity(0.8),
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w500,
+                                      ).copyWith(fontFamily: 'Roboto'),
+                                    ),
+                                    TextSpan(
+                                      text: NumberFormat.currency(
+                                              locale: 'en_NG',
+                                              symbol: '',
+                                              decimalDigits: 0)
+                                          .format(5500),
+                                      style: TextStyle(
+                                        fontFamily: 'Satoshi',
+                                        color:
+                                            kcTextTitleColor.withOpacity(0.9),
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                        letterSpacing: 0.5,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Text(
+                                '/month',
+                                style: TextStyle(
+                                  fontFamily: 'Satoshi',
+                                  color: kcTextTitleColor.withOpacity(0.9),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                          verticalSpaceTiny,
+                          const Text(
+                            'OR',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: kcTextTitleColor,
+                            ),
+                          ),
+                          verticalSpaceTiny,
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: NumberFormat.currency(
+                                              locale: 'en_NG', symbol: '₦')
+                                          .currencySymbol,
+                                      style: GoogleFonts.openSans(
+                                        color:
+                                            kcTextTitleColor.withOpacity(0.8),
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w500,
+                                      ).copyWith(fontFamily: 'Roboto'),
+                                    ),
+                                    TextSpan(
+                                      text: NumberFormat.currency(
+                                              locale: 'en_NG',
+                                              symbol: '',
+                                              decimalDigits: 0)
+                                          .format(55000),
+                                      style: TextStyle(
+                                        fontFamily: 'Satoshi',
+                                        color:
+                                            kcTextTitleColor.withOpacity(0.9),
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                        letterSpacing: 0.5,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Text(
+                                '/year',
+                                style: TextStyle(
+                                  fontFamily: 'Satoshi',
+                                  color: kcTextTitleColor.withOpacity(0.9),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    verticalSpaceIntermitent,
+                    PricingFeature(
+                      name: 'Create 100 invoice',
+                    ),
+                    PricingFeature(
+                      name: 'Send 100 invoices',
+                    ),
+                    PricingFeature(
+                      name: 'Create 100 purchase orders',
+                    ),
+                    PricingFeature(
+                      name: 'Create 100 customers',
+                    ),
+                    PricingFeature(
+                      name: 'Create 100 products and services',
+                    ),
+                  ],
+                ),
               ),
-            )
-          ],
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                decoration: BoxDecoration(
+                  border: Border.all(color: kcBorderColor, width: 1.5),
+                  color: kcOTPColor.withOpacity(0.3), // Add background color
+                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Standard', style: ktsTitleText),
+                    verticalSpaceTinyt,
+                    Text(
+                      'Tailored for growing businesses and entrepreneurs',
+                      style: ktsFormHintText1,
+                    ),
+                    verticalSpaceSmallMid,
+                    Center(
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: NumberFormat.currency(
+                                              locale: 'en_NG', symbol: '₦')
+                                          .currencySymbol,
+                                      style: GoogleFonts.openSans(
+                                        color:
+                                            kcTextTitleColor.withOpacity(0.8),
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w500,
+                                      ).copyWith(fontFamily: 'Roboto'),
+                                    ),
+                                    TextSpan(
+                                      text: NumberFormat.currency(
+                                              locale: 'en_NG',
+                                              symbol: '',
+                                              decimalDigits: 0)
+                                          .format(12500),
+                                      style: TextStyle(
+                                        fontFamily: 'Satoshi',
+                                        color:
+                                            kcTextTitleColor.withOpacity(0.9),
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                        letterSpacing: 0.5,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Text(
+                                '/month',
+                                style: TextStyle(
+                                  fontFamily: 'Satoshi',
+                                  color: kcTextTitleColor.withOpacity(0.9),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                          verticalSpaceTiny,
+                          const Text(
+                            'OR',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: kcTextTitleColor,
+                            ),
+                          ),
+                          verticalSpaceTiny,
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: NumberFormat.currency(
+                                              locale: 'en_NG', symbol: '₦')
+                                          .currencySymbol,
+                                      style: GoogleFonts.openSans(
+                                        color:
+                                            kcTextTitleColor.withOpacity(0.8),
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w500,
+                                      ).copyWith(fontFamily: 'Roboto'),
+                                    ),
+                                    TextSpan(
+                                      text: NumberFormat.currency(
+                                              locale: 'en_NG',
+                                              symbol: '',
+                                              decimalDigits: 0)
+                                          .format(125000),
+                                      style: TextStyle(
+                                        fontFamily: 'Satoshi',
+                                        color:
+                                            kcTextTitleColor.withOpacity(0.9),
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                        letterSpacing: 0.5,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Text(
+                                '/year',
+                                style: TextStyle(
+                                  fontFamily: 'Satoshi',
+                                  color: kcTextTitleColor.withOpacity(0.9),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    verticalSpaceIntermitent,
+                    PricingFeature(
+                      name: 'Create 500 invoices',
+                    ),
+                    PricingFeature(
+                      name: 'Send 500 invoices',
+                    ),
+                    PricingFeature(
+                      name: 'Create 500 purchase orders',
+                    ),
+                    PricingFeature(
+                      name: 'Create 500 customers',
+                    ),
+                    PricingFeature(
+                      name: 'Create 500 products and services',
+                    ),
+                    PricingFeature(
+                      name: 'Assign 1 admin, manager or staff',
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                decoration: BoxDecoration(
+                  border: Border.all(color: kcBorderColor, width: 1.5),
+                  color: kcOTPColor.withOpacity(0.3), // Add background color
+                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Premium', style: ktsTitleText),
+                    verticalSpaceTinyt,
+                    Text(
+                      'Tailored for larger enterprises and complex financial needs',
+                      style: ktsFormHintText1,
+                    ),
+                    verticalSpaceSmallMid,
+                    Center(
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: NumberFormat.currency(
+                                              locale: 'en_NG', symbol: '₦')
+                                          .currencySymbol,
+                                      style: GoogleFonts.openSans(
+                                        color:
+                                            kcTextTitleColor.withOpacity(0.8),
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w500,
+                                      ).copyWith(fontFamily: 'Roboto'),
+                                    ),
+                                    TextSpan(
+                                      text: NumberFormat.currency(
+                                              locale: 'en_NG',
+                                              symbol: '',
+                                              decimalDigits: 0)
+                                          .format(25000),
+                                      style: TextStyle(
+                                        fontFamily: 'Satoshi',
+                                        color:
+                                            kcTextTitleColor.withOpacity(0.9),
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                        letterSpacing: 0.5,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Text(
+                                '/month',
+                                style: TextStyle(
+                                  fontFamily: 'Satoshi',
+                                  color: kcTextTitleColor.withOpacity(0.9),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                          verticalSpaceTiny,
+                          const Text(
+                            'OR',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: kcTextTitleColor,
+                            ),
+                          ),
+                          verticalSpaceTiny,
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: NumberFormat.currency(
+                                              locale: 'en_NG', symbol: '₦')
+                                          .currencySymbol,
+                                      style: GoogleFonts.openSans(
+                                        color:
+                                            kcTextTitleColor.withOpacity(0.8),
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w500,
+                                      ).copyWith(fontFamily: 'Roboto'),
+                                    ),
+                                    TextSpan(
+                                      text: NumberFormat.currency(
+                                              locale: 'en_NG',
+                                              symbol: '',
+                                              decimalDigits: 0)
+                                          .format(250000),
+                                      style: TextStyle(
+                                        fontFamily: 'Satoshi',
+                                        color:
+                                            kcTextTitleColor.withOpacity(0.9),
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                        letterSpacing: 0.5,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Text(
+                                '/year',
+                                style: TextStyle(
+                                  fontFamily: 'Satoshi',
+                                  color: kcTextTitleColor.withOpacity(0.9),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    verticalSpaceIntermitent,
+                    PricingFeature(
+                      name: 'Create unlimited invoices',
+                    ),
+                    PricingFeature(
+                      name: 'Send unlimited invoices',
+                    ),
+                    PricingFeature(
+                      name: 'Create unlimited purchase orders',
+                    ),
+                    PricingFeature(
+                      name: 'Create unlimited customers',
+                    ),
+                    PricingFeature(
+                      name: 'Create unlimited products and services',
+                    ),
+                    PricingFeature(
+                      name: 'Assign 5 admins, managers or staff',
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    }
+
     // return Scaffold(
     //     backgroundColor: kcButtonTextColor,
     //     body: AuthenticationLayout(
@@ -621,11 +698,6 @@ class BillingView extends StackedView<BillingViewModel> {
     //             },
     //           );
     //         }))));
-  }
-
-  @override
-  void onViewModelReady(BillingViewModel viewModel) async {
-    await viewModel.getCurrentSubscription();
   }
 
   @override

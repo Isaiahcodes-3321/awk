@@ -11,7 +11,6 @@ import 'package:verzo/ui/common/app_colors.dart';
 import 'package:verzo/ui/common/app_styles.dart';
 import 'package:verzo/ui/common/ui_helpers.dart';
 import 'package:verzo/ui/views/expense/expense_viewmodel.dart';
-import 'package:timezone/standalone.dart' as tz;
 
 class ExpenseView extends StatefulWidget {
   const ExpenseView({
@@ -116,14 +115,14 @@ class _ExpenseViewState extends State<ExpenseView> {
                                             size: 20,
                                           )),
                                       horizontalSpaceRegular,
-                                      GestureDetector(
-                                          onTap: () {
-                                            viewModel.toggleSearch();
-                                          },
-                                          child: const Icon(
-                                            Icons.search,
-                                            color: kcButtonTextColor,
-                                          )),
+                                      // GestureDetector(
+                                      //     onTap: () {
+                                      //       viewModel.toggleSearch();
+                                      //     },
+                                      //     child: const Icon(
+                                      //       Icons.search,
+                                      //       color: kcButtonTextColor,
+                                      //     )),
                                     ],
                                   ),
                                 ],

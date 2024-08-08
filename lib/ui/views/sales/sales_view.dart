@@ -113,14 +113,14 @@ class _SalesViewState extends State<SalesView> {
                                           size: 20,
                                         )),
                                     horizontalSpaceRegular,
-                                    GestureDetector(
-                                        onTap: () {
-                                          viewModel.toggleSearch();
-                                        },
-                                        child: const Icon(
-                                          Icons.search,
-                                          color: kcButtonTextColor,
-                                        )),
+                                    // GestureDetector(
+                                    //     onTap: () {
+                                    //       viewModel.toggleSearch();
+                                    //     },
+                                    //     child: const Icon(
+                                    //       Icons.search,
+                                    //       color: kcButtonTextColor,
+                                    //     )),
                                   ],
                                 ),
                               ],

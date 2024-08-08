@@ -111,8 +111,6 @@ class AddExpenseView extends StackedView<AddExpenseViewModel>
                   if (viewModel.pickedDate != null) {
                     String formattedDate =
                         DateFormat('yyyy-MM-dd').format(viewModel.pickedDate!);
-                    String formattedDate =
-                        DateFormat('yyyy-MM-dd').format(viewModel.pickedDate!);
                     expenseDateController.text = formattedDate;
                   }
                 },
