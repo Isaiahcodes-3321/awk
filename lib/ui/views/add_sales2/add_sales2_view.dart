@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import 'package:verzo/app/app.router.dart';
+import 'package:verzo/services/business_creation_service.dart';
 import 'package:verzo/services/products_services_service.dart';
 import 'package:verzo/services/sales_service.dart';
 import 'package:verzo/ui/common/app_colors.dart';
@@ -41,6 +43,61 @@ class AddSales2View extends StackedView<AddSalesViewModel> with $AddSalesView {
               child: SvgPicture.asset('assets/images/Rectangle-331.svg'),
             ),
             verticalSpaceSmallMid,
+            Text('Currency', style: ktsFormTitleText),
+            verticalSpaceTiny,
+            DropdownButtonFormField(
+              hint: Text(
+                // AddSalesViewModel.initCurrencyValue,
+                'Select',
+                style: ktsFormHintText,
+              ),
+              menuMaxHeight: 320,
+              elevation: 4,
+              dropdownColor: kcButtonTextColor,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please select a currency';
+                }
+                return null;
+              },
+              icon: const Icon(Icons.expand_more),
+              iconSize: 20,
+              isExpanded: true,
+              focusColor: kcPrimaryColor,
+              style: GoogleFonts.openSans(
+                      color: kcTextColor,
+                      fontSize: 14,
+                      fontWeight: FontWeight.normal)
+                  .copyWith(fontFamily: 'Roboto'),
+              decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                  // hintStyle: ktsFormHintText,
+                  // hintText: 'Select',
+                  enabledBorder: defaultFormBorder,
+                  focusedBorder: defaultFocusedFormBorder,
+                  focusedErrorBorder: defaultErrorFormBorder,
+                  errorStyle: ktsErrorText,
+                  errorBorder: defaultErrorFormBorder,
+                  // labelStyle: ktsFormText,
+                  border: defaultFormBorder),
+              items: viewModel.currencydropdownItems,
+              value: currencyIdController.text.isEmpty
+                  ? null
+                  : currencyIdController.text,
+              onChanged: (value) async {
+                currencyIdController.text = value.toString();
+
+                // Find the selected currency
+                Currency selectedCurrency = viewModel.currencyList.firstWhere(
+                  (currency) => currency.id.toString() == value.toString(),
+                );
+
+                viewModel.selectedCurrencySymbol = selectedCurrency.symbol;
+                final prefs = await SharedPreferences.getInstance();
+                prefs.setString('selectedSymbol', selectedCurrency.symbol);
+              },
+            ),
+            verticalSpaceIntermitent,
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -404,6 +461,7 @@ class AddSales2View extends StackedView<AddSalesViewModel> with $AddSalesView {
 
   @override
   void onViewModelReady(AddSalesViewModel viewModel) async {
+    await viewModel.getCurrencies();
     await viewModel.getCurrencySymbol();
     syncFormWithViewModel(viewModel);
   }
@@ -567,7 +625,7 @@ class AddSaleExpenseItemBottomSheet extends StackedView<AddSalesViewModel>
                     .validate()) {
                   SaleExpenses saleExpense = SaleExpenses(
                     id: '',
-                    index: 1,
+                    index: viewModel.saleExpensecurrentIndex++,
                     description: saleExpenseItemDescriptionController.text,
                     amount: double.parse(saleExpenseItemAmountController.text),
                     baseAmount: viewModel.baseCurrencySymbol !=
@@ -607,13 +665,11 @@ class AddSaleExpenseItemBottomSheet extends StackedView<AddSalesViewModel>
   @override
   void onDispose(AddSalesViewModel viewModel) {
     super.onDispose(viewModel);
-
-    disposeForm();
+    // disposeForm();
   }
 
   @override
   void onViewModelReady(AddSalesViewModel viewModel) async {
-    // await viewModel.getServiceByBusiness();
     await viewModel.getCurrencySymbol();
     syncFormWithViewModel(viewModel);
   }
@@ -823,7 +879,7 @@ class AddServiceExpenseItemBottomSheet extends StackedView<AddSalesViewModel>
                     .validate()) {
                   SaleServiceExpenseEntry saleService = SaleServiceExpenseEntry(
                     id: '',
-                    index: 1,
+                    index: viewModel.serviceExpensecurrentIndex++,
                     description: serviceExpenseDescriptionController.text,
                     amount: num.parse(serviceExpenseAmountController.text),
                     serviceId: serviceIdController.text,

@@ -174,13 +174,33 @@ class ViewSalesView extends StackedView<ViewSalesViewModel> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      viewModel.sale!.saleStatusId == 1
-                          ? viewModel.navigationService.navigateTo(
-                              Routes.updateSalesView,
-                              arguments: viewModel.saleId)
-                          : null;
+                      bool hasSaleExpense =
+                          viewModel.sale!.saleExpenses!.isNotEmpty;
+
+                      if (hasSaleExpense) {
+                        if (viewModel.sale!.saleStatusId == 1) {
+                          viewModel.navigationService.navigateTo(
+                            Routes.updateSalesView,
+                            arguments: viewModel.saleId,
+                          );
+                        }
+                      } else {
+                        if (viewModel.sale!.saleStatusId == 2) {
+                          viewModel.navigationService.navigateTo(
+                            Routes.updateSalesView,
+                            arguments: viewModel.saleId,
+                          );
+                        }
+                      }
 
                       viewModel.rebuildUi();
+                      // viewModel.sale!.saleStatusId == 1
+                      //     ? viewModel.navigationService.navigateTo(
+                      //         Routes.updateSalesView,
+                      //         arguments: viewModel.saleId)
+                      //     : null;
+
+                      // viewModel.rebuildUi();
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

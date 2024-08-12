@@ -1,11 +1,13 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.locator.dart';
 import 'package:verzo/app/app.router.dart';
 import 'package:verzo/services/authentication_service.dart';
+import 'package:verzo/services/business_creation_service.dart';
 import 'package:verzo/services/products_services_service.dart';
 import 'package:verzo/services/sales_service.dart';
 import 'package:verzo/ui/common/app_colors.dart';
@@ -17,11 +19,19 @@ class UpdateSalesViewModel extends FormViewModel {
   final navigationService = locator<NavigationService>();
   final _saleService = locator<SalesService>();
   final authService = locator<AuthenticationService>();
+  final _serviceService = locator<ProductsServicesService>();
+  final businessService = locator<BusinessCreationService>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final GlobalKey<FormState> formKeyBottomSheet = GlobalKey<FormState>();
+  final GlobalKey<FormState> formKeyBottomSheetSaleExpense =
+      GlobalKey<FormState>();
+  final GlobalKey<FormState> formKeyBottomSheetSaleServiceExpense =
+      GlobalKey<FormState>();
   List<Customers> customerList = [];
+  List<Currency> currencyList = [];
   List<Services> serviceList = [];
   List<DropdownMenuItem<String>> customerdropdownItems = [];
+  List<DropdownMenuItem<String>> currencydropdownItems = [];
   List<DropdownMenuItem<String>> servicedropdownItems = [];
   List<SaleExpenses> saleExpenseItems = [];
   List<SaleServiceExpenseEntry> saleServiceExpense = [];
@@ -29,8 +39,13 @@ class UpdateSalesViewModel extends FormViewModel {
   List<Items> newlySelectedItems = [];
   double subtotal = 0.00;
   double total = 0.00;
+  String selectedServiceName = '';
   num saleExpensesAmount = 0.0;
   String selectedCustomerName = '';
+  String selectedUpdatedCurrencySymbol = '';
+  String baseCurrencySymbol = '';
+  int saleExpensecurrentIndex = 0;
+  int serviceExpensecurrentIndex = 0;
 
   late Sales sale; // Add selectedExpense variable
   late final String saleId;
@@ -111,6 +126,8 @@ class UpdateSalesViewModel extends FormViewModel {
 
   Future getSaleById1() async {
     await runBusyFuture(getSaleById());
+    await runBusyFuture(getCurrencies());
+    await runBusyFuture(getCurrencySymbol());
     await runBusyFuture(getCustomersByBusiness());
   }
 
@@ -125,11 +142,13 @@ class UpdateSalesViewModel extends FormViewModel {
     updateDescriptionController.text = sale.description;
     updateNoteController.text = sale.note!;
     updateCustomerIdController.text = sale.customerId;
+    updateCurrencyIdController.text = sale.currencyId!;
     updateCustomerEmailController.text = sale.customerEmail!;
 
     saleExpenseItems = sale.saleExpenses!;
     saleServiceExpense = sale.saleServiceExpenses!;
     selectedItems = sale.invoiceDetails;
+
     calculateSubtotal();
     calculateTotal();
     rebuildUi();
@@ -140,6 +159,7 @@ class UpdateSalesViewModel extends FormViewModel {
   TextEditingController updateDescriptionController = TextEditingController();
   TextEditingController updateNoteController = TextEditingController();
 
+  TextEditingController updateCurrencyIdController = TextEditingController();
   TextEditingController updateCustomerIdController = TextEditingController();
   TextEditingController updateCustomerEmailController = TextEditingController();
   TextEditingController updateSelectedCustomerName = TextEditingController();
@@ -168,20 +188,84 @@ class UpdateSalesViewModel extends FormViewModel {
     return customers;
   }
 
+  Future<List<Services>> getServiceByBusiness() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String businessIdValue = prefs.getString('businessId') ?? '';
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
+
+    // Retrieve existing products/services
+    final services =
+        await _serviceService.getServiceByBusiness(businessId: businessIdValue);
+
+    servicedropdownItems = services.map((service) {
+      return DropdownMenuItem<String>(
+        value: service.id.toString(),
+        child: Text(service.name),
+      );
+    }).toList();
+
+    serviceList = services;
+    rebuildUi();
+
+    return services;
+  }
+
+  Future<List<Currency>> getCurrencies() async {
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
+    final currencies = await businessService.getCurrencies();
+    // Sort the currencies list so that 'NGN' comes first
+    currencies.sort((a, b) {
+      if (a.currency == 'NGN') return -1; // a should come before b
+      if (b.currency == 'NGN') return 1; // b should come before a
+      return 0; // maintain original order for other currencies
+    });
+
+    // Convert the sorted list to DropdownMenuItems
+    currencydropdownItems = currencies.map((currency) {
+      return DropdownMenuItem<String>(
+        value: currency.id.toString(),
+        child: Text('(${currency.symbol}) ${currency.currency}'),
+      );
+    }).toList();
+    currencyList = currencies;
+    return currencies;
+  }
+
+  Future<String?> getCurrencySymbol() async {
+    final prefs = await SharedPreferences.getInstance();
+    baseCurrencySymbol = prefs.getString('symbol') ?? '';
+    selectedUpdatedCurrencySymbol =
+        prefs.getString('selectedUpdatedSymbol') ?? '';
+    rebuildUi();
+    return selectedUpdatedCurrencySymbol;
+  }
+
   //Items
   List<ItemDetail> convertItemsToItemDetails(List<Items> items) {
     List<ItemDetail> itemDetails = [];
 
     for (int i = 0; i < items.length; i++) {
       Items item = items[i];
+      if (baseCurrencySymbol == selectedUpdatedCurrencySymbol) {
+        item.basePrice = item.price;
+      }
       ItemDetail itemDetail = ItemDetail(
-          id: item.id,
-          type: item.type,
-          price: item.price,
-          index: i + 1,
-          quantity: item.quantity,
-          name: item.title,
-          basePrice: 0);
+        id: item.id,
+        type: item.type,
+        price: item.price,
+        index: i + 1,
+        quantity: item.quantity,
+        name: item.title,
+        basePrice: baseCurrencySymbol == selectedUpdatedCurrencySymbol
+            ? item.price
+            : item.basePrice,
+      );
       itemDetails.add(itemDetail);
     }
 
@@ -316,6 +400,7 @@ class UpdateSalesViewModel extends FormViewModel {
         customerId: updateCustomerIdController.text,
         dueDate: updateDueDateController.text,
         dateOfIssue: updateDateOfIssueController.text,
+        currencyId: updateCurrencyIdController.text,
         vat: 7.5);
   }
 
@@ -393,7 +478,14 @@ class UpdateSalesViewModel extends FormViewModel {
                       style: ktsBottomSheetHeaderText,
                     ),
                     verticalSpaceSmallMid,
-                    Text('Price', style: ktsFormTitleText),
+                    Text(
+                      'Price ($selectedUpdatedCurrencySymbol)',
+                      style: GoogleFonts.openSans(
+                        color: kcTextTitleColor,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w300,
+                      ).copyWith(fontFamily: 'Roboto'),
+                    ),
                     verticalSpaceTiny,
                     TextFormField(
                       cursorColor: kcPrimaryColor,
@@ -433,6 +525,59 @@ class UpdateSalesViewModel extends FormViewModel {
                         return null;
                       },
                     ),
+                    verticalSpaceSmall,
+                    if (baseCurrencySymbol != selectedUpdatedCurrencySymbol)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Base Price ($baseCurrencySymbol)',
+                            style: GoogleFonts.openSans(
+                              color: kcTextTitleColor,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w300,
+                            ).copyWith(fontFamily: 'Roboto'),
+                          ),
+                          verticalSpaceTiny,
+                          TextFormField(
+                            cursorColor: kcPrimaryColor,
+                            initialValue: item.basePrice.toStringAsFixed(0),
+                            // Handle price input
+                            onChanged: (value) {
+                              item.basePrice =
+                                  num.tryParse(value) ?? item.price;
+                            },
+                            decoration: InputDecoration(
+                                contentPadding:
+                                    const EdgeInsets.symmetric(horizontal: 12),
+
+                                // border: defaultFormBorder,
+                                enabledBorder: defaultFormBorder,
+                                focusedBorder: defaultFocusedFormBorder,
+                                focusedErrorBorder: defaultErrorFormBorder,
+                                errorStyle: ktsErrorText,
+                                errorBorder: defaultErrorFormBorder),
+                            // textCapitalization: TextCapitalization.words,
+                            style: ktsBodyText,
+                            // controller: mobileController,
+                            keyboardType: TextInputType.number,
+
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter a valid number';
+                              }
+
+                              // Check if the value is not a whole number (non-integer) or is negative
+                              final parsedValue = int.tryParse(value);
+                              if (parsedValue == null || parsedValue < 0) {
+                                return 'Please enter a valid non-negative whole number (integer)';
+                              }
+
+                              return null;
+                            },
+                          ),
+                        ],
+                      ),
                     verticalSpaceSmall,
                     Text('Quantity', style: ktsFormTitleText),
                     verticalSpaceTiny,

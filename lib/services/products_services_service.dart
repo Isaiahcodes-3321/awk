@@ -1518,6 +1518,7 @@ class Items {
   final String? productUnitId;
   final String? serviceUnitId;
   num price;
+  num basePrice;
   num quantity = 1;
   num? basicUnit;
   // num? quantityInStock;
@@ -1533,6 +1534,7 @@ class Items {
       this.productUnitId,
       this.serviceUnitId,
       required this.price,
+      this.basePrice = 0,
       required this.quantity,
       this.basicUnit,
       // this.quantityInStock,

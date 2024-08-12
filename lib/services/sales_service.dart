@@ -678,6 +678,7 @@ class SalesService {
       customerEmail: customerData['email'],
       currencySymbol: currencyData['symbol'],
       currencyName: currencyData['currency'],
+      currencyId: currencyData['id'],
       totalAmount: saleByIdData['saleAmount'] / 100,
       VAT: invoiceData['VAT'],
       subtotal: invoiceData['subtotal'] / 100,

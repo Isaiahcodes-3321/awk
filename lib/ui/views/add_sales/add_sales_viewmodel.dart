@@ -37,10 +37,8 @@ class AddSalesViewModel extends FormViewModel {
   List<DropdownMenuItem<String>> servicedropdownItems = [];
 
   String selectedServiceName = '';
-  String? selectedCurrencySymbol;
-  String? baseCurrencySymbol;
-  String? currencyIdValue;
-  num basePrice = 0;
+  String selectedCurrencySymbol = '';
+  String baseCurrencySymbol = '';
   List<Items> selectedItems = [];
   List<Items> newlySelectedItems = [];
   List<SaleExpenses> saleExpenseItems = [];
@@ -48,7 +46,9 @@ class AddSalesViewModel extends FormViewModel {
   double subtotal = 0.00;
   double total = 0.00;
   num saleExpensesAmount = 0;
-  int currentIndex = 0;
+  int saleExpensecurrentIndex = 0;
+  int serviceExpensecurrentIndex = 0;
+  static String initCurrencyValue = '';
 
   DateTime? pickedDate = DateTime.now();
 
@@ -164,43 +164,21 @@ class AddSalesViewModel extends FormViewModel {
     return customers;
   }
 
-  // Future<List<Currency>> getCurrencies() async {
-  //   final result = await authService.refreshToken();
-  //   if (result.error != null) {
-  //     await navigationService.replaceWithLoginView();
-  //   }
-  //   final currencies = await businessCreationService.getCurrencies();
-
-  //   // Find the NGN currency and set it as the default value
-  //   final ngnCurrency =
-  //       currencies.firstWhere((currency) => currency.currency == 'NGN');
-  //   currencyIdController.text = ngnCurrency.id.toString();
-  //   currencydropdownItems = currencies.map((currency) {
-  //     return DropdownMenuItem<String>(
-  //       value: currency.id.toString(),
-  //       child: Text('(${currency.symbol}) ${currency.currency}'),
-  //     );
-  //   }).toList();
-  //   return currencies;
-  // }
-
-  Future<void> setDefaultCurrency() async {
-    final prefs = await SharedPreferences.getInstance();
-    String currency = prefs.getString('currency') ?? '';
+  Future<List<Currency>> getCurrencies() async {
+    final result = await authService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    }
     final currencies = await businessCreationService.getCurrencies();
 
-    Currency defaultCurrency;
+    // Sort the currencies list so that 'NGN' comes first
+    currencies.sort((a, b) {
+      if (a.currency == 'NGN') return -1; // a should come before b
+      if (b.currency == 'NGN') return 1; // b should come before a
+      return 0; // maintain original order for other currencies
+    });
 
-    defaultCurrency = currencies.firstWhere(
-      (cur) => cur.currency == currency,
-      orElse: () => currencies.first,
-    );
-
-// Set default currency ID and symbol
-    currencyIdController.text = defaultCurrency.id;
-    rebuildUi();
-    selectedCurrencySymbol = defaultCurrency.symbol;
-
+    // Convert the sorted list to DropdownMenuItems
     currencydropdownItems = currencies.map((currency) {
       return DropdownMenuItem<String>(
         value: currency.id.toString(),
@@ -209,33 +187,20 @@ class AddSalesViewModel extends FormViewModel {
     }).toList();
     currencyList = currencies;
     rebuildUi();
-  }
-
-  Future<List<Currency>> getCurrencies() async {
-    final result = await authService.refreshToken();
-    if (result.error != null) {
-      await navigationService.replaceWithLoginView();
-    }
-    await setDefaultCurrency();
-    final currencies = await businessCreationService.getCurrencies();
-    rebuildUi();
     return currencies;
   }
 
-  Future<void> setSelectedCurrencySymbol(String symbol) async {
+  Future<String?> getCurrencySymbol() async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString('selectedSymbol', symbol);
-  }
-
-  Future<void> getCurrencySymbol() async {
-    final prefs = await SharedPreferences.getInstance();
-    selectedCurrencySymbol = prefs.getString('selectedSymbol') ?? '';
     baseCurrencySymbol = prefs.getString('symbol') ?? '';
+    selectedCurrencySymbol = prefs.getString('selectedSymbol') ?? '';
+    rebuildUi();
+    return selectedCurrencySymbol;
   }
 
   void addSaleExpenseItem(SaleExpenses saleExpense) {
-    currentIndex++; // Increment the index for each new expense detail
-    saleExpense.index = currentIndex;
+    saleExpensecurrentIndex++; // Increment the index for each new expense detail
+    saleExpense.index = saleExpensecurrentIndex;
     saleExpenseItems.add(saleExpense);
     calculateTotal();
     rebuildUi();
@@ -261,8 +226,8 @@ class AddSalesViewModel extends FormViewModel {
   }
 
   void addSaleServiceExpense(SaleServiceExpenseEntry saleService) {
-    currentIndex++; // Increment the index for each new expense detail
-    saleService.index = currentIndex;
+    serviceExpensecurrentIndex++; // Increment the index for each new expense detail
+    saleService.index = serviceExpensecurrentIndex;
     saleServiceExpense.add(saleService);
     rebuildUi();
   }
@@ -294,7 +259,7 @@ class AddSalesViewModel extends FormViewModel {
           type: item.type,
           price: item.price,
           basePrice: baseCurrencySymbol != selectedCurrencySymbol
-              ? basePrice
+              ? item.basePrice
               : item.price,
           index: i + 1,
           quantity: item.quantity,
@@ -360,8 +325,8 @@ class AddSalesViewModel extends FormViewModel {
       item: convertItemsToItemDetails(selectedItems),
       dueDate: dueDateValue ?? '',
       dateOfIssue: dateOfIssueValue ?? '',
-      currencyId: currencyIdController.text,
-      vat: 7.5 * 100,
+      currencyId: currencyIdValue ?? '',
+      vat: 7.5,
     );
   }
 
@@ -413,8 +378,6 @@ class AddSalesViewModel extends FormViewModel {
   void navigateBack() => navigationService.back();
   void navigateTo2() => navigationService.navigateTo(Routes.addSales2View);
   void openEditBottomSheet(Items item) {
-    // Temporary variable to store the base price
-    basePrice = item.price;
     showModalBottomSheet(
       backgroundColor: kcButtonTextColor,
       isScrollControlled: true,
@@ -504,10 +467,12 @@ class AddSalesViewModel extends FormViewModel {
                           verticalSpaceTiny,
                           TextFormField(
                             cursorColor: kcPrimaryColor,
-                            initialValue: item.price.toStringAsFixed(0),
+                            initialValue: item.basePrice.toStringAsFixed(0),
                             // Handle price input
                             onChanged: (value) {
-                              basePrice = num.tryParse(value) ?? item.price;
+                              // Update the item's specific basePrice
+                              item.basePrice =
+                                  num.tryParse(value) ?? item.price;
                             },
                             decoration: InputDecoration(
                                 contentPadding:

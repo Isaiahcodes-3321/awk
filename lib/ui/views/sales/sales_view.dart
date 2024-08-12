@@ -64,121 +64,128 @@ class _SalesViewState extends State<SalesView> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      height: 14.h,
-                      color: Color(0XFF2A5DC8),
-                      padding:
-                          const EdgeInsets.only(left: 28, right: 28, top: 4),
-                      child: Column(
-                        // crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          verticalSpaceRegular,
-                          if (!viewModel.isSearchActive)
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Invoice',
-                                      style: ktsHeaderText1,
-                                    ),
-                                    verticalSpaceTinyt,
-                                    Text(
-                                      'Create and manage invoices',
-                                      style: ktsSubtitleTextAuthentication1,
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    GestureDetector(
-                                        onTap: () async {
-                                          final result = viewModel
-                                              .navigationService
-                                              .navigateTo(
-                                                  Routes.archivedSaleView);
-                                          if (result == true) {
-                                            viewModel.reloadSaleData();
-                                          }
-                                        },
-                                        child: const Icon(
-                                          Icons.inventory_2_outlined,
-                                          color: kcButtonTextColor,
-                                          size: 20,
-                                        )),
-                                    horizontalSpaceRegular,
-                                    // GestureDetector(
-                                    //     onTap: () {
-                                    //       viewModel.toggleSearch();
-                                    //     },
-                                    //     child: const Icon(
-                                    //       Icons.search,
-                                    //       color: kcButtonTextColor,
-                                    //     )),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          if (viewModel.isSearchActive)
-                            TextField(
-                              controller: viewModel
-                                  .searchController, // Use the search controller
-                              onChanged: (value) {
-                                if (value.isEmpty) {
-                                  viewModel.reloadSale();
-                                } // Call the search function as you type
-                                else {
-                                  viewModel.searchSale();
-                                }
-                              },
-                              style: ktsBodyTextWhite,
-                              cursorColor: kcButtonTextColor,
-                              decoration: InputDecoration(
-                                focusColor: kcButtonTextColor,
-                                hoverColor: kcPrimaryColor,
-                                fillColor: kcButtonTextColor,
-                                contentPadding: const EdgeInsets.only(top: 10),
-                                hintText: 'Search invoice...',
-                                hintStyle: TextStyle(
-                                    color: kcButtonTextColor.withOpacity(0.4),
-                                    fontSize: 16,
-                                    fontFamily: 'Satoshi',
-                                    fontWeight: FontWeight.w500,
-                                    height: 0,
-                                    letterSpacing: -0.3),
-                                prefixIconColor: kcButtonTextColor,
-                                prefixIcon: const Icon(
-                                  Icons.search,
-                                  size: 20,
-                                ),
-                                suffixIconColor: kcButtonTextColor,
-
-                                suffixIcon: IconButton(
-                                  icon: const Icon(Icons.close, size: 20),
-                                  onPressed: () {
-                                    viewModel.toggleSearch();
-                                    // Call toggleSearch to hide the search bar
-                                  },
-                                ),
-                                enabledBorder: const UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 1, color: kcBorderColor)),
-                                focusedBorder: const UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 1, color: kcPrimaryColor)),
-                                // border: const UnderlineInputBorder(
-                                //     borderSide: BorderSide(
-                                //         width: 1, color: kcPrimaryColor)),
+                    Flexible(
+                      flex: 2,
+                      child: Container(
+                        height: double.infinity,
+                        color: Color(0XFF2A5DC8),
+                        padding:
+                            const EdgeInsets.only(left: 28, right: 28, top: 4),
+                        child: Column(
+                          // crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            verticalSpaceRegular,
+                            if (!viewModel.isSearchActive)
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Invoice',
+                                        style: ktsHeaderText1,
+                                      ),
+                                      verticalSpaceTinyt,
+                                      Text(
+                                        'Create and manage invoices',
+                                        style: ktsSubtitleTextAuthentication1,
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      GestureDetector(
+                                          onTap: () async {
+                                            final result = viewModel
+                                                .navigationService
+                                                .navigateTo(
+                                                    Routes.archivedSaleView);
+                                            if (result == true) {
+                                              viewModel.reloadSaleData();
+                                            }
+                                          },
+                                          child: const Icon(
+                                            Icons.inventory_2_outlined,
+                                            color: kcButtonTextColor,
+                                            size: 20,
+                                          )),
+                                      horizontalSpaceRegular,
+                                      // GestureDetector(
+                                      //     onTap: () {
+                                      //       viewModel.toggleSearch();
+                                      //     },
+                                      //     child: const Icon(
+                                      //       Icons.search,
+                                      //       color: kcButtonTextColor,
+                                      //     )),
+                                    ],
+                                  ),
+                                ],
                               ),
-                            ),
-                          if (viewModel.isSearchActive) verticalSpaceTinyt,
-                        ],
+                            if (viewModel.isSearchActive)
+                              TextField(
+                                controller: viewModel
+                                    .searchController, // Use the search controller
+                                onChanged: (value) {
+                                  if (value.isEmpty) {
+                                    viewModel.reloadSale();
+                                  } // Call the search function as you type
+                                  else {
+                                    viewModel.searchSale();
+                                  }
+                                },
+                                style: ktsBodyTextWhite,
+                                cursorColor: kcButtonTextColor,
+                                decoration: InputDecoration(
+                                  focusColor: kcButtonTextColor,
+                                  hoverColor: kcPrimaryColor,
+                                  fillColor: kcButtonTextColor,
+                                  contentPadding:
+                                      const EdgeInsets.only(top: 10),
+                                  hintText: 'Search invoice...',
+                                  hintStyle: TextStyle(
+                                      color: kcButtonTextColor.withOpacity(0.4),
+                                      fontSize: 16,
+                                      fontFamily: 'Satoshi',
+                                      fontWeight: FontWeight.w500,
+                                      height: 0,
+                                      letterSpacing: -0.3),
+                                  prefixIconColor: kcButtonTextColor,
+                                  prefixIcon: const Icon(
+                                    Icons.search,
+                                    size: 20,
+                                  ),
+                                  suffixIconColor: kcButtonTextColor,
+
+                                  suffixIcon: IconButton(
+                                    icon: const Icon(Icons.close, size: 20),
+                                    onPressed: () {
+                                      viewModel.toggleSearch();
+                                      // Call toggleSearch to hide the search bar
+                                    },
+                                  ),
+                                  enabledBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          width: 1, color: kcBorderColor)),
+                                  focusedBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          width: 1, color: kcPrimaryColor)),
+                                  // border: const UnderlineInputBorder(
+                                  //     borderSide: BorderSide(
+                                  //         width: 1, color: kcPrimaryColor)),
+                                ),
+                              ),
+                            if (viewModel.isSearchActive) verticalSpaceTinyt,
+                          ],
+                        ),
                       ),
                     ),
                     verticalSpaceSmall,

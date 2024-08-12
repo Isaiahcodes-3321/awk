@@ -3,10 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked/stacked_annotations.dart';
 import 'package:verzo/app/app.router.dart';
-import 'package:verzo/services/business_creation_service.dart';
 import 'package:verzo/services/sales_service.dart';
 import 'package:verzo/ui/common/app_colors.dart';
 import 'package:verzo/ui/common/app_styles.dart';
@@ -46,9 +46,13 @@ class AddSalesView extends StackedView<AddSalesViewModel> with $AddSalesView {
         busy: viewModel.isBusy,
         onBackPressed: viewModel.navigateBack,
         // validationMessage: viewModel.validationMessage,
-        onMainButtonTapped: () {
+        onMainButtonTapped: () async {
           if (viewModel.formKey.currentState!.validate()) {
             viewModel.navigateTo2();
+            // SharedPreferences prefs = await SharedPreferences.getInstance();
+            // final String? initBusinessCurrency = prefs.getString('currency');
+            // AddSalesViewModel.initCurrencyValue = initBusinessCurrency!;
+            // // print('value its ${AddSalesViewModel.initCurrencyValue}');
           }
         },
         mainButtonTitle: 'Next',
@@ -65,63 +69,6 @@ class AddSalesView extends StackedView<AddSalesViewModel> with $AddSalesView {
                 child: SvgPicture.asset('assets/images/Group_1000007830.svg'),
               ),
               verticalSpaceSmallMid,
-              Text('Currency', style: ktsFormTitleText),
-              verticalSpaceTiny,
-              DropdownButtonFormField(
-                // hint: Text(
-                //   'Select',
-                //   style: ktsFormHintText,
-                // ),
-                menuMaxHeight: 320,
-                elevation: 4,
-
-                dropdownColor: kcButtonTextColor,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please select a currency';
-                  }
-                  return null;
-                },
-                icon: const Icon(Icons.expand_more),
-                iconSize: 20,
-                isExpanded: true,
-                focusColor: kcPrimaryColor,
-                style: GoogleFonts.openSans(
-                        color: kcTextColor,
-                        fontSize: 14,
-                        fontWeight: FontWeight.normal)
-                    .copyWith(fontFamily: 'Roboto'),
-                decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-                    // hintStyle: ktsFormHintText,
-                    // hintText: 'Select',
-                    enabledBorder: defaultFormBorder,
-                    focusedBorder: defaultFocusedFormBorder,
-                    focusedErrorBorder: defaultErrorFormBorder,
-                    errorStyle: ktsErrorText,
-                    errorBorder: defaultErrorFormBorder,
-                    // labelStyle: ktsFormText,
-                    border: defaultFormBorder),
-                items: viewModel.currencydropdownItems,
-                value: viewModel.currencyIdController.text.isEmpty
-                    ? null
-                    : viewModel.currencyIdController.text,
-                onChanged: (value) async {
-                  viewModel.currencyIdController.text = value.toString();
-                  viewModel.rebuildUi();
-                  // Find the selected currency
-                  Currency selectedCurrency = viewModel.currencyList.firstWhere(
-                    (currency) => currency.id.toString() == value.toString(),
-                  );
-
-                  viewModel.currencyIdController.text = selectedCurrency.id;
-                  viewModel.selectedCurrencySymbol =
-                      selectedCurrency.symbol; // Update the symbo
-                  await viewModel.setSelectedCurrencySymbol(selectedCurrency
-                      .symbol); // Save the symbol to SharedPreferences
-                },
-              ),
-              verticalSpaceSmall,
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -398,10 +345,7 @@ class AddSalesView extends StackedView<AddSalesViewModel> with $AddSalesView {
   @override
   void onViewModelReady(AddSalesViewModel viewModel) async {
     syncFormWithViewModel(viewModel);
-    await viewModel.getCurrencies();
     await viewModel.getCustomersByBusiness();
-
-    // await viewModel.getServiceByBusiness();
   }
 
   @override
