@@ -9,6 +9,7 @@ class DashboardService {
 
   final MutationOptions _updateUserMutation;
   final MutationOptions _resetPasswordMutation;
+  final MutationOptions _changeCardPinMutation;
   final MutationOptions _createSudoCardMutation;
   final MutationOptions _userRequestCardMutation;
   final MutationOptions _generateCardTokenMutation;
@@ -116,6 +117,13 @@ class DashboardService {
           document: gql('''
         mutation ResetPassword(\$input: ResetPassword!){
           resetPassword (input: \$input)
+            }
+            '''),
+        ),
+        _changeCardPinMutation = MutationOptions(
+          document: gql('''
+        mutation ChangeCardPin(\$input: ChangeDefaultCardPinInput){
+          changeCardPin (input: \$input)
             }
             '''),
         ),
@@ -887,6 +895,73 @@ class DashboardService {
 
     // User update was successful
     return UserUpdateResult(user: user);
+  }
+
+  Future<PinChangeResult> changeCardPin({
+    required String cardId,
+    required String businessId,
+    required String oldPin,
+    required String newPin,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('access_token');
+
+    if (token == null) {
+      return PinChangeResult.error(
+        error: GraphQLPinChangeError(
+          message: "Access token not found",
+        ),
+      );
+    }
+
+    // Use the token to create an auth link
+    final authLink = AuthLink(
+      getToken: () => 'Bearer $token',
+    );
+
+    // Create a new GraphQLClient with the auth link
+    final newClient = GraphQLClient(
+      cache: GraphQLCache(),
+      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+    );
+
+    final MutationOptions options = MutationOptions(
+      document: _changeCardPinMutation.document,
+      variables: {
+        'input': {
+          'businessId': businessId,
+          'cardId': cardId,
+          'oldPin': oldPin,
+          'newPin': newPin,
+        }
+      },
+    );
+
+    final QueryResult result = await newClient.mutate(options);
+
+    if (result.hasException) {
+      return PinChangeResult.error(
+        error: GraphQLPinChangeError(
+          message: result.exception?.graphqlErrors.first.message.toString(),
+        ),
+      );
+    }
+
+    if (result.data == null || result.data!['changeCardPin'] == null) {
+      return PinChangeResult.error(
+        error: GraphQLPinChangeError(
+          message: "Error parsing response data",
+        ),
+      );
+    }
+
+    final pinChangeMessage = result.data?['changeCardPin'] ?? '';
+
+    return PinChangeResult(
+      success: PinChangeSuccess(
+        message: pinChangeMessage,
+      ),
+    );
   }
 
   Future<bool> resetPassword({
@@ -1766,4 +1841,26 @@ class SudoCardCreationSuccessResult {
   });
 
   late final String result_id;
+}
+
+class PinChangeResult {
+  final PinChangeSuccess? success;
+  final GraphQLPinChangeError? error;
+
+  PinChangeResult({this.success}) : error = null;
+  PinChangeResult.error({this.error}) : success = null;
+
+  bool get hasError => error != null;
+}
+
+class PinChangeSuccess {
+  final String message;
+
+  PinChangeSuccess({required this.message});
+}
+
+class GraphQLPinChangeError {
+  final String? message;
+
+  GraphQLPinChangeError({required this.message});
 }

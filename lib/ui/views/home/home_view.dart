@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.locator.dart';
@@ -15,6 +17,7 @@ import 'package:verzo/ui/common/app_styles.dart';
 import 'package:verzo/ui/common/ui_helpers.dart';
 import 'package:verzo/ui/views/expense/expense_view.dart';
 import 'package:verzo/ui/views/home/home_viewmodel.dart';
+import 'package:verzo/ui/views/home/reveal_card_info.dart';
 import 'package:verzo/ui/views/purchase/purchase_view.dart';
 import 'package:verzo/ui/views/sales/sales_view.dart';
 
@@ -330,78 +333,6 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
                                       ],
                                     ),
                                   ),
-                                  // PopupMenuItem(
-                                  //   onTap: () {
-                                  //     setState(() {
-                                  //       viewModel.isChecked =
-                                  //           false; // Set the checkbox state to false for 'Last 30 days'
-                                  //     });
-                                  //   },
-                                  //   child: Row(
-                                  //     children: [
-                                  //       Checkbox(
-                                  //         fillColor: MaterialStateProperty
-                                  //             .resolveWith<Color?>(
-                                  //           (Set<MaterialState> states) {
-                                  //             return !viewModel.isChecked
-                                  //                 ? kcFormBorderColor
-                                  //                     .withOpacity(.7)
-                                  //                 : null;
-                                  //             // You can customize the fill color if needed
-                                  //           },
-                                  //         ),
-                                  //         checkColor: kcTextTitleColor,
-                                  //         side: const BorderSide(
-                                  //           width: 1,
-                                  //           color:
-                                  //               kcFormBorderColor, // Set the border color
-                                  //         ),
-                                  //         value: !viewModel.isChecked,
-                                  //         onChanged: null,
-                                  //       ),
-                                  //       Text(
-                                  //         'This quarter',
-                                  //         style: ktsFormHintText,
-                                  //       ),
-                                  //     ],
-                                  //   ),
-                                  // ),
-                                  // PopupMenuItem(
-                                  //   onTap: () {
-                                  //     setState(() {
-                                  //       viewModel.isChecked =
-                                  //           false; // Set the checkbox state to false for 'Last 30 days'
-                                  //     });
-                                  //   },
-                                  //   child: Row(
-                                  //     children: [
-                                  //       Checkbox(
-                                  //         fillColor: MaterialStateProperty
-                                  //             .resolveWith<Color?>(
-                                  //           (Set<MaterialState> states) {
-                                  //             return !viewModel.isChecked
-                                  //                 ? kcFormBorderColor
-                                  //                     .withOpacity(.7)
-                                  //                 : null;
-                                  //             // You can customize the fill color if needed
-                                  //           },
-                                  //         ),
-                                  //         checkColor: kcTextTitleColor,
-                                  //         side: const BorderSide(
-                                  //           width: 1,
-                                  //           color:
-                                  //               kcFormBorderColor, // Set the border color
-                                  //         ),
-                                  //         value: !viewModel.isChecked,
-                                  //         onChanged: null,
-                                  //       ),
-                                  //       Text(
-                                  //         'This year',
-                                  //         style: ktsFormHintText,
-                                  //       ),
-                                  //     ],
-                                  //   ),
-                                  // ),
                                 ];
                               },
                             )
@@ -1094,239 +1025,428 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
   }
 }
 
-class Cards extends ViewModelWidget<HomeViewModel> {
+class Cards extends StatefulWidget {
   const Cards({Key? key, required this.businessCard, required this.cardId})
       : super(key: key);
 
   final BusinessCard businessCard;
-
   final String cardId;
 
   @override
-  Widget build(BuildContext context, HomeViewModel viewModel) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-          height: 200,
-          width: MediaQuery.of(context).size.width * 0.9,
-          decoration: BoxDecoration(
-            border: Border.all(
-                strokeAlign: BorderSide.strokeAlignInside,
-                width: 2,
-                color: kcCardBorderColor),
-            color: kcCardColor.withOpacity(0.3),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(viewModel.userName, style: ktsHeroTextWhiteDashboard1),
-                    // SvgPicture.asset(
-                    //   'assets/images/eye.svg',
-                    //   width: 22,
-                    //   height: 22,
-                    //   color: Colors.white,
-                    // ),
-                    IconButton(
-                        onPressed: () async {
-                          await viewModel.revealSensitiveData(businessCard.id);
-                        },
-                        icon: Icon(
-                          Icons.visibility,
-                          weight: 12,
-                        ))
-                  ],
-                ),
-                Column(
-                  // mainAxisAlignment: MainAxisAlignment.start,
+  _CardsState createState() => _CardsState();
+}
+
+class _CardsState extends State<Cards> {
+  // Define GlobalKey for the showcase
+  final GlobalKey _one = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ShowCaseWidget.of(context).startShowCase([_one]);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ViewModelBuilder<HomeViewModel>.reactive(
+      viewModelBuilder: () => HomeViewModel(),
+      builder: (context, viewModel, child) {
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              height: 200,
+              width: MediaQuery.of(context).size.width * 0.9,
+              decoration: BoxDecoration(
+                border: Border.all(
+                    strokeAlign: BorderSide.strokeAlignInside,
+                    width: 2,
+                    color: kcCardBorderColor),
+                color: kcCardColor.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      'Card number',
-                      style: ktsButtonText2,
-                    ),
-                    verticalSpaceTinyt1,
-                    Text(
-                      businessCard.maskedPan,
-                      style: ktsHeroTextWhiteDashboard1,
-                    )
-                  ],
-                ),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Expiry date',
-                                style: ktsButtonText2,
-                              ),
-                              verticalSpaceTinyt1,
-                              Text(
-                                businessCard.expiryDate,
-                                style: ktsHeroTextWhiteDashboard2,
-                              )
-                            ],
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(viewModel.userName,
+                            style: ktsHeroTextWhiteDashboard1),
+                        Showcase(
+                          key: _one,
+                          description: 'Tap to reveal card information',
+                          child: IconButton(
+                            icon: Icon(Icons.visibility),
+                            onPressed: () async {
+                              SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                              String businessIdValue =
+                                  prefs.getString('businessId') ?? '';
+
+                              // Construct the URL
+                              String url =
+                                  "https://alpha.verzo.app/verzo/viewcard?businessId=${businessIdValue}&cardId=${widget.cardId}";
+                              print("Generated URL: ${widget.cardId}");
+                              // Print the full URL to the console
+                              print("Generated URL: $url");
+                              print("Generated URL: ${widget.cardId}");
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => RevealCardInfoView(
+                                    url: url,
+                                    cardId: widget.cardId,
+                                  ),
+                                ),
+                              );
+                            },
                           ),
-                          horizontalSpaceMedium,
-                          Column(
-                            children: [
-                              Text(
-                                'CVV',
-                                style: ktsButtonText2,
-                              ),
-                              verticalSpaceTinyt1,
-                              Text(
-                                '333',
-                                style: ktsHeroTextWhiteDashboard2,
-                              )
-                            ],
-                          )
+                        ),
+                      ],
+                    ),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Card number', style: ktsButtonText2),
+                        verticalSpaceTinyt1,
+                        Text(
+                          widget.businessCard.maskedPan,
+                          style: ktsHeroTextWhiteDashboard1,
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Expiry date', style: ktsButtonText2),
+                            verticalSpaceTinyt1,
+                            Text(
+                              widget.businessCard.expiryDate,
+                              style: ktsHeroTextWhiteDashboard2,
+                            ),
+                          ],
+                        ),
+                        SvgPicture.asset(
+                          'assets/images/verve.svg',
+                          width: 28,
+                          height: 28,
+                        ),
+                      ],
+                    ),
+                  ]),
+            ),
+            verticalSpaceSmallMid,
+            Container(
+              padding: EdgeInsets.zero,
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Opacity(
+                    opacity: 0.65,
+                    child: GestureDetector(
+                      onTap: () {
+                        null;
+                        // viewModel.checkbusinessAcccount();
+                      },
+                      child: Column(
+                        children: [
+                          CircleAvatar(
+                            radius: 20,
+                            backgroundColor: kcPrimaryColor.withOpacity(0.6),
+                            child: const Icon(
+                              Icons.add,
+                              color: kcButtonTextColor,
+                              size: 24,
+                            ),
+                          ),
+                          verticalSpaceTiny,
+                          Text(
+                            'New card',
+                            style: GoogleFonts.dmSans(
+                              color: kcButtonTextColor,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w300,
+                            ),
+                          ),
                         ],
                       ),
-                      SvgPicture.asset(
-                        'assets/images/verve.svg',
-                        width: 28,
-                        height: 28,
-                      ),
-                    ]),
-              ]),
-        ),
-        // verticalSpaceSmall,
-        // Container(
-        //   padding: EdgeInsets.zero,
-        //   width: MediaQuery.of(context).size.width * 0.9,
-        //   child: Column(
-        //     crossAxisAlignment: CrossAxisAlignment.start,
-        //     mainAxisAlignment: MainAxisAlignment.start,
-        //     mainAxisSize: MainAxisSize.min,
-        //     children: [
-        //       Text('Billing address',
-        //           style: GoogleFonts.dmSans(
-        //             color: kcButtonTextColor.withOpacity(0.7),
-        //             fontSize: 16,
-        //             fontWeight: FontWeight.w300,
-        //           )),
-        //       verticalSpaceTiny,
-        //       Text('No',
-        //           // '${businessCard.line1},${businessCard.city},${businessCard.state},${businessCard.postalCode}',
-        //           style: GoogleFonts.openSans(
-        //             color: kcButtonTextColor,
-        //             fontSize: 18,
-        //             fontWeight: FontWeight.w500,
-        //           ))
-        //     ],
-        //   ),
-        // ),
-        verticalSpaceSmallMid,
-        Container(
-          padding: EdgeInsets.zero,
-          width: MediaQuery.of(context).size.width * 0.9,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              GestureDetector(
-                onTap: () {
-                  viewModel.checkbusinessAcccount();
-                },
-                child: Column(
-                  children: [
-                    CircleAvatar(
-                      radius: 20,
-                      backgroundColor: kcPrimaryColor.withOpacity(0.6),
-                      child: const Icon(
-                        Icons.add,
-                        color: kcButtonTextColor,
-                        size: 24,
-                      ),
                     ),
-                    verticalSpaceTiny,
-                    Text(
-                      'New card',
-                      style: GoogleFonts.dmSans(
-                        color: kcButtonTextColor,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w300,
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              // GestureDetector(
-              //   onTap: () {
-              //     // viewModel.navigationService.navigateTo(Routes.addCardView);
-              //     // viewModel.createSudoCard();
-              //   },
-              //   child: Column(
-              //     children: [
-              //       CircleAvatar(
-              //         radius: 20,
-              //         backgroundColor: kcPrimaryColor.withOpacity(0.6),
-              //         child: const Icon(
-              //           Icons.visibility,
-              //           color: kcButtonTextColor,
-              //           size: 24,
-              //         ),
-              //       ),
-              //       verticalSpaceTiny,
-              //       Text(
-              //         'View',
-              //         style: GoogleFonts.dmSans(
-              //           color: kcButtonTextColor,
-              //           fontSize: 18,
-              //           fontWeight: FontWeight.w300,
-              //         ),
-              //       )
-              //     ],
-              //   ),
-              // ),
-              GestureDetector(
-                onTap: () {
-                  viewModel.navigationService.navigateTo(
-                      Routes.cardTransactionsView,
-                      arguments: cardId);
-                },
-                child: Column(
-                  children: [
-                    CircleAvatar(
-                      radius: 20,
-                      backgroundColor: kcPrimaryColor.withOpacity(0.6),
-                      child: const Icon(
-                        Icons.receipt_outlined,
-                        color: kcButtonTextColor,
-                        size: 24,
-                      ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      viewModel.navigationService.navigateTo(
+                          Routes.cardTransactionsView,
+                          arguments: widget.cardId);
+                    },
+                    child: Column(
+                      children: [
+                        CircleAvatar(
+                          radius: 20,
+                          backgroundColor: kcPrimaryColor.withOpacity(0.6),
+                          child: const Icon(
+                            Icons.receipt_outlined,
+                            color: kcButtonTextColor,
+                            size: 24,
+                          ),
+                        ),
+                        verticalSpaceTiny,
+                        Text(
+                          'Transactions',
+                          style: GoogleFonts.dmSans(
+                            color: kcButtonTextColor,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w300,
+                          ),
+                        ),
+                      ],
                     ),
-                    verticalSpaceTiny,
-                    Text(
-                      'Transactions',
-                      style: GoogleFonts.dmSans(
-                        color: kcButtonTextColor,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w300,
-                      ),
-                    )
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        )
-      ],
+            ),
+          ],
+        );
+      },
     );
   }
 }
+
+// class Cards extends ViewModelWidget<HomeViewModel> {
+//   const Cards({Key? key, required this.businessCard, required this.cardId})
+//       : super(key: key);
+
+//   final BusinessCard businessCard;
+
+//   final String cardId;
+
+//   @override
+//   Widget build(BuildContext context, HomeViewModel viewModel) {
+//     return Column(
+//       mainAxisAlignment: MainAxisAlignment.start,
+//       children: [
+//         Container(
+//           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+//           height: 200,
+//           width: MediaQuery.of(context).size.width * 0.9,
+//           decoration: BoxDecoration(
+//             border: Border.all(
+//                 strokeAlign: BorderSide.strokeAlignInside,
+//                 width: 2,
+//                 color: kcCardBorderColor),
+//             color: kcCardColor.withOpacity(0.3),
+//             borderRadius: BorderRadius.circular(12),
+//           ),
+//           child: Column(
+//               mainAxisSize: MainAxisSize.min,
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//               children: [
+//                 Row(
+//                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                   children: [
+//                     Text(viewModel.userName, style: ktsHeroTextWhiteDashboard1),
+//                     // SvgPicture.asset(
+//                     //   'assets/images/eye.svg',
+//                     //   width: 22,
+//                     //   height: 22,
+//                     //   color: Colors.white,
+//                     // ),
+//                     Showcase(
+//                       key: viewModel.one,
+//                       description: 'Tap to reveal card information',
+//                       child: IconButton(
+//                         icon: Icon(Icons.visibility),
+//                         onPressed: () {
+//                           Navigator.push(
+//                             context,
+//                             MaterialPageRoute(
+//                               builder: (context) => RevealCardInfoView(
+//                                 url:
+//                                     "https://your-web-app.com/reveal-card-info", // Replace with your actual URL
+//                               ),
+//                             ),
+//                           );
+//                         },
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//                 Column(
+//                   // mainAxisAlignment: MainAxisAlignment.start,
+//                   mainAxisSize: MainAxisSize.min,
+//                   crossAxisAlignment: CrossAxisAlignment.start,
+//                   children: [
+//                     Text(
+//                       'Card number',
+//                       style: ktsButtonText2,
+//                     ),
+//                     verticalSpaceTinyt1,
+//                     Text(
+//                       businessCard.maskedPan,
+//                       style: ktsHeroTextWhiteDashboard1,
+//                     )
+//                   ],
+//                 ),
+//                 Row(
+//                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                     children: [
+//                       Column(
+//                         crossAxisAlignment: CrossAxisAlignment.start,
+//                         children: [
+//                           Text(
+//                             'Expiry date',
+//                             style: ktsButtonText2,
+//                           ),
+//                           verticalSpaceTinyt1,
+//                           Text(
+//                             businessCard.expiryDate,
+//                             style: ktsHeroTextWhiteDashboard2,
+//                           )
+//                         ],
+//                       ),
+//                       SvgPicture.asset(
+//                         'assets/images/verve.svg',
+//                         width: 28,
+//                         height: 28,
+//                       ),
+//                     ]),
+//               ]),
+//         ),
+//         // verticalSpaceSmall,
+//         // Container(
+//         //   padding: EdgeInsets.zero,
+//         //   width: MediaQuery.of(context).size.width * 0.9,
+//         //   child: Column(
+//         //     crossAxisAlignment: CrossAxisAlignment.start,
+//         //     mainAxisAlignment: MainAxisAlignment.start,
+//         //     mainAxisSize: MainAxisSize.min,
+//         //     children: [
+//         //       Text('Billing address',
+//         //           style: GoogleFonts.dmSans(
+//         //             color: kcButtonTextColor.withOpacity(0.7),
+//         //             fontSize: 16,
+//         //             fontWeight: FontWeight.w300,
+//         //           )),
+//         //       verticalSpaceTiny,
+//         //       Text('No',
+//         //           // '${businessCard.line1},${businessCard.city},${businessCard.state},${businessCard.postalCode}',
+//         //           style: GoogleFonts.openSans(
+//         //             color: kcButtonTextColor,
+//         //             fontSize: 18,
+//         //             fontWeight: FontWeight.w500,
+//         //           ))
+//         //     ],
+//         //   ),
+//         // ),
+//         verticalSpaceSmallMid,
+//         Container(
+//           padding: EdgeInsets.zero,
+//           width: MediaQuery.of(context).size.width * 0.9,
+//           child: Row(
+//             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//             children: [
+//               GestureDetector(
+//                 onTap: () {
+//                   viewModel.checkbusinessAcccount();
+//                 },
+//                 child: Column(
+//                   children: [
+//                     CircleAvatar(
+//                       radius: 20,
+//                       backgroundColor: kcPrimaryColor.withOpacity(0.6),
+//                       child: const Icon(
+//                         Icons.add,
+//                         color: kcButtonTextColor,
+//                         size: 24,
+//                       ),
+//                     ),
+//                     verticalSpaceTiny,
+//                     Text(
+//                       'New card',
+//                       style: GoogleFonts.dmSans(
+//                         color: kcButtonTextColor,
+//                         fontSize: 18,
+//                         fontWeight: FontWeight.w300,
+//                       ),
+//                     )
+//                   ],
+//                 ),
+//               ),
+//               // GestureDetector(
+//               //   onTap: () {
+//               //     // viewModel.navigationService.navigateTo(Routes.addCardView);
+//               //     // viewModel.createSudoCard();
+//               //   },
+//               //   child: Column(
+//               //     children: [
+//               //       CircleAvatar(
+//               //         radius: 20,
+//               //         backgroundColor: kcPrimaryColor.withOpacity(0.6),
+//               //         child: const Icon(
+//               //           Icons.visibility,
+//               //           color: kcButtonTextColor,
+//               //           size: 24,
+//               //         ),
+//               //       ),
+//               //       verticalSpaceTiny,
+//               //       Text(
+//               //         'View',
+//               //         style: GoogleFonts.dmSans(
+//               //           color: kcButtonTextColor,
+//               //           fontSize: 18,
+//               //           fontWeight: FontWeight.w300,
+//               //         ),
+//               //       )
+//               //     ],
+//               //   ),
+//               // ),
+//               GestureDetector(
+//                 onTap: () {
+//                   viewModel.navigationService.navigateTo(
+//                       Routes.cardTransactionsView,
+//                       arguments: cardId);
+//                 },
+//                 child: Column(
+//                   children: [
+//                     CircleAvatar(
+//                       radius: 20,
+//                       backgroundColor: kcPrimaryColor.withOpacity(0.6),
+//                       child: const Icon(
+//                         Icons.receipt_outlined,
+//                         color: kcButtonTextColor,
+//                         size: 24,
+//                       ),
+//                     ),
+//                     verticalSpaceTiny,
+//                     Text(
+//                       'Transactions',
+//                       style: GoogleFonts.dmSans(
+//                         color: kcButtonTextColor,
+//                         fontSize: 18,
+//                         fontWeight: FontWeight.w300,
+//                       ),
+//                     )
+//                   ],
+//                 ),
+//               ),
+//             ],
+//           ),
+//         )
+//       ],
+//     );
+//   }
+// }
 
 class InvoiceListView extends StatefulWidget {
   const InvoiceListView({Key? key}) : super(key: key);

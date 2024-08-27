@@ -188,9 +188,20 @@ class _FakeUserUpdateResult_13 extends _i1.SmartFake
         );
 }
 
-class _FakeSudoCardCreationResult_14 extends _i1.SmartFake
+class _FakePinChangeResult_14 extends _i1.SmartFake
+    implements _i7.PinChangeResult {
+  _FakePinChangeResult_14(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeSudoCardCreationResult_15 extends _i1.SmartFake
     implements _i7.SudoCardCreationResult {
-  _FakeSudoCardCreationResult_14(
+  _FakeSudoCardCreationResult_15(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -199,9 +210,9 @@ class _FakeSudoCardCreationResult_14 extends _i1.SmartFake
         );
 }
 
-class _FakeExpensesForWeek_15 extends _i1.SmartFake
+class _FakeExpensesForWeek_16 extends _i1.SmartFake
     implements _i7.ExpensesForWeek {
-  _FakeExpensesForWeek_15(
+  _FakeExpensesForWeek_16(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -210,9 +221,9 @@ class _FakeExpensesForWeek_15 extends _i1.SmartFake
         );
 }
 
-class _FakePurchasesForWeek_16 extends _i1.SmartFake
+class _FakePurchasesForWeek_17 extends _i1.SmartFake
     implements _i7.PurchasesForWeek {
-  _FakePurchasesForWeek_16(
+  _FakePurchasesForWeek_17(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -221,9 +232,9 @@ class _FakePurchasesForWeek_16 extends _i1.SmartFake
         );
 }
 
-class _FakeExpensesForMonth_17 extends _i1.SmartFake
+class _FakeExpensesForMonth_18 extends _i1.SmartFake
     implements _i7.ExpensesForMonth {
-  _FakeExpensesForMonth_17(
+  _FakeExpensesForMonth_18(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -232,9 +243,9 @@ class _FakeExpensesForMonth_17 extends _i1.SmartFake
         );
 }
 
-class _FakePurchasesForMonth_18 extends _i1.SmartFake
+class _FakePurchasesForMonth_19 extends _i1.SmartFake
     implements _i7.PurchasesForMonth {
-  _FakePurchasesForMonth_18(
+  _FakePurchasesForMonth_19(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -243,9 +254,9 @@ class _FakePurchasesForMonth_18 extends _i1.SmartFake
         );
 }
 
-class _FakeWeeklyInvoices_19 extends _i1.SmartFake
+class _FakeWeeklyInvoices_20 extends _i1.SmartFake
     implements _i7.WeeklyInvoices {
-  _FakeWeeklyInvoices_19(
+  _FakeWeeklyInvoices_20(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -254,9 +265,9 @@ class _FakeWeeklyInvoices_19 extends _i1.SmartFake
         );
 }
 
-class _FakeMonthlyInvoices_20 extends _i1.SmartFake
+class _FakeMonthlyInvoices_21 extends _i1.SmartFake
     implements _i7.MonthlyInvoices {
-  _FakeMonthlyInvoices_20(
+  _FakeMonthlyInvoices_21(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -265,9 +276,9 @@ class _FakeMonthlyInvoices_20 extends _i1.SmartFake
         );
 }
 
-class _FakeMerchantCreationResult_21 extends _i1.SmartFake
+class _FakeMerchantCreationResult_22 extends _i1.SmartFake
     implements _i8.MerchantCreationResult {
-  _FakeMerchantCreationResult_21(
+  _FakeMerchantCreationResult_22(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -276,9 +287,9 @@ class _FakeMerchantCreationResult_21 extends _i1.SmartFake
         );
 }
 
-class _FakeExpenseCreationResult_22 extends _i1.SmartFake
+class _FakeExpenseCreationResult_23 extends _i1.SmartFake
     implements _i9.ExpenseCreationResult {
-  _FakeExpenseCreationResult_22(
+  _FakeExpenseCreationResult_23(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -287,8 +298,8 @@ class _FakeExpenseCreationResult_22 extends _i1.SmartFake
         );
 }
 
-class _FakeExpenses_23 extends _i1.SmartFake implements _i9.Expenses {
-  _FakeExpenses_23(
+class _FakeExpenses_24 extends _i1.SmartFake implements _i9.Expenses {
+  _FakeExpenses_24(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -297,9 +308,9 @@ class _FakeExpenses_23 extends _i1.SmartFake implements _i9.Expenses {
         );
 }
 
-class _FakeExpenseUpdateResult_24 extends _i1.SmartFake
+class _FakeExpenseUpdateResult_25 extends _i1.SmartFake
     implements _i9.ExpenseUpdateResult {
-  _FakeExpenseUpdateResult_24(
+  _FakeExpenseUpdateResult_25(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -308,9 +319,9 @@ class _FakeExpenseUpdateResult_24 extends _i1.SmartFake
         );
 }
 
-class _FakeExpenseStatusResult_25 extends _i1.SmartFake
+class _FakeExpenseStatusResult_26 extends _i1.SmartFake
     implements _i9.ExpenseStatusResult {
-  _FakeExpenseStatusResult_25(
+  _FakeExpenseStatusResult_26(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -319,9 +330,9 @@ class _FakeExpenseStatusResult_25 extends _i1.SmartFake
         );
 }
 
-class _FakePurchaseCreationResult_26 extends _i1.SmartFake
+class _FakePurchaseCreationResult_27 extends _i1.SmartFake
     implements _i10.PurchaseCreationResult {
-  _FakePurchaseCreationResult_26(
+  _FakePurchaseCreationResult_27(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -330,8 +341,8 @@ class _FakePurchaseCreationResult_26 extends _i1.SmartFake
         );
 }
 
-class _FakePurchases_27 extends _i1.SmartFake implements _i10.Purchases {
-  _FakePurchases_27(
+class _FakePurchases_28 extends _i1.SmartFake implements _i10.Purchases {
+  _FakePurchases_28(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -340,9 +351,9 @@ class _FakePurchases_27 extends _i1.SmartFake implements _i10.Purchases {
         );
 }
 
-class _FakePurchaseStatusResult_28 extends _i1.SmartFake
+class _FakePurchaseStatusResult_29 extends _i1.SmartFake
     implements _i10.PurchaseStatusResult {
-  _FakePurchaseStatusResult_28(
+  _FakePurchaseStatusResult_29(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -351,9 +362,9 @@ class _FakePurchaseStatusResult_28 extends _i1.SmartFake
         );
 }
 
-class _FakePurchaseUpdateResult_29 extends _i1.SmartFake
+class _FakePurchaseUpdateResult_30 extends _i1.SmartFake
     implements _i10.PurchaseUpdateResult {
-  _FakePurchaseUpdateResult_29(
+  _FakePurchaseUpdateResult_30(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -362,9 +373,9 @@ class _FakePurchaseUpdateResult_29 extends _i1.SmartFake
         );
 }
 
-class _FakeSaleCreationResult_30 extends _i1.SmartFake
+class _FakeSaleCreationResult_31 extends _i1.SmartFake
     implements _i11.SaleCreationResult {
-  _FakeSaleCreationResult_30(
+  _FakeSaleCreationResult_31(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -373,9 +384,9 @@ class _FakeSaleCreationResult_30 extends _i1.SmartFake
         );
 }
 
-class _FakeSaleUpdateResult_31 extends _i1.SmartFake
+class _FakeSaleUpdateResult_32 extends _i1.SmartFake
     implements _i11.SaleUpdateResult {
-  _FakeSaleUpdateResult_31(
+  _FakeSaleUpdateResult_32(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -384,8 +395,8 @@ class _FakeSaleUpdateResult_31 extends _i1.SmartFake
         );
 }
 
-class _FakeSales_32 extends _i1.SmartFake implements _i11.Sales {
-  _FakeSales_32(
+class _FakeSales_33 extends _i1.SmartFake implements _i11.Sales {
+  _FakeSales_33(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -394,9 +405,9 @@ class _FakeSales_32 extends _i1.SmartFake implements _i11.Sales {
         );
 }
 
-class _FakeSaleStatusResult_33 extends _i1.SmartFake
+class _FakeSaleStatusResult_34 extends _i1.SmartFake
     implements _i11.SaleStatusResult {
-  _FakeSaleStatusResult_33(
+  _FakeSaleStatusResult_34(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -405,9 +416,9 @@ class _FakeSaleStatusResult_33 extends _i1.SmartFake
         );
 }
 
-class _FakeCustomerCreationResult_34 extends _i1.SmartFake
+class _FakeCustomerCreationResult_35 extends _i1.SmartFake
     implements _i11.CustomerCreationResult {
-  _FakeCustomerCreationResult_34(
+  _FakeCustomerCreationResult_35(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -416,8 +427,8 @@ class _FakeCustomerCreationResult_34 extends _i1.SmartFake
         );
 }
 
-class _FakeCustomers_35 extends _i1.SmartFake implements _i11.Customers {
-  _FakeCustomers_35(
+class _FakeCustomers_36 extends _i1.SmartFake implements _i11.Customers {
+  _FakeCustomers_36(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -426,9 +437,9 @@ class _FakeCustomers_35 extends _i1.SmartFake implements _i11.Customers {
         );
 }
 
-class _FakeCustomerUpdateResult_36 extends _i1.SmartFake
+class _FakeCustomerUpdateResult_37 extends _i1.SmartFake
     implements _i11.CustomerUpdateResult {
-  _FakeCustomerUpdateResult_36(
+  _FakeCustomerUpdateResult_37(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -437,9 +448,9 @@ class _FakeCustomerUpdateResult_36 extends _i1.SmartFake
         );
 }
 
-class _FakeProductCreationResult_37 extends _i1.SmartFake
+class _FakeProductCreationResult_38 extends _i1.SmartFake
     implements _i12.ProductCreationResult {
-  _FakeProductCreationResult_37(
+  _FakeProductCreationResult_38(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -448,9 +459,9 @@ class _FakeProductCreationResult_37 extends _i1.SmartFake
         );
 }
 
-class _FakeProductUnitCreationResult_38 extends _i1.SmartFake
+class _FakeProductUnitCreationResult_39 extends _i1.SmartFake
     implements _i12.ProductUnitCreationResult {
-  _FakeProductUnitCreationResult_38(
+  _FakeProductUnitCreationResult_39(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -459,9 +470,9 @@ class _FakeProductUnitCreationResult_38 extends _i1.SmartFake
         );
 }
 
-class _FakeProductUpdateResult_39 extends _i1.SmartFake
+class _FakeProductUpdateResult_40 extends _i1.SmartFake
     implements _i12.ProductUpdateResult {
-  _FakeProductUpdateResult_39(
+  _FakeProductUpdateResult_40(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -470,8 +481,8 @@ class _FakeProductUpdateResult_39 extends _i1.SmartFake
         );
 }
 
-class _FakeProducts_40 extends _i1.SmartFake implements _i12.Products {
-  _FakeProducts_40(
+class _FakeProducts_41 extends _i1.SmartFake implements _i12.Products {
+  _FakeProducts_41(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -480,9 +491,9 @@ class _FakeProducts_40 extends _i1.SmartFake implements _i12.Products {
         );
 }
 
-class _FakeServiceCreationResult_41 extends _i1.SmartFake
+class _FakeServiceCreationResult_42 extends _i1.SmartFake
     implements _i12.ServiceCreationResult {
-  _FakeServiceCreationResult_41(
+  _FakeServiceCreationResult_42(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -491,9 +502,9 @@ class _FakeServiceCreationResult_41 extends _i1.SmartFake
         );
 }
 
-class _FakeServiceUnitCreationResult_42 extends _i1.SmartFake
+class _FakeServiceUnitCreationResult_43 extends _i1.SmartFake
     implements _i12.ServiceUnitCreationResult {
-  _FakeServiceUnitCreationResult_42(
+  _FakeServiceUnitCreationResult_43(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -502,9 +513,9 @@ class _FakeServiceUnitCreationResult_42 extends _i1.SmartFake
         );
 }
 
-class _FakeServiceUpdateResult_43 extends _i1.SmartFake
+class _FakeServiceUpdateResult_44 extends _i1.SmartFake
     implements _i12.ServiceUpdateResult {
-  _FakeServiceUpdateResult_43(
+  _FakeServiceUpdateResult_44(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -513,8 +524,8 @@ class _FakeServiceUpdateResult_43 extends _i1.SmartFake
         );
 }
 
-class _FakeServices_44 extends _i1.SmartFake implements _i12.Services {
-  _FakeServices_44(
+class _FakeServices_45 extends _i1.SmartFake implements _i12.Services {
+  _FakeServices_45(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -523,9 +534,9 @@ class _FakeServices_44 extends _i1.SmartFake implements _i12.Services {
         );
 }
 
-class _FakeSubscriptions_45 extends _i1.SmartFake
+class _FakeSubscriptions_46 extends _i1.SmartFake
     implements _i13.Subscriptions {
-  _FakeSubscriptions_45(
+  _FakeSubscriptions_46(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -534,9 +545,9 @@ class _FakeSubscriptions_45 extends _i1.SmartFake
         );
 }
 
-class _FakeSubscriptionCreationResult_46 extends _i1.SmartFake
+class _FakeSubscriptionCreationResult_47 extends _i1.SmartFake
     implements _i13.SubscriptionCreationResult {
-  _FakeSubscriptionCreationResult_46(
+  _FakeSubscriptionCreationResult_47(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -545,9 +556,9 @@ class _FakeSubscriptionCreationResult_46 extends _i1.SmartFake
         );
 }
 
-class _FakeSubscriptionCreationResultB_47 extends _i1.SmartFake
+class _FakeSubscriptionCreationResultB_48 extends _i1.SmartFake
     implements _i13.SubscriptionCreationResultB {
-  _FakeSubscriptionCreationResultB_47(
+  _FakeSubscriptionCreationResultB_48(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -2013,6 +2024,54 @@ class MockDashboardService extends _i1.Mock implements _i7.DashboardService {
       ) as _i15.Future<_i7.UserUpdateResult>);
 
   @override
+  _i15.Future<_i7.PinChangeResult> changeCardPin({
+    required String? cardId,
+    required String? businessId,
+    required String? oldPin,
+    required String? newPin,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #changeCardPin,
+          [],
+          {
+            #cardId: cardId,
+            #businessId: businessId,
+            #oldPin: oldPin,
+            #newPin: newPin,
+          },
+        ),
+        returnValue:
+            _i15.Future<_i7.PinChangeResult>.value(_FakePinChangeResult_14(
+          this,
+          Invocation.method(
+            #changeCardPin,
+            [],
+            {
+              #cardId: cardId,
+              #businessId: businessId,
+              #oldPin: oldPin,
+              #newPin: newPin,
+            },
+          ),
+        )),
+        returnValueForMissingStub:
+            _i15.Future<_i7.PinChangeResult>.value(_FakePinChangeResult_14(
+          this,
+          Invocation.method(
+            #changeCardPin,
+            [],
+            {
+              #cardId: cardId,
+              #businessId: businessId,
+              #oldPin: oldPin,
+              #newPin: newPin,
+            },
+          ),
+        )),
+      ) as _i15.Future<_i7.PinChangeResult>);
+
+  @override
   _i15.Future<bool> resetPassword({
     required String? oldPassword,
     required String? newPassword,
@@ -2047,7 +2106,7 @@ class MockDashboardService extends _i1.Mock implements _i7.DashboardService {
           },
         ),
         returnValue: _i15.Future<_i7.SudoCardCreationResult>.value(
-            _FakeSudoCardCreationResult_14(
+            _FakeSudoCardCreationResult_15(
           this,
           Invocation.method(
             #createSudoCard,
@@ -2061,7 +2120,7 @@ class MockDashboardService extends _i1.Mock implements _i7.DashboardService {
         )),
         returnValueForMissingStub:
             _i15.Future<_i7.SudoCardCreationResult>.value(
-                _FakeSudoCardCreationResult_14(
+                _FakeSudoCardCreationResult_15(
           this,
           Invocation.method(
             #createSudoCard,
@@ -2102,7 +2161,7 @@ class MockDashboardService extends _i1.Mock implements _i7.DashboardService {
           },
         ),
         returnValue:
-            _i15.Future<_i7.ExpensesForWeek>.value(_FakeExpensesForWeek_15(
+            _i15.Future<_i7.ExpensesForWeek>.value(_FakeExpensesForWeek_16(
           this,
           Invocation.method(
             #getExpensesForWeek,
@@ -2114,7 +2173,7 @@ class MockDashboardService extends _i1.Mock implements _i7.DashboardService {
           ),
         )),
         returnValueForMissingStub:
-            _i15.Future<_i7.ExpensesForWeek>.value(_FakeExpensesForWeek_15(
+            _i15.Future<_i7.ExpensesForWeek>.value(_FakeExpensesForWeek_16(
           this,
           Invocation.method(
             #getExpensesForWeek,
@@ -2142,7 +2201,7 @@ class MockDashboardService extends _i1.Mock implements _i7.DashboardService {
           },
         ),
         returnValue:
-            _i15.Future<_i7.PurchasesForWeek>.value(_FakePurchasesForWeek_16(
+            _i15.Future<_i7.PurchasesForWeek>.value(_FakePurchasesForWeek_17(
           this,
           Invocation.method(
             #getPurchasesForWeek,
@@ -2154,7 +2213,7 @@ class MockDashboardService extends _i1.Mock implements _i7.DashboardService {
           ),
         )),
         returnValueForMissingStub:
-            _i15.Future<_i7.PurchasesForWeek>.value(_FakePurchasesForWeek_16(
+            _i15.Future<_i7.PurchasesForWeek>.value(_FakePurchasesForWeek_17(
           this,
           Invocation.method(
             #getPurchasesForWeek,
@@ -2182,7 +2241,7 @@ class MockDashboardService extends _i1.Mock implements _i7.DashboardService {
           },
         ),
         returnValue:
-            _i15.Future<_i7.ExpensesForMonth>.value(_FakeExpensesForMonth_17(
+            _i15.Future<_i7.ExpensesForMonth>.value(_FakeExpensesForMonth_18(
           this,
           Invocation.method(
             #getExpensesForMonth,
@@ -2194,7 +2253,7 @@ class MockDashboardService extends _i1.Mock implements _i7.DashboardService {
           ),
         )),
         returnValueForMissingStub:
-            _i15.Future<_i7.ExpensesForMonth>.value(_FakeExpensesForMonth_17(
+            _i15.Future<_i7.ExpensesForMonth>.value(_FakeExpensesForMonth_18(
           this,
           Invocation.method(
             #getExpensesForMonth,
@@ -2222,7 +2281,7 @@ class MockDashboardService extends _i1.Mock implements _i7.DashboardService {
           },
         ),
         returnValue:
-            _i15.Future<_i7.PurchasesForMonth>.value(_FakePurchasesForMonth_18(
+            _i15.Future<_i7.PurchasesForMonth>.value(_FakePurchasesForMonth_19(
           this,
           Invocation.method(
             #getPurchasesForMonth,
@@ -2234,7 +2293,7 @@ class MockDashboardService extends _i1.Mock implements _i7.DashboardService {
           ),
         )),
         returnValueForMissingStub:
-            _i15.Future<_i7.PurchasesForMonth>.value(_FakePurchasesForMonth_18(
+            _i15.Future<_i7.PurchasesForMonth>.value(_FakePurchasesForMonth_19(
           this,
           Invocation.method(
             #getPurchasesForMonth,
@@ -2264,7 +2323,7 @@ class MockDashboardService extends _i1.Mock implements _i7.DashboardService {
           },
         ),
         returnValue:
-            _i15.Future<_i7.WeeklyInvoices>.value(_FakeWeeklyInvoices_19(
+            _i15.Future<_i7.WeeklyInvoices>.value(_FakeWeeklyInvoices_20(
           this,
           Invocation.method(
             #totalWeeklyInvoicesAmount,
@@ -2277,7 +2336,7 @@ class MockDashboardService extends _i1.Mock implements _i7.DashboardService {
           ),
         )),
         returnValueForMissingStub:
-            _i15.Future<_i7.WeeklyInvoices>.value(_FakeWeeklyInvoices_19(
+            _i15.Future<_i7.WeeklyInvoices>.value(_FakeWeeklyInvoices_20(
           this,
           Invocation.method(
             #totalWeeklyInvoicesAmount,
@@ -2308,7 +2367,7 @@ class MockDashboardService extends _i1.Mock implements _i7.DashboardService {
           },
         ),
         returnValue:
-            _i15.Future<_i7.MonthlyInvoices>.value(_FakeMonthlyInvoices_20(
+            _i15.Future<_i7.MonthlyInvoices>.value(_FakeMonthlyInvoices_21(
           this,
           Invocation.method(
             #totalMonthlyInvoicesAmount,
@@ -2321,7 +2380,7 @@ class MockDashboardService extends _i1.Mock implements _i7.DashboardService {
           ),
         )),
         returnValueForMissingStub:
-            _i15.Future<_i7.MonthlyInvoices>.value(_FakeMonthlyInvoices_20(
+            _i15.Future<_i7.MonthlyInvoices>.value(_FakeMonthlyInvoices_21(
           this,
           Invocation.method(
             #totalMonthlyInvoicesAmount,
@@ -2380,7 +2439,7 @@ class MockMerchantService extends _i1.Mock implements _i8.MerchantService {
           },
         ),
         returnValue: _i15.Future<_i8.MerchantCreationResult>.value(
-            _FakeMerchantCreationResult_21(
+            _FakeMerchantCreationResult_22(
           this,
           Invocation.method(
             #createMerchant,
@@ -2394,7 +2453,7 @@ class MockMerchantService extends _i1.Mock implements _i8.MerchantService {
         )),
         returnValueForMissingStub:
             _i15.Future<_i8.MerchantCreationResult>.value(
-                _FakeMerchantCreationResult_21(
+                _FakeMerchantCreationResult_22(
           this,
           Invocation.method(
             #createMerchant,
@@ -2475,7 +2534,7 @@ class MockExpenseService extends _i1.Mock implements _i9.ExpenseService {
           },
         ),
         returnValue: _i15.Future<_i9.ExpenseCreationResult>.value(
-            _FakeExpenseCreationResult_22(
+            _FakeExpenseCreationResult_23(
           this,
           Invocation.method(
             #createExpenses,
@@ -2492,7 +2551,7 @@ class MockExpenseService extends _i1.Mock implements _i9.ExpenseService {
           ),
         )),
         returnValueForMissingStub: _i15.Future<_i9.ExpenseCreationResult>.value(
-            _FakeExpenseCreationResult_22(
+            _FakeExpenseCreationResult_23(
           this,
           Invocation.method(
             #createExpenses,
@@ -2518,7 +2577,7 @@ class MockExpenseService extends _i1.Mock implements _i9.ExpenseService {
           [],
           {#expenseId: expenseId},
         ),
-        returnValue: _i15.Future<_i9.Expenses>.value(_FakeExpenses_23(
+        returnValue: _i15.Future<_i9.Expenses>.value(_FakeExpenses_24(
           this,
           Invocation.method(
             #getExpenseById,
@@ -2527,7 +2586,7 @@ class MockExpenseService extends _i1.Mock implements _i9.ExpenseService {
           ),
         )),
         returnValueForMissingStub:
-            _i15.Future<_i9.Expenses>.value(_FakeExpenses_23(
+            _i15.Future<_i9.Expenses>.value(_FakeExpenses_24(
           this,
           Invocation.method(
             #getExpenseById,
@@ -2562,7 +2621,7 @@ class MockExpenseService extends _i1.Mock implements _i9.ExpenseService {
           },
         ),
         returnValue: _i15.Future<_i9.ExpenseUpdateResult>.value(
-            _FakeExpenseUpdateResult_24(
+            _FakeExpenseUpdateResult_25(
           this,
           Invocation.method(
             #updateExpenses,
@@ -2579,7 +2638,7 @@ class MockExpenseService extends _i1.Mock implements _i9.ExpenseService {
           ),
         )),
         returnValueForMissingStub: _i15.Future<_i9.ExpenseUpdateResult>.value(
-            _FakeExpenseUpdateResult_24(
+            _FakeExpenseUpdateResult_25(
           this,
           Invocation.method(
             #updateExpenses,
@@ -2694,7 +2753,7 @@ class MockExpenseService extends _i1.Mock implements _i9.ExpenseService {
           },
         ),
         returnValue: _i15.Future<_i9.ExpenseStatusResult>.value(
-            _FakeExpenseStatusResult_25(
+            _FakeExpenseStatusResult_26(
           this,
           Invocation.method(
             #markExpenseItemAsReceived,
@@ -2708,7 +2767,7 @@ class MockExpenseService extends _i1.Mock implements _i9.ExpenseService {
           ),
         )),
         returnValueForMissingStub: _i15.Future<_i9.ExpenseStatusResult>.value(
-            _FakeExpenseStatusResult_25(
+            _FakeExpenseStatusResult_26(
           this,
           Invocation.method(
             #markExpenseItemAsReceived,
@@ -2742,7 +2801,7 @@ class MockExpenseService extends _i1.Mock implements _i9.ExpenseService {
           },
         ),
         returnValue: _i15.Future<_i9.ExpenseStatusResult>.value(
-            _FakeExpenseStatusResult_25(
+            _FakeExpenseStatusResult_26(
           this,
           Invocation.method(
             #uploadMerchantInvoiceToExpense,
@@ -2756,7 +2815,7 @@ class MockExpenseService extends _i1.Mock implements _i9.ExpenseService {
           ),
         )),
         returnValueForMissingStub: _i15.Future<_i9.ExpenseStatusResult>.value(
-            _FakeExpenseStatusResult_25(
+            _FakeExpenseStatusResult_26(
           this,
           Invocation.method(
             #uploadMerchantInvoiceToExpense,
@@ -2794,7 +2853,7 @@ class MockExpenseService extends _i1.Mock implements _i9.ExpenseService {
           },
         ),
         returnValue: _i15.Future<_i9.ExpenseStatusResult>.value(
-            _FakeExpenseStatusResult_25(
+            _FakeExpenseStatusResult_26(
           this,
           Invocation.method(
             #makeExpensePayment,
@@ -2810,7 +2869,7 @@ class MockExpenseService extends _i1.Mock implements _i9.ExpenseService {
           ),
         )),
         returnValueForMissingStub: _i15.Future<_i9.ExpenseStatusResult>.value(
-            _FakeExpenseStatusResult_25(
+            _FakeExpenseStatusResult_26(
           this,
           Invocation.method(
             #makeExpensePayment,
@@ -2900,7 +2959,7 @@ class MockPurchaseService extends _i1.Mock implements _i10.PurchaseService {
           },
         ),
         returnValue: _i15.Future<_i10.PurchaseCreationResult>.value(
-            _FakePurchaseCreationResult_26(
+            _FakePurchaseCreationResult_27(
           this,
           Invocation.method(
             #createPurchaseEntry,
@@ -2916,7 +2975,7 @@ class MockPurchaseService extends _i1.Mock implements _i10.PurchaseService {
         )),
         returnValueForMissingStub:
             _i15.Future<_i10.PurchaseCreationResult>.value(
-                _FakePurchaseCreationResult_26(
+                _FakePurchaseCreationResult_27(
           this,
           Invocation.method(
             #createPurchaseEntry,
@@ -2940,7 +2999,7 @@ class MockPurchaseService extends _i1.Mock implements _i10.PurchaseService {
           [],
           {#purchaseId: purchaseId},
         ),
-        returnValue: _i15.Future<_i10.Purchases>.value(_FakePurchases_27(
+        returnValue: _i15.Future<_i10.Purchases>.value(_FakePurchases_28(
           this,
           Invocation.method(
             #getPurchaseById,
@@ -2949,7 +3008,7 @@ class MockPurchaseService extends _i1.Mock implements _i10.PurchaseService {
           ),
         )),
         returnValueForMissingStub:
-            _i15.Future<_i10.Purchases>.value(_FakePurchases_27(
+            _i15.Future<_i10.Purchases>.value(_FakePurchases_28(
           this,
           Invocation.method(
             #getPurchaseById,
@@ -3018,7 +3077,7 @@ class MockPurchaseService extends _i1.Mock implements _i10.PurchaseService {
           },
         ),
         returnValue: _i15.Future<_i10.PurchaseStatusResult>.value(
-            _FakePurchaseStatusResult_28(
+            _FakePurchaseStatusResult_29(
           this,
           Invocation.method(
             #makePurchasePayment,
@@ -3034,7 +3093,7 @@ class MockPurchaseService extends _i1.Mock implements _i10.PurchaseService {
           ),
         )),
         returnValueForMissingStub: _i15.Future<_i10.PurchaseStatusResult>.value(
-            _FakePurchaseStatusResult_28(
+            _FakePurchaseStatusResult_29(
           this,
           Invocation.method(
             #makePurchasePayment,
@@ -3070,7 +3129,7 @@ class MockPurchaseService extends _i1.Mock implements _i10.PurchaseService {
           },
         ),
         returnValue: _i15.Future<_i10.PurchaseStatusResult>.value(
-            _FakePurchaseStatusResult_28(
+            _FakePurchaseStatusResult_29(
           this,
           Invocation.method(
             #uploadMerchantInvoiceToPurchase,
@@ -3084,7 +3143,7 @@ class MockPurchaseService extends _i1.Mock implements _i10.PurchaseService {
           ),
         )),
         returnValueForMissingStub: _i15.Future<_i10.PurchaseStatusResult>.value(
-            _FakePurchaseStatusResult_28(
+            _FakePurchaseStatusResult_29(
           this,
           Invocation.method(
             #uploadMerchantInvoiceToPurchase,
@@ -3118,7 +3177,7 @@ class MockPurchaseService extends _i1.Mock implements _i10.PurchaseService {
           },
         ),
         returnValue: _i15.Future<_i10.PurchaseStatusResult>.value(
-            _FakePurchaseStatusResult_28(
+            _FakePurchaseStatusResult_29(
           this,
           Invocation.method(
             #markPurchaseItemAsReceived,
@@ -3132,7 +3191,7 @@ class MockPurchaseService extends _i1.Mock implements _i10.PurchaseService {
           ),
         )),
         returnValueForMissingStub: _i15.Future<_i10.PurchaseStatusResult>.value(
-            _FakePurchaseStatusResult_28(
+            _FakePurchaseStatusResult_29(
           this,
           Invocation.method(
             #markPurchaseItemAsReceived,
@@ -3186,7 +3245,7 @@ class MockPurchaseService extends _i1.Mock implements _i10.PurchaseService {
           },
         ),
         returnValue: _i15.Future<_i10.PurchaseUpdateResult>.value(
-            _FakePurchaseUpdateResult_29(
+            _FakePurchaseUpdateResult_30(
           this,
           Invocation.method(
             #updatePurchases,
@@ -3201,7 +3260,7 @@ class MockPurchaseService extends _i1.Mock implements _i10.PurchaseService {
           ),
         )),
         returnValueForMissingStub: _i15.Future<_i10.PurchaseUpdateResult>.value(
-            _FakePurchaseUpdateResult_29(
+            _FakePurchaseUpdateResult_30(
           this,
           Invocation.method(
             #updatePurchases,
@@ -3318,7 +3377,7 @@ class MockSalesService extends _i1.Mock implements _i11.SalesService {
           },
         ),
         returnValue: _i15.Future<_i11.SaleCreationResult>.value(
-            _FakeSaleCreationResult_30(
+            _FakeSaleCreationResult_31(
           this,
           Invocation.method(
             #createSales,
@@ -3339,7 +3398,7 @@ class MockSalesService extends _i1.Mock implements _i11.SalesService {
           ),
         )),
         returnValueForMissingStub: _i15.Future<_i11.SaleCreationResult>.value(
-            _FakeSaleCreationResult_30(
+            _FakeSaleCreationResult_31(
           this,
           Invocation.method(
             #createSales,
@@ -3394,7 +3453,7 @@ class MockSalesService extends _i1.Mock implements _i11.SalesService {
           },
         ),
         returnValue:
-            _i15.Future<_i11.SaleUpdateResult>.value(_FakeSaleUpdateResult_31(
+            _i15.Future<_i11.SaleUpdateResult>.value(_FakeSaleUpdateResult_32(
           this,
           Invocation.method(
             #updateSales,
@@ -3415,7 +3474,7 @@ class MockSalesService extends _i1.Mock implements _i11.SalesService {
           ),
         )),
         returnValueForMissingStub:
-            _i15.Future<_i11.SaleUpdateResult>.value(_FakeSaleUpdateResult_31(
+            _i15.Future<_i11.SaleUpdateResult>.value(_FakeSaleUpdateResult_32(
           this,
           Invocation.method(
             #updateSales,
@@ -3445,7 +3504,7 @@ class MockSalesService extends _i1.Mock implements _i11.SalesService {
           [],
           {#saleId: saleId},
         ),
-        returnValue: _i15.Future<_i11.Sales>.value(_FakeSales_32(
+        returnValue: _i15.Future<_i11.Sales>.value(_FakeSales_33(
           this,
           Invocation.method(
             #getSaleById,
@@ -3453,7 +3512,7 @@ class MockSalesService extends _i1.Mock implements _i11.SalesService {
             {#saleId: saleId},
           ),
         )),
-        returnValueForMissingStub: _i15.Future<_i11.Sales>.value(_FakeSales_32(
+        returnValueForMissingStub: _i15.Future<_i11.Sales>.value(_FakeSales_33(
           this,
           Invocation.method(
             #getSaleById,
@@ -3564,7 +3623,7 @@ class MockSalesService extends _i1.Mock implements _i11.SalesService {
           },
         ),
         returnValue:
-            _i15.Future<_i11.SaleStatusResult>.value(_FakeSaleStatusResult_33(
+            _i15.Future<_i11.SaleStatusResult>.value(_FakeSaleStatusResult_34(
           this,
           Invocation.method(
             #effectSaleExpense,
@@ -3578,7 +3637,7 @@ class MockSalesService extends _i1.Mock implements _i11.SalesService {
           ),
         )),
         returnValueForMissingStub:
-            _i15.Future<_i11.SaleStatusResult>.value(_FakeSaleStatusResult_33(
+            _i15.Future<_i11.SaleStatusResult>.value(_FakeSaleStatusResult_34(
           this,
           Invocation.method(
             #effectSaleExpense,
@@ -3612,7 +3671,7 @@ class MockSalesService extends _i1.Mock implements _i11.SalesService {
           },
         ),
         returnValue:
-            _i15.Future<_i11.SaleStatusResult>.value(_FakeSaleStatusResult_33(
+            _i15.Future<_i11.SaleStatusResult>.value(_FakeSaleStatusResult_34(
           this,
           Invocation.method(
             #makeSalePayment,
@@ -3626,7 +3685,7 @@ class MockSalesService extends _i1.Mock implements _i11.SalesService {
           ),
         )),
         returnValueForMissingStub:
-            _i15.Future<_i11.SaleStatusResult>.value(_FakeSaleStatusResult_33(
+            _i15.Future<_i11.SaleStatusResult>.value(_FakeSaleStatusResult_34(
           this,
           Invocation.method(
             #makeSalePayment,
@@ -3651,7 +3710,7 @@ class MockSalesService extends _i1.Mock implements _i11.SalesService {
           {#saleId: saleId},
         ),
         returnValue:
-            _i15.Future<_i11.SaleStatusResult>.value(_FakeSaleStatusResult_33(
+            _i15.Future<_i11.SaleStatusResult>.value(_FakeSaleStatusResult_34(
           this,
           Invocation.method(
             #markSaleAsDelivered,
@@ -3660,7 +3719,7 @@ class MockSalesService extends _i1.Mock implements _i11.SalesService {
           ),
         )),
         returnValueForMissingStub:
-            _i15.Future<_i11.SaleStatusResult>.value(_FakeSaleStatusResult_33(
+            _i15.Future<_i11.SaleStatusResult>.value(_FakeSaleStatusResult_34(
           this,
           Invocation.method(
             #markSaleAsDelivered,
@@ -3709,7 +3768,7 @@ class MockSalesService extends _i1.Mock implements _i11.SalesService {
           },
         ),
         returnValue: _i15.Future<_i11.CustomerCreationResult>.value(
-            _FakeCustomerCreationResult_34(
+            _FakeCustomerCreationResult_35(
           this,
           Invocation.method(
             #createCustomer,
@@ -3725,7 +3784,7 @@ class MockSalesService extends _i1.Mock implements _i11.SalesService {
         )),
         returnValueForMissingStub:
             _i15.Future<_i11.CustomerCreationResult>.value(
-                _FakeCustomerCreationResult_34(
+                _FakeCustomerCreationResult_35(
           this,
           Invocation.method(
             #createCustomer,
@@ -3749,7 +3808,7 @@ class MockSalesService extends _i1.Mock implements _i11.SalesService {
           [],
           {#customerId: customerId},
         ),
-        returnValue: _i15.Future<_i11.Customers>.value(_FakeCustomers_35(
+        returnValue: _i15.Future<_i11.Customers>.value(_FakeCustomers_36(
           this,
           Invocation.method(
             #getCustomerById,
@@ -3758,7 +3817,7 @@ class MockSalesService extends _i1.Mock implements _i11.SalesService {
           ),
         )),
         returnValueForMissingStub:
-            _i15.Future<_i11.Customers>.value(_FakeCustomers_35(
+            _i15.Future<_i11.Customers>.value(_FakeCustomers_36(
           this,
           Invocation.method(
             #getCustomerById,
@@ -3789,7 +3848,7 @@ class MockSalesService extends _i1.Mock implements _i11.SalesService {
           },
         ),
         returnValue: _i15.Future<_i11.CustomerUpdateResult>.value(
-            _FakeCustomerUpdateResult_36(
+            _FakeCustomerUpdateResult_37(
           this,
           Invocation.method(
             #updateCustomers,
@@ -3804,7 +3863,7 @@ class MockSalesService extends _i1.Mock implements _i11.SalesService {
           ),
         )),
         returnValueForMissingStub: _i15.Future<_i11.CustomerUpdateResult>.value(
-            _FakeCustomerUpdateResult_36(
+            _FakeCustomerUpdateResult_37(
           this,
           Invocation.method(
             #updateCustomers,
@@ -3950,7 +4009,7 @@ class MockProductsServicesService extends _i1.Mock
           },
         ),
         returnValue: _i15.Future<_i12.ProductCreationResult>.value(
-            _FakeProductCreationResult_37(
+            _FakeProductCreationResult_38(
           this,
           Invocation.method(
             #createProducts,
@@ -3966,7 +4025,7 @@ class MockProductsServicesService extends _i1.Mock
         )),
         returnValueForMissingStub:
             _i15.Future<_i12.ProductCreationResult>.value(
-                _FakeProductCreationResult_37(
+                _FakeProductCreationResult_38(
           this,
           Invocation.method(
             #createProducts,
@@ -3999,7 +4058,7 @@ class MockProductsServicesService extends _i1.Mock
           },
         ),
         returnValue: _i15.Future<_i12.ProductUnitCreationResult>.value(
-            _FakeProductUnitCreationResult_38(
+            _FakeProductUnitCreationResult_39(
           this,
           Invocation.method(
             #createBusinessProductUnit,
@@ -4013,7 +4072,7 @@ class MockProductsServicesService extends _i1.Mock
         )),
         returnValueForMissingStub:
             _i15.Future<_i12.ProductUnitCreationResult>.value(
-                _FakeProductUnitCreationResult_38(
+                _FakeProductUnitCreationResult_39(
           this,
           Invocation.method(
             #createBusinessProductUnit,
@@ -4050,7 +4109,7 @@ class MockProductsServicesService extends _i1.Mock
           },
         ),
         returnValue: _i15.Future<_i12.ProductUpdateResult>.value(
-            _FakeProductUpdateResult_39(
+            _FakeProductUpdateResult_40(
           this,
           Invocation.method(
             #updateProducts,
@@ -4066,7 +4125,7 @@ class MockProductsServicesService extends _i1.Mock
           ),
         )),
         returnValueForMissingStub: _i15.Future<_i12.ProductUpdateResult>.value(
-            _FakeProductUpdateResult_39(
+            _FakeProductUpdateResult_40(
           this,
           Invocation.method(
             #updateProducts,
@@ -4091,7 +4150,7 @@ class MockProductsServicesService extends _i1.Mock
           [],
           {#productId: productId},
         ),
-        returnValue: _i15.Future<_i12.Products>.value(_FakeProducts_40(
+        returnValue: _i15.Future<_i12.Products>.value(_FakeProducts_41(
           this,
           Invocation.method(
             #getProductById,
@@ -4100,7 +4159,7 @@ class MockProductsServicesService extends _i1.Mock
           ),
         )),
         returnValueForMissingStub:
-            _i15.Future<_i12.Products>.value(_FakeProducts_40(
+            _i15.Future<_i12.Products>.value(_FakeProducts_41(
           this,
           Invocation.method(
             #getProductById,
@@ -4177,7 +4236,7 @@ class MockProductsServicesService extends _i1.Mock
           },
         ),
         returnValue: _i15.Future<_i12.ServiceCreationResult>.value(
-            _FakeServiceCreationResult_41(
+            _FakeServiceCreationResult_42(
           this,
           Invocation.method(
             #createServices,
@@ -4192,7 +4251,7 @@ class MockProductsServicesService extends _i1.Mock
         )),
         returnValueForMissingStub:
             _i15.Future<_i12.ServiceCreationResult>.value(
-                _FakeServiceCreationResult_41(
+                _FakeServiceCreationResult_42(
           this,
           Invocation.method(
             #createServices,
@@ -4224,7 +4283,7 @@ class MockProductsServicesService extends _i1.Mock
           },
         ),
         returnValue: _i15.Future<_i12.ServiceUnitCreationResult>.value(
-            _FakeServiceUnitCreationResult_42(
+            _FakeServiceUnitCreationResult_43(
           this,
           Invocation.method(
             #createBusinessServiceUnit,
@@ -4238,7 +4297,7 @@ class MockProductsServicesService extends _i1.Mock
         )),
         returnValueForMissingStub:
             _i15.Future<_i12.ServiceUnitCreationResult>.value(
-                _FakeServiceUnitCreationResult_42(
+                _FakeServiceUnitCreationResult_43(
           this,
           Invocation.method(
             #createBusinessServiceUnit,
@@ -4271,7 +4330,7 @@ class MockProductsServicesService extends _i1.Mock
           },
         ),
         returnValue: _i15.Future<_i12.ServiceUpdateResult>.value(
-            _FakeServiceUpdateResult_43(
+            _FakeServiceUpdateResult_44(
           this,
           Invocation.method(
             #updateServices,
@@ -4285,7 +4344,7 @@ class MockProductsServicesService extends _i1.Mock
           ),
         )),
         returnValueForMissingStub: _i15.Future<_i12.ServiceUpdateResult>.value(
-            _FakeServiceUpdateResult_43(
+            _FakeServiceUpdateResult_44(
           this,
           Invocation.method(
             #updateServices,
@@ -4308,7 +4367,7 @@ class MockProductsServicesService extends _i1.Mock
           [],
           {#serviceId: serviceId},
         ),
-        returnValue: _i15.Future<_i12.Services>.value(_FakeServices_44(
+        returnValue: _i15.Future<_i12.Services>.value(_FakeServices_45(
           this,
           Invocation.method(
             #getServiceById,
@@ -4317,7 +4376,7 @@ class MockProductsServicesService extends _i1.Mock
           ),
         )),
         returnValueForMissingStub:
-            _i15.Future<_i12.Services>.value(_FakeServices_44(
+            _i15.Future<_i12.Services>.value(_FakeServices_45(
           this,
           Invocation.method(
             #getServiceById,
@@ -4516,7 +4575,7 @@ class MockBillingService extends _i1.Mock implements _i13.BillingService {
           {#businessId: businessId},
         ),
         returnValue:
-            _i15.Future<_i13.Subscriptions>.value(_FakeSubscriptions_45(
+            _i15.Future<_i13.Subscriptions>.value(_FakeSubscriptions_46(
           this,
           Invocation.method(
             #getCurrentSubscriptionByBusiness,
@@ -4525,7 +4584,7 @@ class MockBillingService extends _i1.Mock implements _i13.BillingService {
           ),
         )),
         returnValueForMissingStub:
-            _i15.Future<_i13.Subscriptions>.value(_FakeSubscriptions_45(
+            _i15.Future<_i13.Subscriptions>.value(_FakeSubscriptions_46(
           this,
           Invocation.method(
             #getCurrentSubscriptionByBusiness,
@@ -4552,7 +4611,7 @@ class MockBillingService extends _i1.Mock implements _i13.BillingService {
           },
         ),
         returnValue: _i15.Future<_i13.SubscriptionCreationResult>.value(
-            _FakeSubscriptionCreationResult_46(
+            _FakeSubscriptionCreationResult_47(
           this,
           Invocation.method(
             #createSubscriptionNewCardA,
@@ -4566,7 +4625,7 @@ class MockBillingService extends _i1.Mock implements _i13.BillingService {
         )),
         returnValueForMissingStub:
             _i15.Future<_i13.SubscriptionCreationResult>.value(
-                _FakeSubscriptionCreationResult_46(
+                _FakeSubscriptionCreationResult_47(
           this,
           Invocation.method(
             #createSubscriptionNewCardA,
@@ -4599,7 +4658,7 @@ class MockBillingService extends _i1.Mock implements _i13.BillingService {
           },
         ),
         returnValue: _i15.Future<_i13.SubscriptionCreationResultB>.value(
-            _FakeSubscriptionCreationResultB_47(
+            _FakeSubscriptionCreationResultB_48(
           this,
           Invocation.method(
             #createSubscriptionNewCardB,
@@ -4614,7 +4673,7 @@ class MockBillingService extends _i1.Mock implements _i13.BillingService {
         )),
         returnValueForMissingStub:
             _i15.Future<_i13.SubscriptionCreationResultB>.value(
-                _FakeSubscriptionCreationResultB_47(
+                _FakeSubscriptionCreationResultB_48(
           this,
           Invocation.method(
             #createSubscriptionNewCardB,

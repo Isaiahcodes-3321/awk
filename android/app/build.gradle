@@ -27,7 +27,8 @@ if (flutterVersionName == null) {
 
 android {
     namespace "com.example.verzo"
-    compileSdkVersion flutter.compileSdkVersion
+    compileSdkVersion 34
+    // compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -48,8 +49,8 @@ android {
         applicationId "com.example.verzo"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion flutter.minSdkVersion
-        targetSdkVersion flutter.targetSdkVersion
+        minSdkVersion 21
+        targetSdkVersion 34
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
@@ -69,7 +70,6 @@ flutter {
 
 dependencies {
     // implementation "androidx.appcompat:appcompat:1.6.1"
-    // implementation "com.google.android.material:material:1.5.0"
-    // implementation "com.verygoodsecurity:vgsshow:1.0.0"
-    // implementation "com.squareup.okhttp3:okhttp:4.12.0"
+    // implementation "com.google.android.material:material:1.9.0"
+    // implementation "com.verygoodsecurity:vgsshow:1.3.3"
 }

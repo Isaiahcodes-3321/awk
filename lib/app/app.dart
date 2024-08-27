@@ -101,6 +101,7 @@ import 'package:verzo/ui/views/view_business_account/view_business_account_view.
 import 'package:verzo/ui/views/subscription_check/subscription_check_view.dart';
 import 'package:verzo/ui/views/notifications/notifications_view.dart';
 import 'package:verzo/services/notification_service.dart';
+import 'package:verzo/ui/views/pin_change/pin_change_view.dart';
 // @stacked-import
 
 @StackedApp(
@@ -179,6 +180,7 @@ import 'package:verzo/services/notification_service.dart';
     MaterialRoute(page: ViewBusinessAccountView),
     MaterialRoute(page: SubscriptionCheckView),
     MaterialRoute(page: NotificationsView),
+    MaterialRoute(page: PinChangeView),
 // @stacked-route
   ],
   dependencies: [

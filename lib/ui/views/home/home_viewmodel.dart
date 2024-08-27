@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
@@ -27,33 +28,6 @@ enum DrawerItem {
 enum FilterItems { weekly, monthly }
 
 class HomeViewModel extends ReactiveViewModel with ListenableServiceMixin {
-  final MethodChannel platform =
-      const MethodChannel('com.verzo/vgs_show_view_channel');
-
-  Future<void> revealSensitiveData(String cardId) async {
-    try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String businessIdValue = prefs.getString('businessId') ?? '';
-
-      final result1 = await authService.refreshToken();
-      if (result1.error != null) {
-        await navigationService.replaceWithLoginView();
-      }
-
-      final result = await _dashboardService.generateCardToken(
-          businessId: businessIdValue, cardId: cardId);
-
-      if (result.isNotEmpty) {
-        String cardToken = result;
-        await platform.invokeMethod('revealData', {'cardToken': cardToken});
-      } else {
-        print("Failed to generate card token.");
-      }
-    } on PlatformException catch (e) {
-      print("Failed to reveal data: '${e.message}'.");
-    }
-  }
-
   final navigationService = locator<NavigationService>();
   final _dashboardService = locator<DashboardService>();
   final _expenseService = locator<ExpenseService>();
