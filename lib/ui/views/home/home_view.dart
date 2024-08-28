@@ -3,7 +3,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:showcaseview/showcaseview.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/app/app.locator.dart';
@@ -58,15 +57,15 @@ class _HomeViewState extends State<HomeView>
           await viewModel.subscriptionValidation();
           await viewModel.getCardsByBusiness();
           await viewModel.getBusinessById();
-          await viewModel.totalWeeklyInvoicesAmount();
+          // await viewModel.totalWeeklyInvoicesAmount();
           await viewModel.getInvoiceByBusiness();
-          await viewModel.getExpensesForWeek();
-          await viewModel.getPurchasesForWeek();
+          // await viewModel.getExpensesForWeek();
+          // await viewModel.getPurchasesForWeek();
           await viewModel.getExpenseByBusiness();
           await viewModel.getPurchasesByBusiness();
-          await viewModel.totalMonthlyInvoicesAmount();
-          await viewModel.getExpensesForMonth();
-          await viewModel.getPurchasesForMonth();
+          // await viewModel.totalMonthlyInvoicesAmount();
+          // await viewModel.getExpensesForMonth();
+          // await viewModel.getPurchasesForMonth();
           //refresh token on invoice,expense,purchase list, weekly invoice expense purchase.
         },
         builder: (
@@ -174,16 +173,16 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
           await viewModel.getCardsByBusiness();
           await viewModel.getBusinessById();
           // await viewModel.getUserAndBusinessData();
-          await viewModel.totalWeeklyInvoicesAmount();
+          // await viewModel.totalWeeklyInvoicesAmount();
           await viewModel.getInvoiceByBusiness();
-          await viewModel.getExpensesForWeek();
-          await viewModel.getPurchasesForWeek();
+          // await viewModel.getExpensesForWeek();
+          // await viewModel.getPurchasesForWeek();
           await viewModel.getExpenseByBusiness();
           await viewModel.getPurchasesByBusiness();
 
-          await viewModel.totalMonthlyInvoicesAmount();
-          await viewModel.getExpensesForMonth();
-          await viewModel.getPurchasesForMonth();
+          // await viewModel.totalMonthlyInvoicesAmount();
+          // await viewModel.getExpensesForMonth();
+          // await viewModel.getPurchasesForMonth();
           //refresh token on invoice,expense,purchase list, weekly invoice expense purchase.
         },
         builder: (
@@ -363,77 +362,45 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Column(
-                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisSize: MainAxisSize.max,
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                        MainAxisAlignment.spaceAround,
                                     children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(viewModel.userName,
-                                              style:
-                                                  ktsHeroTextWhiteDashboard1),
-                                          // SvgPicture.asset(
-                                          //   'assets/images/eye.svg',
-                                          //   width: 22,
-                                          //   height: 22,
-                                          //   color: Colors.white,
-                                          // ),
-                                        ],
+                                      SvgPicture.asset(
+                                        'assets/images/verzo_logo22.svg',
+                                        width: 20,
+                                        height: 20,
                                       ),
-                                      Column(
-                                        // mainAxisAlignment: MainAxisAlignment.start,
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'Card number',
-                                            style: ktsButtonText2,
-                                          ),
-                                          verticalSpaceTinyt1,
-                                          Text(
-                                            'XXXX XXXX XXXX XXXX',
-                                            style: ktsHeroTextWhiteDashboard1,
-                                          )
-                                        ],
+                                      const Text(
+                                        '**** **** **** ****',
+                                        // style: ktsHeroTextWhiteDashboard1,
+                                        style: TextStyle(
+                                            color: kcButtonTextColor,
+                                            fontSize: 30),
                                       ),
                                       Row(
+                                          mainAxisSize: MainAxisSize.max,
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             Row(
                                               children: [
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      'Expiry date',
-                                                      style: ktsButtonText2,
-                                                    ),
-                                                    verticalSpaceTinyt1,
-                                                    Text(
-                                                      'XX / XX',
-                                                      style:
-                                                          ktsHeroTextWhiteDashboard1,
-                                                    )
-                                                  ],
-                                                ),
+                                                Text('CARD HOLDER',
+                                                    style:
+                                                        ktsSubtitleTextAuthentication1),
                                               ],
                                             ),
                                             SvgPicture.asset(
                                               'assets/images/verve.svg',
-                                              width: 28,
-                                              height: 28,
+                                              width: 20,
+                                              height: 20,
                                             ),
                                           ]),
                                     ]),
                               ),
-                              verticalSpaceTiny,
+                              verticalSpaceTiny1,
                               Center(
                                 child: Text(
                                   'You have no card',
@@ -488,7 +455,7 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
                         return Material(
                           color: Colors.transparent,
                           child: ListView.separated(
-                            padding: const EdgeInsets.symmetric(vertical: 0),
+                            padding: EdgeInsets.zero,
                             physics: const NeverScrollableScrollPhysics(),
                             primary: false,
                             shrinkWrap: true,
@@ -1025,199 +992,164 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
   }
 }
 
-class Cards extends StatefulWidget {
+class Cards extends ViewModelWidget<HomeViewModel> {
   const Cards({Key? key, required this.businessCard, required this.cardId})
       : super(key: key);
 
   final BusinessCard businessCard;
+
   final String cardId;
 
   @override
-  _CardsState createState() => _CardsState();
-}
-
-class _CardsState extends State<Cards> {
-  // Define GlobalKey for the showcase
-  final GlobalKey _one = GlobalKey();
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ShowCaseWidget.of(context).startShowCase([_one]);
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ViewModelBuilder<HomeViewModel>.reactive(
-      viewModelBuilder: () => HomeViewModel(),
-      builder: (context, viewModel, child) {
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              height: 200,
-              width: MediaQuery.of(context).size.width * 0.9,
-              decoration: BoxDecoration(
-                border: Border.all(
-                    strokeAlign: BorderSide.strokeAlignInside,
-                    width: 2,
-                    color: kcCardBorderColor),
-                color: kcCardColor.withOpacity(0.3),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                  mainAxisSize: MainAxisSize.min,
+  Widget build(BuildContext context, HomeViewModel viewModel) {
+    return Column(
+      // mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          height: 200,
+          width: MediaQuery.of(context).size.width * 0.9,
+          decoration: BoxDecoration(
+            border: Border.all(
+                strokeAlign: BorderSide.strokeAlignInside,
+                width: 2,
+                color: kcCardBorderColor),
+            color: kcCardColor.withOpacity(0.3),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Column(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(viewModel.userName,
-                            style: ktsHeroTextWhiteDashboard1),
-                        Showcase(
-                          key: _one,
-                          description: 'Tap to reveal card information',
-                          child: IconButton(
-                            icon: Icon(Icons.visibility),
-                            onPressed: () async {
-                              SharedPreferences prefs =
-                                  await SharedPreferences.getInstance();
-                              String businessIdValue =
-                                  prefs.getString('businessId') ?? '';
-
-                              // Construct the URL
-                              String url =
-                                  "https://alpha.verzo.app/verzo/viewcard?businessId=${businessIdValue}&cardId=${widget.cardId}";
-                              print("Generated URL: ${widget.cardId}");
-                              // Print the full URL to the console
-                              print("Generated URL: $url");
-                              print("Generated URL: ${widget.cardId}");
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => RevealCardInfoView(
-                                    url: url,
-                                    cardId: widget.cardId,
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ],
+                    SvgPicture.asset(
+                      'assets/images/verzo_logo22.svg',
+                      width: 20,
+                      height: 20,
                     ),
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Card number', style: ktsButtonText2),
-                        verticalSpaceTinyt1,
-                        Text(
-                          widget.businessCard.maskedPan,
-                          style: ktsHeroTextWhiteDashboard1,
-                        ),
-                      ],
+                    GestureDetector(
+                        onTap: () async {
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          String businessIdValue =
+                              prefs.getString('businessId') ?? '';
+                          // Construct the URL
+                          String url =
+                              "https://alpha.verzo.app/verzo/viewcard?businessId=${businessIdValue}&cardId=${cardId}";
+                          print("Generated URL: $cardId");
+                          // Print the full URL to the console
+                          print("Generated URL: $url");
+                          print("Generated URL: $cardId");
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => RevealCardInfoView(
+                                url: url,
+                                cardId: cardId,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Icon(
+                          Icons.visibility_sharp,
+                          color: kcButtonTextColor.withOpacity(0.9),
+                        ))
+                  ],
+                ),
+                Text(
+                  businessCard.maskedPan,
+                  style: ktsHeroTextWhiteDashboard1,
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(viewModel.userName,
+                        style: ktsSubtitleTextAuthentication1),
+                    SvgPicture.asset(
+                      'assets/images/verve.svg',
+                      width: 20,
+                      height: 20,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Expiry date', style: ktsButtonText2),
-                            verticalSpaceTinyt1,
-                            Text(
-                              widget.businessCard.expiryDate,
-                              style: ktsHeroTextWhiteDashboard2,
-                            ),
-                          ],
+                  ],
+                ),
+              ]),
+        ),
+        verticalSpaceSmallMid,
+        Container(
+          padding: EdgeInsets.zero,
+          width: MediaQuery.of(context).size.width * 0.9,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Opacity(
+                opacity: 0.65,
+                child: GestureDetector(
+                  onTap: () {
+                    null;
+                    // viewModel.checkbusinessAcccount();
+                  },
+                  child: Column(
+                    children: [
+                      CircleAvatar(
+                        radius: 20,
+                        backgroundColor: kcPrimaryColor.withOpacity(0.6),
+                        child: const Icon(
+                          Icons.add,
+                          color: kcButtonTextColor,
+                          size: 24,
                         ),
-                        SvgPicture.asset(
-                          'assets/images/verve.svg',
-                          width: 28,
-                          height: 28,
+                      ),
+                      verticalSpaceTiny,
+                      Text(
+                        'New card',
+                        style: GoogleFonts.dmSans(
+                          color: kcButtonTextColor,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w300,
                         ),
-                      ],
-                    ),
-                  ]),
-            ),
-            verticalSpaceSmallMid,
-            Container(
-              padding: EdgeInsets.zero,
-              width: MediaQuery.of(context).size.width * 0.9,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Opacity(
-                    opacity: 0.65,
-                    child: GestureDetector(
-                      onTap: () {
-                        null;
-                        // viewModel.checkbusinessAcccount();
-                      },
-                      child: Column(
-                        children: [
-                          CircleAvatar(
-                            radius: 20,
-                            backgroundColor: kcPrimaryColor.withOpacity(0.6),
-                            child: const Icon(
-                              Icons.add,
-                              color: kcButtonTextColor,
-                              size: 24,
-                            ),
-                          ),
-                          verticalSpaceTiny,
-                          Text(
-                            'New card',
-                            style: GoogleFonts.dmSans(
-                              color: kcButtonTextColor,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w300,
-                            ),
-                          ),
-                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  viewModel.navigationService.navigateTo(
+                      Routes.cardTransactionsView,
+                      arguments: cardId);
+                },
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      radius: 20,
+                      backgroundColor: kcPrimaryColor.withOpacity(0.6),
+                      child: const Icon(
+                        Icons.receipt_outlined,
+                        color: kcButtonTextColor,
+                        size: 24,
                       ),
                     ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      viewModel.navigationService.navigateTo(
-                          Routes.cardTransactionsView,
-                          arguments: widget.cardId);
-                    },
-                    child: Column(
-                      children: [
-                        CircleAvatar(
-                          radius: 20,
-                          backgroundColor: kcPrimaryColor.withOpacity(0.6),
-                          child: const Icon(
-                            Icons.receipt_outlined,
-                            color: kcButtonTextColor,
-                            size: 24,
-                          ),
-                        ),
-                        verticalSpaceTiny,
-                        Text(
-                          'Transactions',
-                          style: GoogleFonts.dmSans(
-                            color: kcButtonTextColor,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w300,
-                          ),
-                        ),
-                      ],
+                    verticalSpaceTiny,
+                    Text(
+                      'Transactions',
+                      style: GoogleFonts.dmSans(
+                        color: kcButtonTextColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w300,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
-        );
-      },
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

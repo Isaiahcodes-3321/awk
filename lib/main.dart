@@ -30,17 +30,15 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ResponsiveSizer(
       builder: (context, orientation, screenType) {
-        return ShowCaseWidget(
-          builder: (context) => MaterialApp(
-            color: kcButtonTextColor,
-            debugShowCheckedModeBanner: false,
-            initialRoute: Routes.startupView,
-            onGenerateRoute: StackedRouter().onGenerateRoute,
-            navigatorKey: StackedService.navigatorKey,
-            navigatorObservers: [
-              StackedService.routeObserver,
-            ],
-          ),
+        return MaterialApp(
+          color: kcButtonTextColor,
+          debugShowCheckedModeBanner: false,
+          initialRoute: Routes.startupView,
+          onGenerateRoute: StackedRouter().onGenerateRoute,
+          navigatorKey: StackedService.navigatorKey,
+          navigatorObservers: [
+            StackedService.routeObserver,
+          ],
         );
       },
     );
