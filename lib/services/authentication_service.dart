@@ -19,7 +19,7 @@ class AuthenticationService {
   AuthenticationService()
       : client = ValueNotifier(GraphQLClient(
           cache: GraphQLCache(),
-          link: HttpLink('https://api2.verzo.app/graphql'),
+          link: HttpLink('https://api.verzo.app/graphql'),
         )),
         _signInMutation = MutationOptions(
           document: gql('''
@@ -100,7 +100,7 @@ class AuthenticationService {
     // Create a new GraphQLClient with the authlink
     final newClient = GraphQLClient(
       cache: GraphQLCache(),
-      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+      link: authLink.concat(HttpLink('https://api.verzo.app/graphql')),
     );
 
     final MutationOptions options = MutationOptions(
@@ -143,7 +143,7 @@ class AuthenticationService {
     // Create a new GraphQLClient with the authlink
     final newClient = GraphQLClient(
       cache: GraphQLCache(),
-      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+      link: authLink.concat(HttpLink('https://api.verzo.app/graphql')),
     );
 
     final MutationOptions options = MutationOptions(
@@ -241,7 +241,7 @@ class AuthenticationService {
     // Create a new GraphQLClient with the authlink
     final newClient = GraphQLClient(
       cache: GraphQLCache(),
-      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+      link: authLink.concat(HttpLink('https://api.verzo.app/graphql')),
     );
     final MutationOptions options = MutationOptions(
       document: _refreshTokenMutation.document,
@@ -292,7 +292,7 @@ class AuthenticationService {
     // Create a new GraphQLClient with the authlink
     final newClient = GraphQLClient(
       cache: GraphQLCache(),
-      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+      link: authLink.concat(HttpLink('https://api.verzo.app/graphql')),
     );
 
     // Make a GraphQL mutation to the authentication endpoint to log out the current user

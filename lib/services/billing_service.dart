@@ -17,7 +17,7 @@ class BillingService {
   BillingService()
       : client = ValueNotifier(GraphQLClient(
           cache: GraphQLCache(),
-          link: HttpLink('https://api2.verzo.app/graphql'),
+          link: HttpLink('https://api.verzo.app/graphql'),
         )),
         _createSubscriptionNewCardAMutation = MutationOptions(
           document: gql('''
@@ -93,7 +93,7 @@ class BillingService {
     // Create a new GraphQLClient with the authlink
     final newClient = GraphQLClient(
       cache: GraphQLCache(),
-      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+      link: authLink.concat(HttpLink('https://api.verzo.app/graphql')),
     );
 
     final QueryOptions options = QueryOptions(
@@ -134,7 +134,7 @@ class BillingService {
     // Create a new GraphQLClient with the authlink
     final newClient = GraphQLClient(
       cache: GraphQLCache(),
-      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+      link: authLink.concat(HttpLink('https://api.verzo.app/graphql')),
     );
 
     final QueryOptions options = QueryOptions(
@@ -185,7 +185,7 @@ class BillingService {
     // Create a new GraphQLClient with the authlink
     final newClient = GraphQLClient(
       cache: GraphQLCache(),
-      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+      link: authLink.concat(HttpLink('https://api.verzo.app/graphql')),
     );
 
     final MutationOptions options = MutationOptions(
@@ -246,7 +246,7 @@ class BillingService {
     // Create a new GraphQLClient with the authlink
     final newClient = GraphQLClient(
       cache: GraphQLCache(),
-      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+      link: authLink.concat(HttpLink('https://api.verzo.app/graphql')),
     );
 
     final MutationOptions options = MutationOptions(

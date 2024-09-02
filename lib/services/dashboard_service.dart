@@ -38,7 +38,7 @@ class DashboardService {
   DashboardService()
       : client = ValueNotifier(GraphQLClient(
           cache: GraphQLCache(),
-          link: HttpLink('https://api2.verzo.app/graphql'),
+          link: HttpLink('https://api.verzo.app/graphql'),
         )),
         _getBusinessesByUserIdQuery = QueryOptions(
           document: gql('''
@@ -356,7 +356,7 @@ class DashboardService {
     // Create a new GraphQLClient with the authlink
     final newClient = GraphQLClient(
       cache: GraphQLCache(),
-      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+      link: authLink.concat(HttpLink('https://api.verzo.app/graphql')),
     );
 
     final QueryOptions options = QueryOptions(
@@ -407,7 +407,7 @@ class DashboardService {
     // Create a new GraphQLClient with the authlink
     final newClient = GraphQLClient(
       cache: GraphQLCache(),
-      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+      link: authLink.concat(HttpLink('https://api.verzo.app/graphql')),
     );
 
     final MutationOptions options = MutationOptions(
@@ -444,7 +444,7 @@ class DashboardService {
     // Create a new GraphQLClient with the authlink
     final newClient = GraphQLClient(
       cache: GraphQLCache(),
-      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+      link: authLink.concat(HttpLink('https://api.verzo.app/graphql')),
     );
 
     final QueryOptions options = QueryOptions(
@@ -505,7 +505,7 @@ class DashboardService {
     // Create a new GraphQLClient with the authlink
     final newClient = GraphQLClient(
       cache: GraphQLCache(),
-      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+      link: authLink.concat(HttpLink('https://api.verzo.app/graphql')),
     );
 
     final QueryOptions options = QueryOptions(
@@ -553,7 +553,7 @@ class DashboardService {
     // Create a new GraphQLClient with the authlink
     final newClient = GraphQLClient(
       cache: GraphQLCache(),
-      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+      link: authLink.concat(HttpLink('https://api.verzo.app/graphql')),
     );
 
     final QueryOptions options = QueryOptions(
@@ -614,7 +614,7 @@ class DashboardService {
     // Create a new GraphQLClient with the authlink
     final newClient = GraphQLClient(
       cache: GraphQLCache(),
-      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+      link: authLink.concat(HttpLink('https://api.verzo.app/graphql')),
     );
 
     final QueryOptions options = QueryOptions(
@@ -672,7 +672,7 @@ class DashboardService {
     // Create a new GraphQLClient with the authlink
     final newClient = GraphQLClient(
       cache: GraphQLCache(),
-      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+      link: authLink.concat(HttpLink('https://api.verzo.app/graphql')),
     );
 
     final QueryResult userAndBusinessResult =
@@ -753,7 +753,7 @@ class DashboardService {
     // Create a new GraphQLClient with the authlink
     final newClient = GraphQLClient(
       cache: GraphQLCache(),
-      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+      link: authLink.concat(HttpLink('https://api.verzo.app/graphql')),
     );
     final QueryOptions options = QueryOptions(
       document: _getBusinessByIdQuery.document,
@@ -806,7 +806,7 @@ class DashboardService {
     // Create a new GraphQLClient with the authlink
     final newClient = GraphQLClient(
       cache: GraphQLCache(),
-      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+      link: authLink.concat(HttpLink('https://api.verzo.app/graphql')),
     );
 
     final QueryResult userAndRoleResult =
@@ -854,7 +854,7 @@ class DashboardService {
     // Create a new GraphQLClient with the authlink
     final newClient = GraphQLClient(
       cache: GraphQLCache(),
-      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+      link: authLink.concat(HttpLink('https://api.verzo.app/graphql')),
     );
 
     final MutationOptions options = MutationOptions(
@@ -922,7 +922,7 @@ class DashboardService {
     // Create a new GraphQLClient with the auth link
     final newClient = GraphQLClient(
       cache: GraphQLCache(),
-      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+      link: authLink.concat(HttpLink('https://api.verzo.app/graphql')),
     );
 
     final MutationOptions options = MutationOptions(
@@ -985,7 +985,7 @@ class DashboardService {
     // Create a new GraphQLClient with the authlink
     final newClient = GraphQLClient(
       cache: GraphQLCache(),
-      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+      link: authLink.concat(HttpLink('https://api.verzo.app/graphql')),
     );
 
     final MutationOptions options = MutationOptions(
@@ -1043,7 +1043,7 @@ class DashboardService {
     // Create a new GraphQLClient with the authlink
     final newClient = GraphQLClient(
       cache: GraphQLCache(),
-      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+      link: authLink.concat(HttpLink('https://api.verzo.app/graphql')),
     );
 
     final MutationOptions options = MutationOptions(
@@ -1111,7 +1111,7 @@ class DashboardService {
     // Create a new GraphQLClient with the authlink
     final newClient = GraphQLClient(
       cache: GraphQLCache(),
-      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+      link: authLink.concat(HttpLink('https://api.verzo.app/graphql')),
     );
 
     final MutationOptions options = MutationOptions(
@@ -1151,7 +1151,7 @@ class DashboardService {
 
     final newClient = GraphQLClient(
       cache: GraphQLCache(),
-      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+      link: authLink.concat(HttpLink('https://api.verzo.app/graphql')),
     );
 
     final QueryOptions options = QueryOptions(
@@ -1203,7 +1203,7 @@ class DashboardService {
 
     final newClient = GraphQLClient(
       cache: GraphQLCache(),
-      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+      link: authLink.concat(HttpLink('https://api.verzo.app/graphql')),
     );
 
     final QueryOptions options = QueryOptions(
@@ -1256,7 +1256,7 @@ class DashboardService {
 
     final newClient = GraphQLClient(
       cache: GraphQLCache(),
-      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+      link: authLink.concat(HttpLink('https://api.verzo.app/graphql')),
     );
 
     final QueryOptions options = QueryOptions(
@@ -1309,7 +1309,7 @@ class DashboardService {
 
     final newClient = GraphQLClient(
       cache: GraphQLCache(),
-      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+      link: authLink.concat(HttpLink('https://api.verzo.app/graphql')),
     );
 
     final QueryOptions options = QueryOptions(
@@ -1364,7 +1364,7 @@ class DashboardService {
 
     final newClient = GraphQLClient(
       cache: GraphQLCache(),
-      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+      link: authLink.concat(HttpLink('https://api.verzo.app/graphql')),
     );
 
     final QueryOptions options = QueryOptions(
@@ -1445,7 +1445,7 @@ class DashboardService {
 
     final newClient = GraphQLClient(
       cache: GraphQLCache(),
-      link: authLink.concat(HttpLink('https://api2.verzo.app/graphql')),
+      link: authLink.concat(HttpLink('https://api.verzo.app/graphql')),
     );
 
     final QueryOptions options = QueryOptions(

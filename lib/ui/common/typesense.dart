@@ -6,7 +6,7 @@ import 'package:verzo/services/purchase_service.dart';
 import 'package:verzo/services/sales_service.dart';
 
 // const host = "157.230.122.176";
-const host = "analytics2.verzo.app";
+const host = "analytics.verzo.app";
 const protocol = Protocol.https;
 final config = Configuration(
   "VdetGahcpA1tjTCOa2HvtyYj1v5tECq8",

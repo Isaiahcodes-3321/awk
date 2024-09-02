@@ -12,7 +12,7 @@ class NotificationService {
   NotificationService()
       : client = ValueNotifier(GraphQLClient(
           cache: GraphQLCache(),
-          link: HttpLink('https://queue.api2.verzo.app/graphql'),
+          link: HttpLink('https://queue.api.verzo.app/graphql'),
         )),
         _getMessagesQuery = QueryOptions(
           document: gql('''
