@@ -15,6 +15,7 @@ class AuthenticationService {
   final MutationOptions _signUpMutation;
   final MutationOptions _addUserDeviceTokenMutation;
   final MutationOptions _removeUserDeviceTokenMutation;
+  final MutationOptions _deleteUserByIdMutation;
 
   AuthenticationService()
       : client = ValueNotifier(GraphQLClient(
@@ -48,6 +49,13 @@ class AuthenticationService {
           document: gql('''
         mutation LogOut {
           logOut 
+        }
+      '''),
+        ),
+        _deleteUserByIdMutation = MutationOptions(
+          document: gql('''
+        mutation DeleteUserById {
+          deleteUserById 
         }
       '''),
         ),
@@ -317,6 +325,60 @@ class AuthenticationService {
     bool logOut = result.data?['logOut'];
 
     return logOut;
+  }
+
+  Future<bool> deleteUserById() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('access_token');
+
+    if (token == null) {
+      throw GraphQLAuthError(
+        message: "Access token not found",
+      );
+    }
+// Use the token to create an authlink
+    final authLink = AuthLink(
+      getToken: () => 'Bearer $token',
+    );
+
+    // Create a new GraphQLClient with the authlink
+    final newClient = GraphQLClient(
+      cache: GraphQLCache(),
+      link: authLink.concat(HttpLink('https://api.verzo.app/graphql')),
+    );
+
+    // Make a GraphQL mutation to the authentication endpoint to log out the current user
+    final MutationOptions options = MutationOptions(
+      document: _deleteUserByIdMutation.document,
+    );
+
+    final QueryResult result = await newClient.mutate(options);
+
+    // final deviceToken = prefs.getString('device_token');
+    // await removeUserDeviceToken(deviceToken: deviceToken!);
+
+    prefs.setString('access_token', '');
+    prefs.setString('refresh_token', '');
+    prefs.setString('email', '');
+    prefs.setString('password', '');
+    prefs.setString('businessId', '');
+    prefs.setString('businessName', '');
+    prefs.setString('businessEmail', '');
+    prefs.setString('businessMobile', '');
+    prefs.setString('businessCategoryId', '');
+    prefs.setString('userId', '');
+    prefs.setString('userName', '');
+    prefs.setString('userEmail', '');
+    prefs.setString('date', '');
+    prefs.setBool('isLoggedIn', false);
+
+    if (result.hasException) {
+      // Handle any errors that may have occurred during the log out process
+      throw Exception(result.exception);
+    }
+    bool userDeleted = result.data?['deleteUserById'];
+
+    return userDeleted;
   }
 
   Future<CreateAccountWithEmailResult> createAccountWithEmail(

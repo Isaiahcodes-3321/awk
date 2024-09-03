@@ -645,7 +645,7 @@ class DashboardService {
         cardTransactionData.map((data) {
       return CardTransactions(
           id: data['id'],
-          amount: data['amount'],
+          amount: data['amount'] / 100,
           type: data['type'],
           currency: data['currency'],
           createdAt: data['createdAt']);

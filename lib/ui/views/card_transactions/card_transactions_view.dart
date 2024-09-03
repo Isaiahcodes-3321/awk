@@ -146,14 +146,10 @@ class CardTransactionsView extends StackedView<CardTransactionsViewModel> {
 }
 
 class CardTransaction extends ViewModelWidget<CardTransactionsViewModel> {
-  const CardTransaction({Key? key, required this.cardTransactions
-      // required this.expenseId,
-      })
+  const CardTransaction({Key? key, required this.cardTransactions})
       : super(key: key);
 
   final CardTransactions cardTransactions;
-
-  // final String expenseId;
 
   @override
   Widget build(BuildContext context, CardTransactionsViewModel viewModel) {
@@ -171,9 +167,19 @@ class CardTransaction extends ViewModelWidget<CardTransactionsViewModel> {
                     text: TextSpan(
                       children: [
                         TextSpan(
+                          text: cardTransactions.amount < 0
+                              ? '-'
+                              : '', // Add negative sign if the amount is negative
+                          style: GoogleFonts.openSans(
+                            color: kcTextTitleColor.withOpacity(0.8),
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                          ).copyWith(fontFamily: 'Roboto'),
+                        ),
+                        TextSpan(
                           text: NumberFormat.currency(
                                   locale: 'en_NGN', symbol: '₦')
-                              .currencySymbol, // The remaining digits without the symbol
+                              .currencySymbol, // The currency symbol
                           style: GoogleFonts.openSans(
                             color: kcTextTitleColor.withOpacity(0.8),
                             fontSize: 18,
@@ -183,15 +189,38 @@ class CardTransaction extends ViewModelWidget<CardTransactionsViewModel> {
                         TextSpan(
                           text: NumberFormat.currency(
                                   locale: 'en_NGN', symbol: '')
-                              .format(cardTransactions
-                                  .amount), // The remaining digits without the symbol
+                              .format(cardTransactions.amount
+                                  .abs()), // Absolute value of the amount
                           style: TextStyle(
-                              fontFamily: 'Satoshi',
-                              color: kcTextTitleColor.withOpacity(0.9),
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5),
+                            fontFamily: 'Satoshi',
+                            color: kcTextTitleColor.withOpacity(0.9),
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0.5,
+                          ),
                         ),
+                        // TextSpan(
+                        //   text: NumberFormat.currency(
+                        //           locale: 'en_NGN', symbol: '₦')
+                        //       .currencySymbol, // The remaining digits without the symbol
+                        //   style: GoogleFonts.openSans(
+                        //     color: kcTextTitleColor.withOpacity(0.8),
+                        //     fontSize: 18,
+                        //     fontWeight: FontWeight.w500,
+                        //   ).copyWith(fontFamily: 'Roboto'),
+                        // ),
+                        // TextSpan(
+                        //   text: NumberFormat.currency(
+                        //           locale: 'en_NGN', symbol: '')
+                        //       .format(cardTransactions
+                        //           .amount), // The remaining digits without the symbol
+                        //   style: TextStyle(
+                        //       fontFamily: 'Satoshi',
+                        //       color: kcTextTitleColor.withOpacity(0.9),
+                        //       fontSize: 18,
+                        //       fontWeight: FontWeight.w600,
+                        //       letterSpacing: 0.5),
+                        // ),
                       ],
                     ),
                   ),

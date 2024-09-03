@@ -24,8 +24,11 @@ class CardTransactionsViewModel
     if (result.error != null) {
       await navigationService.replaceWithLoginView();
     } else if (result.tokens != null) {
-      cardTransactions =
+      final cardTransactions1 =
           await dashboardService.viewCardTransactions(cardId: cardId);
+
+      // Reverse the list here
+      cardTransactions = cardTransactions1.reversed.toList();
     }
 
     rebuildUi();

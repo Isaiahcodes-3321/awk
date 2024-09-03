@@ -120,9 +120,7 @@ class SalesViewModel extends FutureViewModel<List<Sales>> {
       await navigationService.replaceWithLoginView();
     } else if (result.tokens != null) {
       sales = await _saleService.getSaleByBusiness(businessId: businessIdValue);
-      rebuildUi();
     }
-    // Retrieve existing expense categories
 
     rebuildUi();
     return sales;

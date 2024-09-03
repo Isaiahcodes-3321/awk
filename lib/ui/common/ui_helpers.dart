@@ -238,3 +238,100 @@ Future<void> logout() async {
     // Perform any additional logout actions
   }
 }
+
+Future<void> deleteAccount() async {
+  final dbExpense = await getExpenseDatabase();
+  final dbExpense2 = await getExpenseDatabaseList();
+  final dbPurchase = await getPurchaseDatabase();
+  final dbPurchase2 = await getPurchaseDatabaseList();
+  final dbSales = await getSalesDatabase2();
+  final dbSales2 = await getSalesDatabaseList();
+  final dbCustomers = await getCustomerDatabase();
+  final dbProducts = await getProductDatabase();
+  final dbServices = await getServiceDatabase();
+  final dbExpenseWeek = await getExpensesForWeekDatabase();
+  final dbExpenseMonth = await getExpensesForMonthDatabase();
+  final dbPurchaseWeek = await getPurchasesForWeekDatabase();
+  final dbPurchaseMonth = await getPurchasesForMonthDatabase();
+  final dbWeeklyInvoices = await getWeeklyInvoicesDatabase();
+  final dbMonthlyInvoices = await getMonthlyInvoicesDatabase();
+
+  final authenticationService = locator<AuthenticationService>();
+  final DialogService dialogService = locator<DialogService>();
+  final navigationService = locator<NavigationService>();
+  final DialogResponse? response = await dialogService.showCustomDialog(
+    variant: DialogType.delete,
+    title: 'Delete Account?',
+    description:
+        'Are you sure you want to delete account? This action is not reversible and All information related to this account will be deleted permanently.',
+    barrierDismissible: true,
+    mainButtonTitle: 'Delete',
+  );
+  if (response?.confirmed == true) {
+    final result = await authenticationService.refreshToken();
+    if (result.error != null) {
+      await navigationService.replaceWithLoginView();
+    } else if (result.tokens != null) {
+      final bool isDeleted = await authenticationService.deleteUserById();
+      if (isDeleted == true) {
+        // await futureToRun();
+        await dialogService.showCustomDialog(
+          variant: DialogType.deleteSuccess,
+          title: 'Deleted!',
+          description: 'Your account has been successfully deleted!',
+          barrierDismissible: true,
+          mainButtonTitle: 'Ok',
+        );
+        selectedindex = 0;
+        // Delete data from the 'expenses' table
+        await dbExpense.delete('expenses');
+        await dbExpense2.delete('expenses');
+
+        // Delete data from the 'purchases' table
+        await dbPurchase.delete('purchases');
+        await dbPurchase2.delete('purchases');
+
+        // Delete data from the 'sales' table
+        await dbSales.delete('sales');
+        await dbSales2.delete('sales');
+
+        // Delete data from the 'customers' table
+        await dbCustomers.delete('customers');
+
+        // Delete data from the 'products' table
+        await dbProducts.delete('products');
+
+        // Delete data from the 'services' table
+        await dbServices.delete('services');
+
+        // Delete data from the 'expenses_for_week' table
+        await dbExpenseWeek.delete('expenses_for_week');
+
+        // Delete data from the 'expenses_for_month' table
+        await dbExpenseMonth.delete('expenses_for_month');
+
+        // Delete data from the 'purchases_for_week' table
+        await dbPurchaseWeek.delete('purchases_for_week');
+
+        // Delete data from the 'purchases_for_month' table
+        await dbPurchaseMonth.delete('purchases_for_month');
+
+        // Delete data from the 'weekly_invoices' table
+        await dbWeeklyInvoices.delete('weekly_invoices');
+
+        // Delete data from the 'monthly_invoices' table
+        await dbMonthlyInvoices.delete('monthly_invoices');
+
+        navigationService.replaceWithLoginView();
+        // Perform any additional logout actions
+      } else {
+        await dialogService.showCustomDialog(
+            variant: DialogType.deleteSuccess,
+            title: 'Unauthorized!',
+            description: "Your account can't be deleted.",
+            barrierDismissible: true,
+            mainButtonTitle: 'Ok');
+      }
+    }
+  }
+}

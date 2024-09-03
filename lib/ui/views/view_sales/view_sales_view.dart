@@ -205,15 +205,30 @@ class ViewSalesView extends StackedView<ViewSalesViewModel> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        SvgPicture.asset(
-                          'assets/images/edit-contained.svg',
-                          width: 18,
-                          height: 18,
+                        Opacity(
+                          opacity: (viewModel.sale!.saleExpenses!.isNotEmpty &&
+                                      viewModel.sale!.saleStatusId == 1) ||
+                                  (viewModel.sale!.saleExpenses!.isEmpty &&
+                                      viewModel.sale!.saleStatusId == 2)
+                              ? 1.0
+                              : 0.6, // Set opacity based on the condition
+                          child: SvgPicture.asset(
+                            'assets/images/edit-contained.svg',
+                            width: 18,
+                            height: 18,
+                          ),
                         ),
                         horizontalSpaceminute,
                         Text(
                           'Edit',
-                          style: ktsAddNewText,
+                          style: ktsAddNewText.copyWith(
+                            color: (viewModel.sale!.saleExpenses!.isNotEmpty &&
+                                        viewModel.sale!.saleStatusId == 1) ||
+                                    (viewModel.sale!.saleExpenses!.isEmpty &&
+                                        viewModel.sale!.saleStatusId == 2)
+                                ? ktsAddNewText.color
+                                : ktsAddNewText.color?.withOpacity(0.6),
+                          ),
                         ),
                       ],
                     ),
@@ -320,23 +335,29 @@ class ViewSalesView extends StackedView<ViewSalesViewModel> {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Description',
-                        style: ktsFormHintText,
-                      ),
-                      verticalSpaceTinyt,
-                      Text(
-                        viewModel.sale!.description,
-                        style: ktsTextAuthentication3,
-                      ),
-                    ],
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Description',
+                          style: ktsFormHintText,
+                        ),
+                        verticalSpaceTinyt,
+                        Text(
+                          viewModel.sale!.description,
+                          style: ktsTextAuthentication3,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 3,
+                        ),
+                      ],
+                    ),
                   ),
+                  horizontalSpaceSmall,
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.start,

@@ -358,6 +358,14 @@ TextStyle ktsErrorText = TextStyle(
     fontWeight: FontWeight.w500,
     height: 0,
     letterSpacing: 0);
+
+TextStyle ktsErrorText1 = TextStyle(
+    color: kcErrorColor.withOpacity(0.9),
+    fontSize: 16,
+    fontFamily: 'Satoshi',
+    fontWeight: FontWeight.w500,
+    height: 0,
+    letterSpacing: 0);
 TextStyle ktsHeaderTextWhite = const TextStyle(
     // color: kcButtonTextColor,
     // fontSize: 16,

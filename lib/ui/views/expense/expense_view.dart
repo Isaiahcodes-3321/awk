@@ -68,7 +68,7 @@ class _ExpenseViewState extends State<ExpenseView> {
                         flex: 2,
                         child: Container(
                           height: double.infinity,
-                          color: Color(0XFF2A5DC8),
+                          color: const Color(0XFF2A5DC8),
                           padding: const EdgeInsets.only(
                               left: 28, right: 28, top: 4),
                           child: Column(

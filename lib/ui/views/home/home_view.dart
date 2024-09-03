@@ -57,15 +57,15 @@ class _HomeViewState extends State<HomeView>
           await viewModel.subscriptionValidation();
           await viewModel.getCardsByBusiness();
           await viewModel.getBusinessById();
-          // await viewModel.totalWeeklyInvoicesAmount();
+          await viewModel.totalWeeklyInvoicesAmount();
           await viewModel.getInvoiceByBusiness();
-          // await viewModel.getExpensesForWeek();
-          // await viewModel.getPurchasesForWeek();
+          await viewModel.getExpensesForWeek();
+          await viewModel.getPurchasesForWeek();
           await viewModel.getExpenseByBusiness();
           await viewModel.getPurchasesByBusiness();
-          // await viewModel.totalMonthlyInvoicesAmount();
-          // await viewModel.getExpensesForMonth();
-          // await viewModel.getPurchasesForMonth();
+          await viewModel.totalMonthlyInvoicesAmount();
+          await viewModel.getExpensesForMonth();
+          await viewModel.getPurchasesForMonth();
           //refresh token on invoice,expense,purchase list, weekly invoice expense purchase.
         },
         builder: (
@@ -479,7 +479,7 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
               DraggableScrollableSheet(
                 snap: false,
                 initialChildSize: 0.8,
-                minChildSize: 0.4,
+                minChildSize: 0.2,
                 maxChildSize: 0.8,
                 builder: (context, controller) => Container(
                   decoration: const BoxDecoration(

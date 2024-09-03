@@ -357,6 +357,35 @@ class _SettingsViewState extends State<SettingsView> {
                                 color: kcTextSubTitleColor,
                               ),
                             ),
+                            verticalSpaceIntermitent,
+                            Text(
+                              'Others',
+                              style: ktsSubtitleTextAuthentication2,
+                            ),
+                            ListTile(
+                              contentPadding: EdgeInsetsDirectional.zero,
+                              leading: SvgPicture.asset(
+                                'assets/images/Frame_43540-7.svg',
+                                width: 32,
+                                height: 32,
+                              ),
+                              title: Text(
+                                'Delete account',
+                                style: ktsErrorText1,
+                              ),
+                              subtitle: Text(
+                                'This action is not reversible!',
+                                style: ktsFormHintText,
+                              ),
+                              trailing: IconButton(
+                                onPressed: () {
+                                  deleteAccount();
+                                },
+                                icon: const Icon(Icons.arrow_forward),
+                                iconSize: 24,
+                                color: kcErrorColor.withOpacity(0.7),
+                              ),
+                            ),
                             verticalSpaceRegular,
                             Center(
                               child: GestureDetector(
