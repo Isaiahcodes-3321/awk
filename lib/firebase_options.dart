@@ -64,7 +64,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '532715957064',
     projectId: 'verzo-83af7',
     storageBucket: 'verzo-83af7.appspot.com',
-    iosBundleId: 'com.example.verzo',
+    iosBundleId: 'verzo.app',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -73,7 +73,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '532715957064',
     projectId: 'verzo-83af7',
     storageBucket: 'verzo-83af7.appspot.com',
-    iosBundleId: 'com.example.verzo',
+    iosBundleId: 'verzo.app',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(

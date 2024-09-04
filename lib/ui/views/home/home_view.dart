@@ -173,16 +173,16 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
           await viewModel.getCardsByBusiness();
           await viewModel.getBusinessById();
           // await viewModel.getUserAndBusinessData();
-          // await viewModel.totalWeeklyInvoicesAmount();
+          await viewModel.totalWeeklyInvoicesAmount();
           await viewModel.getInvoiceByBusiness();
-          // await viewModel.getExpensesForWeek();
-          // await viewModel.getPurchasesForWeek();
+          await viewModel.getExpensesForWeek();
+          await viewModel.getPurchasesForWeek();
           await viewModel.getExpenseByBusiness();
           await viewModel.getPurchasesByBusiness();
 
-          // await viewModel.totalMonthlyInvoicesAmount();
-          // await viewModel.getExpensesForMonth();
-          // await viewModel.getPurchasesForMonth();
+          await viewModel.totalMonthlyInvoicesAmount();
+          await viewModel.getExpensesForMonth();
+          await viewModel.getPurchasesForMonth();
           //refresh token on invoice,expense,purchase list, weekly invoice expense purchase.
         },
         builder: (
@@ -492,6 +492,7 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
                     scrollDirection: Axis.vertical,
                     padding: const EdgeInsets.only(bottom: 2),
                     primary: false,
+                    // physics: NeverScrollableScrollPhysics(),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -1039,7 +1040,7 @@ class Cards extends ViewModelWidget<HomeViewModel> {
                               prefs.getString('businessId') ?? '';
                           // Construct the URL
                           String url =
-                              "https://alpha.verzo.app/verzo/viewcard?businessId=${businessIdValue}&cardId=${cardId}";
+                              "https://beta.verzo.app/verzo/viewcard?businessId=${businessIdValue}&cardId=${cardId}";
                           print("Generated URL: $cardId");
                           // Print the full URL to the console
                           print("Generated URL: $url");

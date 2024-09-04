@@ -1364,6 +1364,16 @@ class MockAuthenticationService extends _i1.Mock
       ) as _i15.Future<bool>);
 
   @override
+  _i15.Future<bool> deleteUserById() => (super.noSuchMethod(
+        Invocation.method(
+          #deleteUserById,
+          [],
+        ),
+        returnValue: _i15.Future<bool>.value(false),
+        returnValueForMissingStub: _i15.Future<bool>.value(false),
+      ) as _i15.Future<bool>);
+
+  @override
   _i15.Future<_i4.CreateAccountWithEmailResult> createAccountWithEmail({
     required String? email,
     required String? password,

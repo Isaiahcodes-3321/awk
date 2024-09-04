@@ -1,4 +1,4 @@
-package com.example.verzo
+package verzo.app
 
 import io.flutter.embedding.android.FlutterActivity
 
