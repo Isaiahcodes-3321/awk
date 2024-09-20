@@ -102,12 +102,12 @@ class _ProductViewState extends State<ProductView> {
                             TextFormField(
                               controller: viewModel
                                   .searchController, // Use the search controller
-                              onChanged: (value) {
+                              onChanged: (value) async {
                                 if (value.isEmpty) {
-                                  viewModel.reloadProducts();
+                                  await viewModel.reloadProducts();
                                 } // Call the search function as you type
                                 else {
-                                  viewModel.searchProduct();
+                                  await viewModel.searchProduct();
                                 }
                               },
                               style: ktsBodyTextWhite,

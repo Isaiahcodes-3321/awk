@@ -54,19 +54,11 @@ class _HomeViewState extends State<HomeView>
         viewModelBuilder: () => HomeViewModel(),
         onViewModelReady: (viewModel) async {
           viewModel.setUserDetails();
-          await viewModel.subscriptionValidation();
-          await viewModel.getCardsByBusiness();
           await viewModel.getBusinessById();
-          await viewModel.totalWeeklyInvoicesAmount();
           await viewModel.getInvoiceByBusiness();
-          await viewModel.getExpensesForWeek();
-          await viewModel.getPurchasesForWeek();
           await viewModel.getExpenseByBusiness();
           await viewModel.getPurchasesByBusiness();
-          await viewModel.totalMonthlyInvoicesAmount();
-          await viewModel.getExpensesForMonth();
-          await viewModel.getPurchasesForMonth();
-          //refresh token on invoice,expense,purchase list, weekly invoice expense purchase.
+          //refresh token on invoice,expense,purchase list
         },
         builder: (
           BuildContext context,
@@ -171,19 +163,14 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
           viewModel.setUserDetails();
           await viewModel.subscriptionValidation();
           await viewModel.getCardsByBusiness();
-          await viewModel.getBusinessById();
           // await viewModel.getUserAndBusinessData();
           await viewModel.totalWeeklyInvoicesAmount();
-          await viewModel.getInvoiceByBusiness();
           await viewModel.getExpensesForWeek();
           await viewModel.getPurchasesForWeek();
-          await viewModel.getExpenseByBusiness();
-          await viewModel.getPurchasesByBusiness();
-
           await viewModel.totalMonthlyInvoicesAmount();
           await viewModel.getExpensesForMonth();
           await viewModel.getPurchasesForMonth();
-          //refresh token on invoice,expense,purchase list, weekly invoice expense purchase.
+          //refresh token on weekly invoice expense purchase.
         },
         builder: (
           BuildContext context,
@@ -492,7 +479,7 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
                     scrollDirection: Axis.vertical,
                     padding: const EdgeInsets.only(bottom: 2),
                     primary: false,
-                    // physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -954,18 +941,24 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
                                         controller: tabController,
                                         children: [
                                           ListView(
+                                            physics:
+                                                const AlwaysScrollableScrollPhysics(),
                                             padding: EdgeInsets.zero,
                                             scrollDirection: Axis.vertical,
                                             shrinkWrap: true,
                                             children: const [InvoiceListView()],
                                           ),
                                           ListView(
+                                            physics:
+                                                const AlwaysScrollableScrollPhysics(),
                                             padding: EdgeInsets.zero,
                                             scrollDirection: Axis.vertical,
                                             shrinkWrap: true,
                                             children: const [ExpenseListView()],
                                           ),
                                           ListView(
+                                            physics:
+                                                const AlwaysScrollableScrollPhysics(),
                                             padding: EdgeInsets.zero,
                                             scrollDirection: Axis.vertical,
                                             shrinkWrap: true,
@@ -1154,232 +1147,6 @@ class Cards extends ViewModelWidget<HomeViewModel> {
     );
   }
 }
-
-// class Cards extends ViewModelWidget<HomeViewModel> {
-//   const Cards({Key? key, required this.businessCard, required this.cardId})
-//       : super(key: key);
-
-//   final BusinessCard businessCard;
-
-//   final String cardId;
-
-//   @override
-//   Widget build(BuildContext context, HomeViewModel viewModel) {
-//     return Column(
-//       mainAxisAlignment: MainAxisAlignment.start,
-//       children: [
-//         Container(
-//           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-//           height: 200,
-//           width: MediaQuery.of(context).size.width * 0.9,
-//           decoration: BoxDecoration(
-//             border: Border.all(
-//                 strokeAlign: BorderSide.strokeAlignInside,
-//                 width: 2,
-//                 color: kcCardBorderColor),
-//             color: kcCardColor.withOpacity(0.3),
-//             borderRadius: BorderRadius.circular(12),
-//           ),
-//           child: Column(
-//               mainAxisSize: MainAxisSize.min,
-//               crossAxisAlignment: CrossAxisAlignment.start,
-//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//               children: [
-//                 Row(
-//                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                   children: [
-//                     Text(viewModel.userName, style: ktsHeroTextWhiteDashboard1),
-//                     // SvgPicture.asset(
-//                     //   'assets/images/eye.svg',
-//                     //   width: 22,
-//                     //   height: 22,
-//                     //   color: Colors.white,
-//                     // ),
-//                     Showcase(
-//                       key: viewModel.one,
-//                       description: 'Tap to reveal card information',
-//                       child: IconButton(
-//                         icon: Icon(Icons.visibility),
-//                         onPressed: () {
-//                           Navigator.push(
-//                             context,
-//                             MaterialPageRoute(
-//                               builder: (context) => RevealCardInfoView(
-//                                 url:
-//                                     "https://your-web-app.com/reveal-card-info", // Replace with your actual URL
-//                               ),
-//                             ),
-//                           );
-//                         },
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//                 Column(
-//                   // mainAxisAlignment: MainAxisAlignment.start,
-//                   mainAxisSize: MainAxisSize.min,
-//                   crossAxisAlignment: CrossAxisAlignment.start,
-//                   children: [
-//                     Text(
-//                       'Card number',
-//                       style: ktsButtonText2,
-//                     ),
-//                     verticalSpaceTinyt1,
-//                     Text(
-//                       businessCard.maskedPan,
-//                       style: ktsHeroTextWhiteDashboard1,
-//                     )
-//                   ],
-//                 ),
-//                 Row(
-//                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                     children: [
-//                       Column(
-//                         crossAxisAlignment: CrossAxisAlignment.start,
-//                         children: [
-//                           Text(
-//                             'Expiry date',
-//                             style: ktsButtonText2,
-//                           ),
-//                           verticalSpaceTinyt1,
-//                           Text(
-//                             businessCard.expiryDate,
-//                             style: ktsHeroTextWhiteDashboard2,
-//                           )
-//                         ],
-//                       ),
-//                       SvgPicture.asset(
-//                         'assets/images/verve.svg',
-//                         width: 28,
-//                         height: 28,
-//                       ),
-//                     ]),
-//               ]),
-//         ),
-//         // verticalSpaceSmall,
-//         // Container(
-//         //   padding: EdgeInsets.zero,
-//         //   width: MediaQuery.of(context).size.width * 0.9,
-//         //   child: Column(
-//         //     crossAxisAlignment: CrossAxisAlignment.start,
-//         //     mainAxisAlignment: MainAxisAlignment.start,
-//         //     mainAxisSize: MainAxisSize.min,
-//         //     children: [
-//         //       Text('Billing address',
-//         //           style: GoogleFonts.dmSans(
-//         //             color: kcButtonTextColor.withOpacity(0.7),
-//         //             fontSize: 16,
-//         //             fontWeight: FontWeight.w300,
-//         //           )),
-//         //       verticalSpaceTiny,
-//         //       Text('No',
-//         //           // '${businessCard.line1},${businessCard.city},${businessCard.state},${businessCard.postalCode}',
-//         //           style: GoogleFonts.openSans(
-//         //             color: kcButtonTextColor,
-//         //             fontSize: 18,
-//         //             fontWeight: FontWeight.w500,
-//         //           ))
-//         //     ],
-//         //   ),
-//         // ),
-//         verticalSpaceSmallMid,
-//         Container(
-//           padding: EdgeInsets.zero,
-//           width: MediaQuery.of(context).size.width * 0.9,
-//           child: Row(
-//             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//             children: [
-//               GestureDetector(
-//                 onTap: () {
-//                   viewModel.checkbusinessAcccount();
-//                 },
-//                 child: Column(
-//                   children: [
-//                     CircleAvatar(
-//                       radius: 20,
-//                       backgroundColor: kcPrimaryColor.withOpacity(0.6),
-//                       child: const Icon(
-//                         Icons.add,
-//                         color: kcButtonTextColor,
-//                         size: 24,
-//                       ),
-//                     ),
-//                     verticalSpaceTiny,
-//                     Text(
-//                       'New card',
-//                       style: GoogleFonts.dmSans(
-//                         color: kcButtonTextColor,
-//                         fontSize: 18,
-//                         fontWeight: FontWeight.w300,
-//                       ),
-//                     )
-//                   ],
-//                 ),
-//               ),
-//               // GestureDetector(
-//               //   onTap: () {
-//               //     // viewModel.navigationService.navigateTo(Routes.addCardView);
-//               //     // viewModel.createSudoCard();
-//               //   },
-//               //   child: Column(
-//               //     children: [
-//               //       CircleAvatar(
-//               //         radius: 20,
-//               //         backgroundColor: kcPrimaryColor.withOpacity(0.6),
-//               //         child: const Icon(
-//               //           Icons.visibility,
-//               //           color: kcButtonTextColor,
-//               //           size: 24,
-//               //         ),
-//               //       ),
-//               //       verticalSpaceTiny,
-//               //       Text(
-//               //         'View',
-//               //         style: GoogleFonts.dmSans(
-//               //           color: kcButtonTextColor,
-//               //           fontSize: 18,
-//               //           fontWeight: FontWeight.w300,
-//               //         ),
-//               //       )
-//               //     ],
-//               //   ),
-//               // ),
-//               GestureDetector(
-//                 onTap: () {
-//                   viewModel.navigationService.navigateTo(
-//                       Routes.cardTransactionsView,
-//                       arguments: cardId);
-//                 },
-//                 child: Column(
-//                   children: [
-//                     CircleAvatar(
-//                       radius: 20,
-//                       backgroundColor: kcPrimaryColor.withOpacity(0.6),
-//                       child: const Icon(
-//                         Icons.receipt_outlined,
-//                         color: kcButtonTextColor,
-//                         size: 24,
-//                       ),
-//                     ),
-//                     verticalSpaceTiny,
-//                     Text(
-//                       'Transactions',
-//                       style: GoogleFonts.dmSans(
-//                         color: kcButtonTextColor,
-//                         fontSize: 18,
-//                         fontWeight: FontWeight.w300,
-//                       ),
-//                     )
-//                   ],
-//                 ),
-//               ),
-//             ],
-//           ),
-//         )
-//       ],
-//     );
-//   }
-// }
 
 class InvoiceListView extends StatefulWidget {
   const InvoiceListView({Key? key}) : super(key: key);

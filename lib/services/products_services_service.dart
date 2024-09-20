@@ -75,6 +75,10 @@ class ProductsServicesService {
             id
             productName
             price
+            stockStatus
+            productsInventory{
+              quantity
+              }
             trackReorderLevel
             reorderLevel
             productUnitId
@@ -230,7 +234,6 @@ class ProductsServicesService {
               id
               productName
               price
-              
             }
             }
           }
@@ -521,11 +524,15 @@ class ProductsServicesService {
 
     final productByIdData = productByIdResult.data?['getProductById'] ?? [];
 
+    final stockData = productByIdData['productsInventory'];
+
     final Products productById = Products(
       id: productByIdData['id'],
       productName: productByIdData['productName'],
       price: productByIdData['price'] / 100,
       quantity: 1,
+      stockStatus: productByIdData['stockStatus'],
+      stockCount: stockData['quantity'],
       // reorderLevel: productByIdData['reorderLevel'],
       productUnitId: productByIdData['businessProductUnitId'] ??
           productByIdData['productUnitId'],
@@ -1249,14 +1256,17 @@ class ProductsServicesService {
         [];
 
     final List<Products> products = productsData.map((data) {
+      // final stockData = data['productsInventory'];
       return Products(
-          id: data['id'],
-          productName: data['productName'],
-          price: data['price'] / 100,
-          quantity: 1
-          // reorderLevel: 0,
-          // trackReorderLevel: false
-          );
+        id: data['id'],
+        productName: data['productName'],
+        price: data['price'] / 100,
+        quantity: 1,
+        // stockStatus: data['stockStatus'],
+        // stockCount: stockData['quantity']
+        // reorderLevel: 0,
+        // trackReorderLevel: false
+      );
     }).toList();
 
     return products;
@@ -1415,6 +1425,8 @@ class Products {
   // bool trackReorderLevel;
   // num reorderLevel;
   String? productUnitId;
+  String? stockStatus;
+  num? stockCount;
 
   Products(
       {required this.id,
@@ -1423,7 +1435,9 @@ class Products {
       // required this.trackReorderLevel,
       required this.price,
       required this.quantity,
-      this.productUnitId});
+      this.productUnitId,
+      this.stockStatus,
+      this.stockCount});
 
   Map<String, dynamic> toMap() {
     return {
@@ -1431,7 +1445,7 @@ class Products {
       'productName': productName,
       'price': price,
       'productUnitId': productUnitId,
-      'quantity': quantity
+      'quantity': quantity,
     };
   }
 }

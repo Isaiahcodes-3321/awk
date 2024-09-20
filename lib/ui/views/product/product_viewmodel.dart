@@ -46,6 +46,8 @@ class ProductViewModel extends FutureViewModel<List<Products>> {
           productName: maps[i]['productName'],
           price: maps[i]['price'],
           quantity: 1,
+          // stockCount: maps[i]['stockCount'],
+          // stockStatus: maps[i]['stockStatus']
         );
       });
     } else {
@@ -75,8 +77,8 @@ class ProductViewModel extends FutureViewModel<List<Products>> {
   }
 
   Future<List<Products>> getProductByBusiness() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String businessIdValue = prefs.getString('businessId') ?? '';
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String businessIdValue = pref.getString('businessId') ?? '';
     final result = await authService.refreshToken();
     if (result.error != null) {
       await navigationService.replaceWithLoginView();
@@ -110,11 +112,9 @@ class ProductViewModel extends FutureViewModel<List<Products>> {
       // searchResults =
       //     expenses; // Reset to original list when the search query is empty
     }
-    // print(searchResults);
-
-    data = searchResults;
 
     rebuildUi();
+    data = searchResults;
     // return searchResults;
   }
 

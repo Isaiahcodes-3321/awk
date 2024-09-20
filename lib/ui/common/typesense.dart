@@ -186,7 +186,7 @@ Future<List<Products>> searchProducts(
       id: document['id'],
       productName: document['productName'],
       price: document['price'],
-      quantity: 0,
+      quantity: 1,
       // reorderLevel: 0,
       // trackReorderLevel: false,
     );

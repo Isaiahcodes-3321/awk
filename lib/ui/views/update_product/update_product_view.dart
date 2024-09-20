@@ -65,6 +65,45 @@ class UpdateProductView extends StackedView<UpdateProductViewModel> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    'Stock Count: ${viewModel.product.stockCount}',
+                    style: ktsFormTitleText,
+                  ),
+                  if (viewModel.product.stockStatus == 'inStock')
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: kcSuccessColor,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text('In stock',
+                          style: ktsSubtitleTileText2 // Set your text style
+                          ),
+                    )
+                  else
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: kcArchiveColor,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text('Out of stock',
+                          style: ktsSubtitleTileText // Set your text style
+                          ),
+                    )
+                ],
+              ),
+              Divider(
+                color: kcBorderColor,
+              ),
+              verticalSpaceTiny1,
               Text('Product name', style: ktsFormTitleText),
               verticalSpaceTiny,
               TextFormField(

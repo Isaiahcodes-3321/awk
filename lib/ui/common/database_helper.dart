@@ -120,7 +120,7 @@ Future<Database> getProductDatabase() async {
     join(await getDatabasesPath(), 'product_database.db'),
     onCreate: (db, version) {
       db.execute(
-          'CREATE TABLE products(id TEXT PRIMARY KEY, productName TEXT, productUnitId TEXT, price REAL, quantity REAL)');
+          'CREATE TABLE products(id TEXT PRIMARY KEY, productName TEXT, productUnitId TEXT, stockStatus TEXT, price REAL, stockCount REAL, quantity REAL)');
     },
     version: 1,
   );
