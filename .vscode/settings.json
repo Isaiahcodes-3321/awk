@@ -4,6 +4,12 @@
         "*.dart": "${capture}.mobile.dart, ${capture}.tablet.dart, ${capture}.desktop.dart, ${capture}.form.dart, ${capture}.g.dart, ${capture}.freezed.dart, ${capture}.logger.dart, ${capture}.locator.dart, ${capture}.router.dart, ${capture}.dialogs.dart, ${capture}.bottomsheets.dart"
     },
     "editor.fontSize": 18,
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "files.exclude": {
+        "**/awks.iml": true,
+        "**/devtools_options.yaml": true,
+        "**/firebase.json": true,
+        "**/stacked.json": true
+    }
 }
 

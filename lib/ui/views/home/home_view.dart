@@ -1,24 +1,25 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:stacked/stacked.dart';
-import 'package:stacked_services/stacked_services.dart';
-import 'package:verzo/app/app.locator.dart';
+import 'package:flutter/material.dart';
 import 'package:verzo/app/app.router.dart';
-import 'package:verzo/services/dashboard_service.dart';
-import 'package:verzo/services/expense_service.dart';
-import 'package:verzo/services/purchase_service.dart';
-import 'package:verzo/services/sales_service.dart';
+import 'package:verzo/app/app.locator.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:verzo/ui/common/app_colors.dart';
 import 'package:verzo/ui/common/app_styles.dart';
 import 'package:verzo/ui/common/ui_helpers.dart';
-import 'package:verzo/ui/views/expense/expense_view.dart';
-import 'package:verzo/ui/views/home/home_viewmodel.dart';
-import 'package:verzo/ui/views/home/reveal_card_info.dart';
-import 'package:verzo/ui/views/purchase/purchase_view.dart';
+import 'package:verzo/services/sales_service.dart';
+import 'package:verzo/services/expense_service.dart';
+import 'package:verzo/services/purchase_service.dart';
 import 'package:verzo/ui/views/sales/sales_view.dart';
+import 'package:verzo/services/dashboard_service.dart';
+import 'package:stacked_services/stacked_services.dart';
+import 'package:verzo/ui/views/home/home_viewmodel.dart';
+import 'package:verzo/ui/views/expense/expense_view.dart';
+import 'package:verzo/ui/views/home/reveal_card_info.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:verzo/ui/views/purchase/purchase_view.dart';
+
 
 class HomeView extends StatefulWidget {
   const HomeView({
@@ -160,9 +161,9 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
     return ViewModelBuilder<HomeViewModel>.reactive(
         viewModelBuilder: () => HomeViewModel(),
         onViewModelReady: (viewModel) async {
+          await viewModel.getCardsByBusiness();
           viewModel.setUserDetails();
           await viewModel.subscriptionValidation();
-          await viewModel.getCardsByBusiness();
           // await viewModel.getUserAndBusinessData();
           await viewModel.totalWeeklyInvoicesAmount();
           await viewModel.getExpensesForWeek();
@@ -449,6 +450,7 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
                             itemCount: viewModel.businessCard.length,
                             itemBuilder: (context, index) {
                               var businessCard = viewModel.businessCard[index];
+
                               return Cards(
                                 cardId: businessCard.id,
                                 businessCard: businessCard,
@@ -479,7 +481,7 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
                     scrollDirection: Axis.vertical,
                     padding: const EdgeInsets.only(bottom: 2),
                     primary: false,
-                    physics: const NeverScrollableScrollPhysics(),
+                    // physics: const NeverScrollableScrollPhysics(),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -523,7 +525,7 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
                                             MediaQuery.of(context).size.width *
                                                 0.76,
                                         decoration: BoxDecoration(
-                                          color: Color(0XFF2A5DC8),
+                                          color: const Color(0XFF2A5DC8),
                                           // color: Colors.white,
                                           // gradient: const LinearGradient(
                                           //   colors: [
@@ -641,7 +643,7 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
                                             MediaQuery.of(context).size.width *
                                                 0.76,
                                         decoration: BoxDecoration(
-                                          color: Color(0XFF2A5DC8),
+                                          color: const Color(0XFF2A5DC8),
                                           // gradient: const LinearGradient(
                                           //   colors: [
                                           //     Color(0xFF6275E9),
@@ -688,7 +690,7 @@ class _NewViewState extends State<NewView> with SingleTickerProviderStateMixin {
                                                   horizontalSpaceminute2,
                                                   Text(
                                                     "${viewModel.isChecked ? (viewModel.expenseForWeek?.percentageIncreaseInExpenseThisWeek ?? 0) : (viewModel.expenseForMonth?.percentageIncreaseInExpenseThisMonth ?? 0)}%",
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                       fontFamily: 'Satoshi',
                                                       color: kcButtonTextColor,
                                                       fontSize: 18,
@@ -1034,10 +1036,10 @@ class Cards extends ViewModelWidget<HomeViewModel> {
                           // Construct the URL
                           String url =
                               "https://beta.verzo.app/verzo/viewcard?businessId=${businessIdValue}&cardId=${cardId}";
-                          print("Generated URL: $cardId");
+                          debugPrint("Generated URL: $cardId");
                           // Print the full URL to the console
-                          print("Generated URL: $url");
-                          print("Generated URL: $cardId");
+                          debugPrint("Generated URL: $url");
+                          debugPrint("Generated URL: $cardId");
                           Navigator.push(
                             context,
                             MaterialPageRoute(

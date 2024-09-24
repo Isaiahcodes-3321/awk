@@ -1,21 +1,20 @@
 import 'dart:convert';
-
+import 'package:sqflite/sqflite.dart';
+import 'package:stacked/stacked.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:verzo/app/app.locator.dart';
 import 'package:verzo/app/app.router.dart';
-import 'package:verzo/services/authentication_service.dart';
+import 'package:verzo/app/app.locator.dart';
+import 'package:verzo/services/sales_service.dart';
 import 'package:verzo/services/billing_service.dart';
-import 'package:verzo/services/business_creation_service.dart';
-import 'package:verzo/services/dashboard_service.dart';
 import 'package:verzo/services/expense_service.dart';
 import 'package:verzo/services/purchase_service.dart';
-import 'package:verzo/services/sales_service.dart';
-import 'package:stacked/stacked.dart';
-import 'package:stacked_services/stacked_services.dart';
 import 'package:verzo/ui/common/database_helper.dart';
+import 'package:verzo/services/dashboard_service.dart';
+import 'package:stacked_services/stacked_services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:verzo/services/authentication_service.dart';
+import 'package:verzo/services/business_creation_service.dart';
 
 enum DrawerItem {
   home,
@@ -188,16 +187,22 @@ class HomeViewModel extends ReactiveViewModel with ListenableServiceMixin {
     }
   }
 
+  bool ifCardLoadsFirstTime = false;
+
   Future<List<BusinessCard>> getCardsByBusiness() async {
+    List<BusinessCard> result = [];
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String businessIdValue = prefs.getString('businessId') ?? '';
+    debugPrint('step 1');
     final result1 = await authService.refreshToken();
     if (result1.error != null) {
       await navigationService.replaceWithLoginView();
     }
-    final result =
+    result =
         await _dashboardService.getCardsByBusiness(businessId: businessIdValue);
+
     businessCard = result;
+    debugPrint('step 2');
     rebuildUi();
     return result;
   }
