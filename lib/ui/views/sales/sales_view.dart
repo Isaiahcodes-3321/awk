@@ -76,6 +76,7 @@ class _SalesViewState extends State<SalesView> {
                             verticalSpaceRegular,
                             if (!viewModel.isSearchActive)
                               Row(
+                                // added this line
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -192,6 +193,7 @@ class _SalesViewState extends State<SalesView> {
                         ),
                       ),
                     ),
+                    // added this too
                     // verticalSpaceSmall,
                     Flexible(
                       flex: 8,
